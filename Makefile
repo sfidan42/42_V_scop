@@ -19,7 +19,7 @@ clean:
 fclean: clean
 	rm -f $(GLFW)
 	rm -rf inc/GLFW
-	rm -rf glfw-3.4 glfw-3.4.zip
+	rm -rf glfw-3.4
 
 re: clean all
 
