@@ -5,7 +5,7 @@ CC		=	c++ -Wall -Wextra -Werror -std=c++11
 all: $(GLFW) $(NAME) run
 
 $(GLFW):
-	./glfw.sh
+	./add_glfw.sh
 
 $(NAME): main.cpp
 	$(CC) main.cpp -Iinc -Llib -lglfw3 -lGL -o $(NAME)
@@ -19,7 +19,7 @@ clean:
 fclean: clean
 	rm -f $(GLFW)
 	rm -rf inc/GLFW
-	rm -rf glfw-3.4/build
+	rm -rf glfw-3.4 glfw-3.4.zip
 
 re: clean all
 
