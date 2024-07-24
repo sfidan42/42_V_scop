@@ -30,16 +30,19 @@ int	main(void)
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
-	unsigned int	buffer_id;
-	float			data[6] = {
-		-0.5f, -0.5f,
-		 0.0f,  0.5f,
-		 0.5f, -0.5f
+	unsigned int		buffer_id;
+	const unsigned int	size = 10;
+	float				data[size] = {
+		 .0f, .0f,
+		 .0f, .5f,
+		 .5f, .5f,
+		 .5f, .0f,
+		-.5, -.5f,
 	};
 
 	glGenBuffers(1, &buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), data, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
@@ -50,8 +53,8 @@ int	main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-
+		glDrawArrays(GL_LINE_LOOP, 0, 5);
+		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
