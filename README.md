@@ -3,7 +3,8 @@
 ## Ubuntu 22.04LTS!
 
 ## Install dependencies
-- ```sudo apt install libwayland-dev libxkbcommon-dev xorg-dev```
+- GLFW ```sudo apt install libwayland-dev libxkbcommon-dev xorg-dev```
+- GLEW:```sudo apt install build-essential libxmu-dev libxi-dev libgl-dev```
 
 ## Run the project
 - ```make```
