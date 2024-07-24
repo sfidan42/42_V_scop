@@ -19,6 +19,7 @@ clean:
 fclean: clean
 	rm -f $(GLFW)
 	rm -rf inc/GLFW
+	rm -rf glfw-3.4/build
 
 re: clean all
 
