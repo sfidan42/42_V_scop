@@ -5,4 +5,7 @@
 # include <iostream>
 # include <string>
 
+GLuint	CreateShader(const std::string &vertexShader, const std::string &fragmentShader);
+void	ParseShader(const std::string &filepath);
+
 #endif
