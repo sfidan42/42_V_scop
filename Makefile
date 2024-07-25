@@ -6,10 +6,9 @@ GLFW	=	lib/libglfw3.a
 GLEW	=	lib/libGLEW.a
 CC		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc
 
-all: $(GLFW) $(GLEW) $(NAME) compile run
+all: run
 
 bin/%.o: src/%.cpp | bin
-	@echo "Compiling $<"
 	${CC} -c $< -o $@
 
 bin:
@@ -22,15 +21,12 @@ $(GLFW):
 	./add_glfw.sh
 
 $(NAME): $(OBJ)
-	@echo "Creating $(NAME)"
 	ar rcs $(NAME) $(OBJ)
 
-compile: main.cpp
-	@echo "Compiling $(EXE)"
+$(EXE): main.cpp $(GLFW) $(GLEW) $(NAME)
 	$(CC) main.cpp -L. -lscop -Llib -lGLEW -lglfw3 -lGL -o $(EXE)
 
-run:
-	@echo "Running $(EXE)"
+run: $(EXE)
 	./$(EXE)
 
 clean:
@@ -42,4 +38,4 @@ fclean: clean
 
 re: clean all
 
-.PHONY: all bin compile run clean fclean re
+.PHONY: all bin clean fclean re

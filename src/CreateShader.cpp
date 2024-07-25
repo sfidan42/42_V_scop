@@ -1,7 +1,7 @@
 #include <main.h>
 
 static
-unsigned int	CompileShader(GLenum type, const std::string &source)
+GLuint	CompileShader(GLenum type, const std::string &source)
 {
 	GLuint		id;
 	const char	*src;
@@ -26,16 +26,16 @@ unsigned int	CompileShader(GLenum type, const std::string &source)
 	return id;
 }
 
-GLuint	CreateShader(const std::string &vertexShader, const std::string &fragmentShader)
+GLuint	CreateShader(ShaderProgramSource &source)
 {
 	GLuint	program;
 	GLuint	vs;
 	GLuint	fs;
 
 	program = glCreateProgram();
-	vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-	
+	vs = CompileShader(GL_VERTEX_SHADER, source.vertexSource);
+	fs = CompileShader(GL_FRAGMENT_SHADER, source.fragmentSource);
+
 	glAttachShader(program, vs);
 	glAttachShader(program, fs);
 	glLinkProgram(program);
