@@ -1,4 +1,4 @@
-#include <main.hpp>
+#include <scop.hpp>
 
 /*
 * Given a file path, this function will read the file and parse it to a string.

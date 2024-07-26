@@ -1,4 +1,4 @@
-#include <main.hpp>
+#include <scop.hpp>
 
 int	main(void)
 {
@@ -16,7 +16,7 @@ int	main(void)
 		if (!window)
 		{
 			glfwTerminate();
-			return -1;
+			return (-1);
 		}
 		/* Make the window's context current */
 		glfwMakeContextCurrent(window);
@@ -24,8 +24,10 @@ int	main(void)
 			throw std::runtime_error("Error: GLEW not initialized");
 		/* Print OpenGL version */
 		std::cout << glGetString(GL_VERSION) << std::endl;
+		/* Set up the vertex array and index array */
 		setVertexArray();
 		indexSize = setVertexIndexArray();
+		/* Load the shader */
 		shader << "res/shaders/Basic.shader";
 		shader.use();
 		/* Loop until the user closes the window */
@@ -34,18 +36,18 @@ int	main(void)
 			/* Render here */
 			glClear(GL_COLOR_BUFFER_BIT);
 			/* Drawing */
-			glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, nullptr);
+			GLCall(glDrawElements(GL_TRIANGLES, indexSize, GL_INT, nullptr));
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
 			/* Poll for and process events */
 			glfwPollEvents();
 		}
 		glfwTerminate();
-		return 0;
+		return (0);
 	}
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << std::endl;
-		return -1;
+		return (-1);
 	}
 }

@@ -1,4 +1,4 @@
-#include <main.hpp>
+#include <scop.hpp>
 
 void	setVertexArray(void)
 {

@@ -1,4 +1,4 @@
-SRC		=	shader.cpp buffer.cpp
+SRC		=	shader.cpp buffer.cpp error.cpp
 OBJ		=	$(addprefix bin/, $(SRC:.cpp=.o))
 NAME	=	libscop.a
 EXE		=	scop
@@ -7,7 +7,7 @@ GLEW	=	lib/libGLEW.a
 CC		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc -g
 
 all: $(EXE)
-	./$(EXE)
+	./$(EXE) || echo "Error: $(EXE) failed"
 
 bin/%.o: src/%.cpp
 	${CC} -c $< -o $@
