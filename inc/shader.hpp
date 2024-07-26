@@ -19,6 +19,7 @@ public:
 	~Shader(void);
 	void	operator<<(const char *filepath);
 	void	use(void);
+	void	changeColor(float r, float g, float b, float a);
 };
 
 # endif

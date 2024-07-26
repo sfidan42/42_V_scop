@@ -94,5 +94,15 @@ void	Shader::operator<<(const char *filepath)
 
 void	Shader::use(void)
 {
-	glUseProgram(_program);
+	GLCall(glUseProgram(_program));
+	changeColor(1.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void	Shader::changeColor(float r, float g, float b, float a)
+{
+	GLint	location;
+
+	GLCall(location = glGetUniformLocation(_program, "u_Color"));
+	ASSERT(location != -1);
+	GLCall(glUniform4f(location, r, g, b, a));
 }

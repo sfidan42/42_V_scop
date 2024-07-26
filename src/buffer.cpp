@@ -4,12 +4,12 @@ void	setVertexArray(void)
 {
 	unsigned int		buffer_id;
 	const unsigned int	size = 12;
-	const unsigned int	vertexSize = 2;
+	const unsigned int	vertexSize = 3;
 	float				data[size] = {
-		-.5f, -.5f,
-		.5f, -.5f,
-		.5f,  .5f,
-		-.5f,  .5f,
+		 .5, -.1, -.2,
+		 .1,  .5,  .1,
+		-.5,  .0, -.3,
+		  0, -.5,  .0,
 	};
 
 	glGenBuffers(1, &buffer_id);

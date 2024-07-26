@@ -35,6 +35,6 @@ fclean: clean
 	rm -rf inc/GLFW inc/GL
 	rm -rf glfw-3.4 glew-2.1.0
 
-re: clean all
+re: fclean all
 
 .PHONY: all clean fclean re
