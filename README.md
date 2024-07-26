@@ -15,3 +15,8 @@
 - [Download source code](https://www.glfw.org/download.html)
 - [Build and Compile source code](https://www.glfw.org/docs/latest/compile.html)
 - if glClear not found, then also link it: -lGL
+
+## GLEW
+- The OpenGL Extension Wrangler Library (GLEW) is a cross-platform open-source C/C++ extension loading library. GLEW provides efficient run-time mechanisms for determining which OpenGL extensions are supported on the target platform.
+- GLEW needs an openGL window open first.
+- do```#include <GL/glew.h>``` before ```#include <GLFW/glfw3.h>```

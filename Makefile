@@ -1,10 +1,10 @@
-SRC		=	CreateShader.cpp  ParseShader.cpp
+SRC		=	shader.cpp buffer.cpp
 OBJ		=	$(addprefix bin/, $(SRC:.cpp=.o))
 NAME	=	libscop.a
 EXE		=	scop
 GLFW	=	lib/libglfw3.a
 GLEW	=	lib/libGLEW.a
-CC		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc
+CC		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc -g
 
 all: $(EXE)
 	./$(EXE)
