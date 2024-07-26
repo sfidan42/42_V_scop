@@ -9,7 +9,7 @@ CC		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc
 all: $(EXE)
 	./$(EXE)
 
-bin/%.o: src/%.cpp | bin
+bin/%.o: src/%.cpp
 	${CC} -c $< -o $@
 
 bin:
@@ -21,7 +21,7 @@ $(GLEW):
 $(GLFW):
 	./add_glfw.sh
 
-$(NAME): $(OBJ)
+$(NAME): bin $(OBJ)
 	ar rcs $(NAME) $(OBJ)
 
 $(EXE): main.cpp $(GLFW) $(GLEW) $(NAME)
@@ -32,8 +32,9 @@ clean:
 
 fclean: clean
 	rm -f $(GLFW) $(GLEW)
-	rm -rf inc/GLFW inc/GL glfw-3.4 glew-2.1.0
+	rm -rf inc/GLFW inc/GL
+	rm -rf glfw-3.4 glew-2.1.0
 
 re: clean all
 
-.PHONY: all bin clean fclean re
+.PHONY: all clean fclean re
