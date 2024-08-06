@@ -5,7 +5,6 @@ int	main(void)
 	try
 	{
 		GLFWwindow		*window;
-		unsigned int	indexSize;
 		Shader			shader;
 
 		/* Initialize the library */
@@ -26,26 +25,57 @@ int	main(void)
 			throw std::runtime_error("Error: GLEW not initialized");
 		/* Print OpenGL version */
 		std::cout << glGetString(GL_VERSION) << std::endl;
-		/* Set up the vertex array and index array */
-		setVertexArray();
-		indexSize = setVertexIndexArray();
+
+		float positions[] = {
+			-0.5f, -0.5f,
+			 0.5f, -0.5f,
+			 0.5f,  0.5f,
+			-0.5f,  0.5f
+		};
+
+		unsigned int indices[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		unsigned int vao;
+		GLCall(glGenVertexArrays(1, &vao));
+		GLCall(glBindVertexArray(vao));
+
+		VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+
+		GLCall(glEnableVertexAttribArray(0));
+		GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+
+		IndexBuffer ib(indices, 6);
+
 		/* Load the shader */
 		shader << "res/shaders/Basic.shader";
+
+		GLCall(glBindVertexArray(0));
+		GLCall(glUseProgram(0));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
 		shader.use();
 		/* Loop until the user closes the window */
 		float r = 0.0f, increment = 0.05f;
 		while (!glfwWindowShouldClose(window))
 		{
 			/* Render here */
-			glClear(GL_COLOR_BUFFER_BIT);
+			GLCall(glClear(GL_COLOR_BUFFER_BIT));
 			/* Drawing */
 			shader.changeColor(r, .3f, .8f, 1.0f);
+
+			GLCall(glBindVertexArray(vao));
+			ib.bind();
+
+			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 			if (r > 1.0f)
 				increment = -0.05f;
 			else if (r < 0.0f)
 				increment = 0.05f;
 			r += increment;
-			GLCall(glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, nullptr));
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
 			/* Poll for and process events */

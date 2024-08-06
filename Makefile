@@ -1,4 +1,4 @@
-SRC		=	shader.cpp buffer.cpp error.cpp
+SRC		=	shader.cpp VertexBuffer.cpp IndexBuffer.cpp error.cpp
 OBJ		=	$(addprefix bin/, $(SRC:.cpp=.o))
 NAME	=	libscop.a
 EXE		=	scop

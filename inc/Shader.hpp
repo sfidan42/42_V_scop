@@ -1,5 +1,5 @@
-#ifndef SHADER_H
-# define SHADER_H
+#ifndef __SHADER__
+# define __SHADER__
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -7,6 +7,7 @@
 class Shader
 {
 private:
+	GLint		_location;
 	GLuint		_program;
 	std::string	_filepath;
 	std::string	_vertexSource;

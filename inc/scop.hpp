@@ -4,8 +4,9 @@
 # include <GLFW/glfw3.h>
 # include <iostream>
 # include <string>
-# include <shader.hpp>
-# include <buffer.h>
+# include <Shader.hpp>
+# include <VertexBuffer.hpp>
+# include <IndexBuffer.hpp>
 # include <error.h>
 
 #endif
