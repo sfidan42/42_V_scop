@@ -57,7 +57,9 @@ int	main(void)
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
+		/* Start using the shader before render loop */
 		shader.use();
+
 		/* Loop until the user closes the window */
 		float r = 0.0f, increment = 0.05f;
 		while (!glfwWindowShouldClose(window))
