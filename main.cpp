@@ -83,12 +83,12 @@ int	main(void)
 			/* Poll for and process events */
 			glfwPollEvents();
 		}
-		glfwTerminate();
-		return (0);
 	}
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << std::endl;
 		return (-1);
 	}
+	glfwTerminate();
+	return (0);
 }
