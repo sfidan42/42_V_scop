@@ -4,7 +4,7 @@
 
 ## Install dependencies
 - GLFW ```sudo apt install libwayland-dev libxkbcommon-dev xorg-dev```
-- GLEW:```sudo apt install build-essential libxmu-dev libxi-dev libgl-dev```
+- GLEW:```sudo apt install build-essential libxmu-dev libxi-dev libgl-dev libglu1-mesa-dev```
 
 ## Run the project
 - ```make```
