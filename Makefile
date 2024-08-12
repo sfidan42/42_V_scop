@@ -4,7 +4,9 @@ NAME	=	libscop.a
 EXE		=	scop
 GLFW	=	lib/libglfw3.a
 GLEW	=	lib/libGLEW.a
-CC		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc -g
+CC		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc #-g
+LIBS	=	-L. -lscop -Llib -lGLEW -lglfw3
+FRAMES	=	-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 
 all: $(EXE)
 	./$(EXE) || echo "Error: $(EXE) failed"
@@ -12,29 +14,28 @@ all: $(EXE)
 bin/%.o: src/%.cpp
 	${CC} -c $< -o $@
 
-bin:
-	mkdir -p bin
-
 $(GLEW):
-	./add_glew.sh
+	@echo $(GLEW) is required to build $(EXE)
+	exit 1
 
 $(GLFW):
-	./add_glfw.sh
+	@echo $(GLFW) is required to build $(EXE)
+	exit 1
+
+bin:
+	mkdir -p bin
 
 $(NAME): bin $(OBJ)
 	ar rcs $(NAME) $(OBJ)
 
 $(EXE): main.cpp $(GLFW) $(GLEW) $(NAME)
-	$(CC) main.cpp -L. -lscop -Llib -lGLEW -lglfw3 -lGL -o $(EXE)
+	$(CC) main.cpp $(LIBS) $(FRAMES) -o $(EXE)
 
 clean:
-	rm -rf $(NAME) $(EXE) bin
+	rm -rf bin
 
 fclean: clean
-	rm -f $(GLFW) $(GLEW)
-	rm -rf inc/GLFW inc/GL
-	rm -rf glfw-3.4 glew-2.1.0
-
+	rm -f $(NAME) $(EXE)
 re: fclean all
 
 .PHONY: all clean fclean re
