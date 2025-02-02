@@ -1,4 +1,6 @@
-#include <scop.hpp>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
 
 int main(void)
 {
@@ -18,6 +20,14 @@ int main(void)
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    /* Initialize GLAD */
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

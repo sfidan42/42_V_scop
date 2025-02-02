@@ -24,6 +24,6 @@ glad: prepare
 	rm -rf glad
 
 clean:
-	rm -rf lib
+	rm -rf lib glfw-3.4 glad
 
 .PHONY: all glfw glad clean prepare

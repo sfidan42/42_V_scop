@@ -4,8 +4,7 @@
 
 ## Install dependencies
 - GLFW ```sudo apt install libwayland-dev libxkbcommon-dev xorg-dev```
-- GLEW:```sudo apt install build-essential libxmu-dev libxi-dev libgl-dev```
-- GL: ```sudo apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev```
+- GLAD: 
 
 ## Run the project
 - ```make```
@@ -17,7 +16,6 @@
 - [Build and Compile source code](https://www.glfw.org/docs/latest/compile.html)
 - if glClear not found, then also link it: -lGL
 
-## GLEW
-- The OpenGL Extension Wrangler Library (GLEW) is a cross-platform open-source C/C++ extension loading library. GLEW provides efficient run-time mechanisms for determining which OpenGL extensions are supported on the target platform.
-- GLEW needs an openGL window open first.
-- do```#include <GL/glew.h>``` before ```#include <GLFW/glfw3.h>```
+## GLAD
+- In simple words, GLAD manages function pointers for OpenGL. It is useful becuase OpenGL is only really a standard/specification it is up to the driver manufacturer to implement the specification to a driver that the specific graphics card supports.
+- do```#include <glad/glad.h>``` before ```#include <GLFW/glfw3.h>```
