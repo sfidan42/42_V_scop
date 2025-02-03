@@ -1,5 +1,7 @@
 
-CC	=	gcc -Wall -Wextra -Werror -std=c11 -g -Ilib/inc
+CC		=	gcc -Wall -Wextra -Werror -std=c11 -g -Ilib/inc
+GLAD	=	lib/bin/glad.o
+GLFW	=	lib/src/libglfw3.a
 
 all: glfw glad
 
@@ -8,7 +10,10 @@ prepare:
 
 # glfw-3.4.zip: https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
 
-glfw: prepare
+glfw: prepare $(GLFW)
+glad: prepare $(GLAD)
+
+$(GLFW):
 	unzip glfw-3.4.zip
 	cmake -S glfw-3.4 -B glfw-3.4/build
 	make -C glfw-3.4/build
@@ -16,7 +21,7 @@ glfw: prepare
 	mv glfw-3.4/build/src/libglfw3.a lib/src
 	rm -rf glfw-3.4
 
-glad: prepare
+$(GLAD):
 	unzip glad.zip
 	mv glad/include/glad lib/inc
 	mv glad/include/KHR lib/inc

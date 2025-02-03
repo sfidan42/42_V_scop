@@ -3,7 +3,7 @@
 ## Ubuntu 22.04LTS!
 
 ## Install dependencies
-- GLFW ```sudo apt install libwayland-dev libxkbcommon-dev xorg-dev```
+- GLFW ```sudo apt install libwayland-dev libxkbcommon-dev xorg-dev libgtk-3-dev```
 - GLAD: 
 
 ## Run the project

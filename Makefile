@@ -1,16 +1,16 @@
-SRC		=	error.cpp
-OBJ		=	$(addprefix bin/, $(SRC:.cpp=.o))
+SRC     =   error.cpp
+OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
 
-EXE		=	scop
+EXE     =   scop
 
-NAME	=	libscop.a
-GLFW	=	dep/lib/src/libglfw3.a
-GLAD	=	dep/lib/bin/glad.o
+NAME    =   libscop.a
+GLFW    =   dep/lib/src/libglfw3.a
+GLAD    =   dep/lib/bin/glad.o
 
-CXX		=	c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g
+CXX     =   c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g
 
-FLAGS	=	-L. -lscop -Ldep/lib/src -lglfw3 -lGL
-#FLAGS	+=	-lX11 -lpthread -lXrandr -lXi -ldl -lXxf86vm -lXinerama -lXcursor
+FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL
+#FLAGS  +=  -lX11 -lpthread -lXrandr -lXi -ldl -lXxf86vm -lXinerama -lXcursor
 
 all: $(EXE)
 	./$(EXE) || echo "Error: $(EXE) failed"
@@ -18,16 +18,16 @@ all: $(EXE)
 bin/%.o: src/%.cpp
 	$(CXX) -c $< -o $@
 
-dep:
-	make -C dep
+$(GLFW):
+	make -C dep glfw
 
-$(GLFW): dep
-$(GLAD): dep
+$(GLAD):
+	make -C dep glad
 
 bin:
 	mkdir -p bin
 
-$(NAME): bin $(OBJ) $(GLAD)
+$(NAME): $(GLAD) bin $(OBJ)
 	ar rcs $(NAME) $(OBJ) $(GLAD)
 
 $(EXE): main.cpp $(GLFW) $(NAME)
@@ -37,9 +37,9 @@ clean:
 	rm -rf $(NAME) bin
 
 fclean: clean
-	rm -rf $(EXE) lib
+	rm -rf $(EXE)
 	make -C dep clean
 
 re: fclean all
 
-.PHONY: all clean fclean re dep
+.PHONY: all clean fclean re dep_glad dep_glfw
