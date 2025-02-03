@@ -2,6 +2,9 @@
 # define SCOP_H
 # include <glad/glad.h>
 # include <GLFW/glfw3.h>
-# include <error.h>
+# include <iostream>
+# include "error.h"
+# include <fstream>
+# include <sstream>
 
 #endif

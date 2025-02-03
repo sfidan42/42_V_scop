@@ -9,8 +9,7 @@ GLAD    =   dep/lib/bin/glad.o
 
 CXX     =   c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g
 
-FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL
-#FLAGS  +=  -lX11 -lpthread -lXrandr -lXi -ldl -lXxf86vm -lXinerama -lXcursor
+FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 all: $(EXE)
 	./$(EXE) || echo "Error: $(EXE) failed"
