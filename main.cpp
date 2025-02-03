@@ -1,6 +1,6 @@
+#include <iostream> // Add this line to include the C++ Standard Library
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 
 int main(void)
 {
@@ -28,6 +28,8 @@ int main(void)
         glfwTerminate();
         return -1;
     }
+
+    std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

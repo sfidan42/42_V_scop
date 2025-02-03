@@ -22,7 +22,7 @@ $(GLFW):
 	make -C dep glfw
 
 $(GLAD):
-	make -C dep glad
+	make  -C dep glad
 
 bin:
 	mkdir -p bin
