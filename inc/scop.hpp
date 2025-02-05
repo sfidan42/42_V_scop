@@ -4,7 +4,5 @@
 # include <GLFW/glfw3.h>
 # include <iostream>
 # include "error.h"
-# include <fstream>
-# include <sstream>
 
 #endif
