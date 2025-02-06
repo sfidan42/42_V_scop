@@ -10,11 +10,16 @@ Shader::~Shader(void)
 
 void	Shader::parse(const char *filepath)
 {
-	std::ifstream		file(filepath);
-	std::string			line;
-	std::stringstream	ss[2];
 	int					i;
+	std::string			line;
+	std::ifstream		file(filepath);
+	std::stringstream	ss[2];
 
+	if (!file.is_open())
+	{
+		std::cerr << "Failed to open file\n";
+		return ;
+	}
 	i = -1;
 	while (getline(file, line))
 	{
@@ -49,7 +54,7 @@ void	Shader::use(void)
 
 	const char		*vertexShaderSource = _vertex_shader.c_str();
 	const char		*fragmentShaderSource = _fragment_shader.c_str();
-	
+
 	unsigned int	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	unsigned int	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
