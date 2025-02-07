@@ -5,7 +5,7 @@
 # include <GLFW/glfw3.h>
 # include <iostream>
 
-unsigned int	load_texture(const char *texture_path)
+unsigned int	load_texture(const char *texture_path, unsigned int rgb_mode)
 {
 	unsigned int	texture;
 
@@ -20,7 +20,7 @@ unsigned int	load_texture(const char *texture_path)
 	unsigned char *data = stbi_load(texture_path, &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, rgb_mode, width, height, 0, rgb_mode, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(data);
 	}

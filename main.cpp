@@ -6,10 +6,25 @@ void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void	processInput(GLFWwindow *window)
+void	processInput(GLFWwindow *window, unsigned int shaderProgram)
 {
+	static float mixValue = 0.2f;
+
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		mixValue += 0.01f;
+		if(mixValue >= 1.0f)
+			mixValue = 1.0f;
+	}
+	if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		mixValue -= 0.01f;
+		if(mixValue <= 0.0f)
+			mixValue = 0.0f;
+	}
+	glUniform1f(glGetUniformLocation(shaderProgram, "mixValue"), mixValue);
 }
 
 int	main(void)
@@ -77,20 +92,30 @@ int	main(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	shader.parse("res/shaders/texture.shader");
-	glUseProgram(shader.create());
+	unsigned int shaderProgram = shader.create();
+	
+	unsigned int textures[2];
 
-	unsigned int texture = load_texture("res/textures/container.jpg");
+	textures[0] = load_texture("res/textures/container.jpg", GL_RGB);
+	stbi_set_flip_vertically_on_load(true);
+	textures[1] = load_texture("res/textures/awesomeface.png", GL_RGBA);
+	glUseProgram(shaderProgram);
+	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+	glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window);
+		processInput(window, shaderProgram);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textures[0]);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, textures[1]);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 
