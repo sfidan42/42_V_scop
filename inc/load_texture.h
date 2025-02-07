@@ -5,8 +5,6 @@
 # include <GLFW/glfw3.h>
 # include <iostream>
 
-# include <load_texture.h>
-
 unsigned int	load_texture(const char *texture_path)
 {
 	unsigned int	texture;
