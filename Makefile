@@ -7,7 +7,7 @@ NAME    =   libscop.a
 GLFW    =   dep/lib/src/libglfw3.a
 GLAD    =   dep/lib/bin/glad.o
 
-CXX     =   c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g
+CXX     =   c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g -lm
 
 FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 

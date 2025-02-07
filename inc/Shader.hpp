@@ -1,8 +1,10 @@
 #pragma once
+# include <glad/glad.h>
+# include <GLFW/glfw3.h>
 # include <string>
 # include <fstream>
 # include <sstream>
-# include "scop.hpp"
+# include <iostream>
 
 class Shader
 {
@@ -14,8 +16,8 @@ private:
 public:
 	Shader(void);
 	~Shader(void);
-	void	parse(const char *filepath);
-	void	use(void);
+	void			parse(const char *filepath);
+	unsigned int	create(void);
 private:
 	void	_compile(unsigned int shader, const char *shader_source);
 };

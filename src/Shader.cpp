@@ -49,9 +49,8 @@ void	Shader::_compile(unsigned int shader, const char *shader_source)
 	}
 }
 
-void	Shader::use(void)
+unsigned int	Shader::create(void)
 {
-
 	const char		*vertexShaderSource = _vertex_shader.c_str();
 	const char		*fragmentShaderSource = _fragment_shader.c_str();
 
@@ -60,14 +59,13 @@ void	Shader::use(void)
 
 	_compile(vertexShader, vertexShaderSource);
 	_compile(fragmentShader, fragmentShaderSource);
-
+	
 	unsigned int shaderProgram = glCreateProgram();
 
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
-	glUseProgram(shaderProgram);
-
+	
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &_success);
 	if (!_success)
 	{
@@ -77,4 +75,6 @@ void	Shader::use(void)
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+	return (shaderProgram);
 }

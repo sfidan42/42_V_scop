@@ -1,5 +1,4 @@
 #include <scop.hpp>
-#include <Shader.hpp>
 
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -43,16 +42,16 @@ int	main(void)
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
 	float vertices[] = {
-		-0.8f, 0.0f, 0.0f, // left bottom
-		-.4f, 0.4f, 0.0f, // left top
-		0.0f, 0.0f, 0.0f, // center
-		0.4f, 0.4f, 0.0f, // right top
-		0.8f, 0.0f, 0.0f, // right bottom
+		// positions		// colors		  // texture coords
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f // top left
 	};
 
-	unsigned int indices[] = { // note that we start from 0!
-		0, 1, 2, // first triangle
-		2, 3, 4, // second triangle
+	unsigned int indices[] = {
+		0, 1, 2,
+		0, 2, 3
 	};
 
 	unsigned int VAO;
@@ -66,15 +65,21 @@ int	main(void)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glBindVertexArray(VAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	shader.parse("res/shaders/basic.shader");
-	shader.use();
+	shader.parse("res/shaders/texture.shader");
+	glUseProgram(shader.create());
+
+	unsigned int texture = load_texture("res/textures/container.jpg");
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -85,8 +90,9 @@ int	main(void)
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
