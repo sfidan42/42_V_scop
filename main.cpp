@@ -27,6 +27,27 @@ void	processInput(GLFWwindow *window, unsigned int shaderProgram)
 	glUniform1f(glGetUniformLocation(shaderProgram, "mixValue"), mixValue);
 }
 
+void	transform1(unsigned int shaderProgram)
+{
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+	trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+
+	unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+}
+
+void	transform2(unsigned int shaderProgram)
+{
+	glm::mat4 trans = glm::mat4(1.0f);
+	float scaleAmount = sin(glfwGetTime());
+	trans = glm::scale(trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+	trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+
+	unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+}
+
 int	main(void)
 {
 	GLFWwindow	*window;
@@ -57,11 +78,11 @@ int	main(void)
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
 	float vertices[] = {
-		// positions		// colors		  // texture coords
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f // top left
+		// positions		// texture coords
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f // top left
 	};
 
 	unsigned int indices[] = {
@@ -71,7 +92,7 @@ int	main(void)
 
 	unsigned int VAO;
 	unsigned int VBO;
-	unsigned int EBO;
+	unsigned int EBOs[2];
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -80,18 +101,18 @@ int	main(void)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glBindVertexArray(VAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
 
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glGenBuffers(2, EBOs);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[2]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	shader.parse("res/shaders/texture.shader");
+	shader.parse("res/shaders/matrice.shader");
 	unsigned int shaderProgram = shader.create();
 	
 	unsigned int textures[2];
@@ -116,7 +137,11 @@ int	main(void)
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
+		transform1(shaderProgram);
+		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
+		transform2(shaderProgram);
 		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
