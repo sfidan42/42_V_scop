@@ -27,25 +27,34 @@ void	processInput(GLFWwindow *window, unsigned int shaderProgram)
 	glUniform1f(glGetUniformLocation(shaderProgram, "mixValue"), mixValue);
 }
 
-void	transform1(unsigned int shaderProgram)
+void	transform(unsigned int shaderProgram, unsigned int i, glm::vec3 cubePositions[10], float angle_ratio)
 {
-	glm::mat4 trans = glm::mat4(1.0f);
-	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-	trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+	static float	x = 10.0f;
+	static float	y = -0.01f;
 
-	unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-}
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-void	transform2(unsigned int shaderProgram)
-{
-	glm::mat4 trans = glm::mat4(1.0f);
-	float scaleAmount = sin(glfwGetTime());
-	trans = glm::scale(trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
-	trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+	glm::mat4 view = glm::mat4(1.0f);
+	// note that we’re translating the scene in the reverse direction
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f * x));
 
-	unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+	x += y;
+	if (x >= 10.0f || x <= 1.0f)
+		y = -y;
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, cubePositions[i]);
+	float angle = 20.0f * (i + 1) * angle_ratio;
+	model = glm::rotate(model, glm::radians(angle),
+	glm::vec3(1.0f, 0.3f, 0.5f));
+
+	unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 }
 
 int	main(void)
@@ -78,11 +87,47 @@ int	main(void)
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
 	float vertices[] = {
-		// positions		// texture coords
-		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f // top left
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
 	unsigned int indices[] = {
@@ -90,9 +135,22 @@ int	main(void)
 		0, 2, 3
 	};
 
+	glm::vec3 cubePositions[] = {
+		glm::vec3( 0.0f, 0.0f, 0.0f),
+		glm::vec3( 2.0f, 5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3( 2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f, 3.0f, -7.5f),
+		glm::vec3( 1.3f, -2.0f, -2.5f),
+		glm::vec3( 1.5f, 2.0f, -2.5f),
+		glm::vec3( 1.5f, 0.2f, -1.5f),
+		glm::vec3(-1.3f, 1.0f, -1.5f)
+	};
+
 	unsigned int VAO;
 	unsigned int VBO;
-	unsigned int EBOs[2];
+	unsigned int EBO;
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -106,13 +164,11 @@ int	main(void)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	glGenBuffers(2, EBOs);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[2]);
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	shader.parse("res/shaders/matrice.shader");
+	shader.parse("res/shaders/transform.shader");
 	unsigned int shaderProgram = shader.create();
 	
 	unsigned int textures[2];
@@ -126,23 +182,28 @@ int	main(void)
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	glEnable(GL_DEPTH_TEST);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window, shaderProgram);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-		transform1(shaderProgram);
-		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-		transform2(shaderProgram);
-		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(VAO);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		float	angle_ratio = (float)glfwGetTime();
+		for (unsigned int i = 0; i < 10; i++)
+		{
+			transform(shaderProgram, i, cubePositions, angle_ratio);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+		//glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

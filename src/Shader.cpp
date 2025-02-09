@@ -46,6 +46,7 @@ void	Shader::_compile(unsigned int shader, const char *shader_source)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, _infoLog);
 		std::cerr << "shader compilation failed\n" << _infoLog << std::endl;
+		std::cerr << shader_source << std::endl;
 	}
 }
 
