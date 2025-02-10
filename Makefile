@@ -1,4 +1,4 @@
-SRC     =   error.cpp Shader.cpp Scop.cpp
+SRC     =   error.cpp Shader.cpp Scop.cpp Obj.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
 
 EXE     =   scop
