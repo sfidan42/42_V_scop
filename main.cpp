@@ -1,61 +1,5 @@
-#include <scop.hpp>
-
-void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	(void)window;
-	glViewport(0, 0, width, height);
-}
-
-void	processInput(GLFWwindow *window, unsigned int shaderProgram)
-{
-	static float mixValue = 0.2f;
-
-	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-	if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		mixValue += 0.01f;
-		if(mixValue >= 1.0f)
-			mixValue = 1.0f;
-	}
-	if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		mixValue -= 0.01f;
-		if(mixValue <= 0.0f)
-			mixValue = 0.0f;
-	}
-	glUniform1f(glGetUniformLocation(shaderProgram, "mixValue"), mixValue);
-}
-
-void	transform(unsigned int shaderProgram, unsigned int i, glm::vec3 cubePositions[10], float angle_ratio)
-{
-	static float	x = 10.0f;
-	static float	y = -0.01f;
-
-	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-
-	glm::mat4 view = glm::mat4(1.0f);
-	// note that we’re translating the scene in the reverse direction
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f * x));
-
-	x += y;
-	if (x >= 10.0f || x <= 1.0f)
-		y = -y;
-
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, cubePositions[i]);
-	float angle = 20.0f * (i + 1) * angle_ratio;
-	model = glm::rotate(model, glm::radians(angle),
-	glm::vec3(1.0f, 0.3f, 0.5f));
-
-	unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
-	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
-	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-}
+#include <Scop.hpp>
+#include <load_texture.h>
 
 int	main(void)
 {
@@ -184,6 +128,9 @@ int	main(void)
 
 	glEnable(GL_DEPTH_TEST);
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, mouse_callback);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window, shaderProgram);
@@ -198,6 +145,9 @@ int	main(void)
 		glBindVertexArray(VAO);
 		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		float	angle_ratio = (float)glfwGetTime();
+		float	currentFrame = (float)glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 		for (unsigned int i = 0; i < 10; i++)
 		{
 			transform(shaderProgram, i, cubePositions, angle_ratio);
