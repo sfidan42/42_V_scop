@@ -32,6 +32,8 @@ void	Obj::read(const char *file_path)
 	float			vertex[3];
 	float			index[3];
 
+	_vertices.clear();
+	_indices.clear();
 	while (std::getline(file, line))
 	{
 		std::istringstream	iss(line);
