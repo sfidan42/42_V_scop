@@ -34,11 +34,11 @@ void	transform(unsigned int shaderProgram, glm::vec3 position)
 
 	glm::mat4 view = glm::mat4(1.0f);
 	// note that we’re translating the scene in the reverse direction
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -7.0f));
+	view = glm::translate(view, glm::vec3(2.0f, 0.0f, -5.0f));
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, position);
-	float angle = 20.0f * sin(glfwGetTime()) * 10.0f;
+	float angle = 180.0f * sin(glfwGetTime());
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
 	unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
@@ -161,7 +161,7 @@ int	main(void)
 	unsigned int shaderPrograms[2];
 	shader.parse("res/shaders/light.shader");
 	shaderPrograms[0] = shader.create();
-	shader.parse("res/shaders/normal.shader");
+	shader.parse("res/shaders/specular.shader");
 	shaderPrograms[1] = shader.create();
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -191,7 +191,7 @@ int	main(void)
 		glUniform3f(glGetUniformLocation(shaderPrograms[1], "lightColor"), 1.0f, 1.0f, 1.0f);
 		glUniform3f(glGetUniformLocation(shaderPrograms[1], "objectColor"), 1.0f, 0.5f, 0.31f);
 		glUniform3f(glGetUniformLocation(shaderPrograms[1], "lightPos"), 1.2f, 1.0f, 2.0f);
-		transform(shaderPrograms[1], glm::vec3(-5.0f, 0.0f, 0.0f));
+		transform(shaderPrograms[1], glm::vec3(-2.0f, 0.0f, 0.0f));
 		glBindVertexArray(myObjVAOs[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
