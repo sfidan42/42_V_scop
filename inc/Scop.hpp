@@ -9,6 +9,7 @@
 # include <glm/gtc/type_ptr.hpp>
 
 void	transform(unsigned int shaderProgram, unsigned int i, glm::vec3 cubePositions[10], float angle_ratio);
+void	transform(unsigned int shaderProgram, glm::vec3 position);
 void	processInput(GLFWwindow *window, unsigned int shaderProgram);
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void	mouse_callback(GLFWwindow* window, double xpos, double ypos);

@@ -37,12 +37,12 @@ void	Obj::read(const char *file_path)
 	}
 }
 
-std::vector<float>	Obj::get_vertices(void)
+std::vector<float>	Obj::getVertices(void)
 {
 	return (_vertices);
 }
 
-std::vector<unsigned int>	Obj::get_indices(void)
+std::vector<unsigned int>	Obj::getIndices(void)
 {
 	return (_indices);
 }

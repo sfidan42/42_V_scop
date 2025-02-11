@@ -12,6 +12,6 @@ public:
 	Obj(void);
 	~Obj();
 	void						read(const char *file_path);
-	std::vector<float>			get_vertices(void);
-	std::vector<unsigned int>	get_indices(void);
+	std::vector<float>			getVertices(void);
+	std::vector<unsigned int>	getIndices(void);
 };

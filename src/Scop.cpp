@@ -1,6 +1,6 @@
 #include <Scop.hpp>
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos = glm::vec3(5.0f, 0.0f, 15.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -73,6 +73,9 @@ void	processInput(GLFWwindow *window, unsigned int shaderProgram)
 	glUniform1f(glGetUniformLocation(shaderProgram, "mixValue"), mixValue);
 
 	float	cameraSpeed = 2.5f * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		cameraSpeed *= 5.0f;
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		cameraPos += cameraSpeed * cameraFront;
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -97,6 +100,28 @@ void	transform(unsigned int shaderProgram, unsigned int i, glm::vec3 cubePositio
 	float angle = 20.0f * (i + 1) * angle_ratio;
 	model = glm::rotate(model, glm::radians(angle),
 	glm::vec3(1.0f, 0.3f, 0.5f));
+
+	unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+}
+
+void	transform(unsigned int shaderProgram, glm::vec3 position)
+{
+
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+	glm::mat4	view;
+	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, position);
+	float angle = sin(glfwGetTime()) * 180.0f;
+	model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
 	unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
