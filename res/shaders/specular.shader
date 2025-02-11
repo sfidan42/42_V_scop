@@ -14,19 +14,19 @@ void	main()
 {
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
 	FragPos = vec3(model * vec4(aPos, 1.0));
-	Normal = aPos;
+	Normal = vec3(model * vec4(aPos, 1.0));
 }
 
 #shader fragment
 #version 460 core
 
-out		vec4	FragColor;
+in		vec3	Normal;
+in		vec3	FragPos;
 uniform	vec3	objectColor;
 uniform	vec3	lightColor;
 uniform	vec3	lightPos;
 uniform vec3    viewPos;
-in		vec3	Normal;
-in		vec3	FragPos;
+out		vec4	FragColor;
 
 void    main()
 {

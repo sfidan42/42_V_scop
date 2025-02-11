@@ -6,25 +6,10 @@ void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void	processInput(GLFWwindow *window, unsigned int shaderProgram)
+void	processInput(GLFWwindow *window)
 {
-	static float mixValue = 0.2f;
-
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		mixValue += 0.01f;
-		if(mixValue >= 1.0f)
-			mixValue = 1.0f;
-	}
-	if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		mixValue -= 0.01f;
-		if(mixValue <= 0.0f)
-			mixValue = 0.0f;
-	}
-	glUniform1f(glGetUniformLocation(shaderProgram, "mixValue"), mixValue);
 }
 
 void	transform(unsigned int shaderProgram, glm::vec3 position)
@@ -110,7 +95,7 @@ int	main(void)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window, shaderProgram);
+		processInput(window);
 
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -118,7 +103,7 @@ int	main(void)
 		glUseProgram(shaderProgram);
 		glUniform3f(glGetUniformLocation(shaderProgram, "lightColor"), 1.0f, 1.0f, 1.0f);
 		glUniform3f(glGetUniformLocation(shaderProgram, "objectColor"), 1.0f, 0.7f, 0.51f);	
-		glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), 10.0f, 5.0f, 0.0f);
+		glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), 50.0f, 5.0f, 0.0f);
 		glUniform3f(glGetUniformLocation(shaderProgram, "viewPos"), 0.0f, 0.0f, 0.5f);
 		transform(shaderProgram, glm::vec3(0.0f, -2.0f, -3.0f));
 		glBindVertexArray(VAO);
