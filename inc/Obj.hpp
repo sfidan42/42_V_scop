@@ -53,6 +53,8 @@ void	Obj::read(const char *file_path)
 			_indices.push_back(index[2]);
 		}
 	}
+	std::cout << "size of vertices: " << _vertices.size() << std::endl;
+	std::cout << "size of indices: " << _indices.size() << std::endl;
 }
 
 std::vector<float>	Obj::get_vertices(void)

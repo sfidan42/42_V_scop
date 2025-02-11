@@ -2,7 +2,7 @@
 #version 460 core
 
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
+//layout (location = 1) in vec3 aNormal;
 
 uniform	mat4	model;
 uniform	mat4	view;
@@ -14,7 +14,7 @@ void	main()
 {
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
 	FragPos = vec3(model * vec4(aPos, 1.0));
-	Normal = mat3(transpose(inverse(model))) * aNormal;
+	Normal = aPos;
 }
 
 #shader fragment
@@ -24,9 +24,9 @@ out		vec4	FragColor;
 uniform	vec3	objectColor;
 uniform	vec3	lightColor;
 uniform	vec3	lightPos;
+uniform vec3    viewPos;
 in		vec3	Normal;
 in		vec3	FragPos;
-uniform vec3    viewPos;
 
 void    main()
 {
