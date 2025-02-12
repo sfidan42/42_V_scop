@@ -1,4 +1,4 @@
-SRC     =   error.cpp Shader.cpp
+SRC     =   error.cpp Shader.cpp Obj.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
 
 EXE     =   scop
@@ -8,7 +8,6 @@ NAME    =   libscop.a
 GLFW    =   dep/lib/src/libglfw3.a
 GLAD    =   dep/lib/bin/glad.o
 GLM		=   dep/lib/inc/glm/glm.hpp
-STB		=   dep/lib/inc/stb_image.h
 
 CXX     =   c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g -lm
 
@@ -29,8 +28,6 @@ $(GLAD):
 	make -C dep glad
 $(GLM):
 	make -C dep glm
-$(STB):
-	make -C dep stb
 
 $(NAME): bin $(OBJ)
 	ar rcs $(NAME) $(OBJ) $(GLAD)
