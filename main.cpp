@@ -12,22 +12,21 @@ void	processInput(GLFWwindow *window)
 		glfwSetWindowShouldClose(window, true);
 }
 
-void	useShader(unsigned int shaderProgram, float distance)
+void	useShader(unsigned int shaderProgram, glm::vec3 relPos)
 {
 	glUseProgram(shaderProgram);
-	
+
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-	
+
 	glm::mat4 view = glm::mat4(1.0f);
 	// note that we’re translating the scene in the reverse direction
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -distance));
-	
+	view = glm::translate(view, relPos);
+
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 	float angle = 180.0f * sin(glfwGetTime());
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-	
+
 	unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
 	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
@@ -36,13 +35,14 @@ void	useShader(unsigned int shaderProgram, float distance)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	glUniform3f(glGetUniformLocation(shaderProgram, "lightColor"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), distance * 10.0f, distance * 10.0f, -distance * 10.0f);
+	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), relPos.x, relPos.y, relPos.z);
 }
 
 int	main(void)
 {
 	GLFWwindow	*window;
 	Shader		shader;
+	Obj			obj;
 
 	if (!glfwInit())
 		return (-1);
@@ -68,10 +68,9 @@ int	main(void)
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	Obj	obj;
-	obj.read("res/objects/teddy.obj");
-	std::vector<float> vertices = obj.get_vertices();
-	std::vector<unsigned int> indices = obj.get_indices();
+	obj.read("res/objects/42.obj");
+	std::vector<float>			vertices = obj.getVertices();
+	std::vector<unsigned int>	indices = obj.getIndices();
 
 	unsigned int	VBO;
 	unsigned int	VAOs[2];
@@ -98,12 +97,17 @@ int	main(void)
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	float distance = 0.0f;
+	vertex		vertAvg = obj.getVertexAvg();
+	glm::vec3	relativePosition = glm::vec3(0.0f, 0.0f, 0.0f);
+	float		distance = 0.0f;
 	for (const auto& vertex : vertices)
 	{
 		distance = std::max(distance, std::abs(vertex));
 	}
 	distance *= 2.0f;
+	relativePosition.x += vertAvg.x;
+	relativePosition.y += vertAvg.y;
+	relativePosition.z += vertAvg.z - distance;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -113,7 +117,7 @@ int	main(void)
 
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		useShader(shaderProgram, distance);
+		useShader(shaderProgram, relativePosition);
 		glBindVertexArray(*VAOs);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

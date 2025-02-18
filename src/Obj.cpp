@@ -1,6 +1,6 @@
 #include <Obj.hpp>
 
-Obj::Obj(void)
+Obj::Obj(void) : _vertexAvg{0.0f, 0.0f, 0.0f}
 {
 }
 
@@ -13,9 +13,8 @@ void	Obj::read(const char *file_path)
 	std::ifstream	file(file_path);
 	std::string		line;
 	std::string		word;
-	float			vertex[3];
-	unsigned int	index[3];
-	bool			black = true;
+	vertex			vert;
+	triangle		tri;
 
 	_vertices.clear();
 	_indices.clear();
@@ -25,57 +24,66 @@ void	Obj::read(const char *file_path)
 		iss >> word;
 		if (word == "v")
 		{
-			iss >> vertex[0] >> vertex[1] >> vertex[2];
-			_vertices.push_back(vertex[0]);
-			_vertices.push_back(vertex[1]);
-			_vertices.push_back(vertex[2]);
-			if (black)
-			{
-				_vertices.push_back(0.1f);
-				_vertices.push_back(0.1f);
-				_vertices.push_back(0.1f);
-				black = false;
-			}
-			else
-			{
-				_vertices.push_back(1.0f);
-				_vertices.push_back(1.0f);
-				_vertices.push_back(1.0f);
-				black = true;
-			}
-			_vertexAvg[0] += vertex[0];
-			_vertexAvg[1] += vertex[1];
-			_vertexAvg[2] += vertex[2];
+			iss >> vert.x >> vert.y >> vert.z;
+			_vertices.push_back(vert);
+			_vertexAvg.x += vert.x;
+			_vertexAvg.y += vert.y;
+			_vertexAvg.z += vert.z;
 		}
 		else if (word == "f")
 		{
-			iss >> index[0] >> index[1] >> index[2];
-			_indices.push_back(index[0] - 1);
-			_indices.push_back(index[1] - 1);
-			_indices.push_back(index[2] - 1);
+			iss >> tri.v1 >> tri.v2 >> tri.v3;
+			tri.data[0] -= 1;
+			tri.data[1] -= 1;
+			tri.data[2] -= 1;
+			_indices.push_back(tri);
 		}
 	}
-	_vertexAvg[0] /= (_vertices.size() / 6);
-	_vertexAvg[1] /= (_vertices.size() / 6);
-	_vertexAvg[2] /= (_vertices.size() / 6);
+	_vertexAvg.x /= _vertices.size();
+	_vertexAvg.y /= _vertices.size();
+	_vertexAvg.z /= _vertices.size();
 	std::cout << "size of vertices: " << _vertices.size() << std::endl;
 	std::cout << "size of indices: " << _indices.size() << std::endl;
 	std::cout << "size of the object: " << (float)(_vertices.size() * sizeof(float) + _indices.size() * sizeof(unsigned int)) / 1024.0f << "kB" << std::endl;
-	std::cout << "average of vertices: " << _vertexAvg[0] << " " << _vertexAvg[1] << " " << _vertexAvg[2] << std::endl;
+	std::cout << "average of vertices: " << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << " " << std::endl;
 }
 
-std::vector<float>	Obj::get_vertices(void)
+std::vector<float>	Obj::getVertices(void)
 {
-	for (unsigned int i = 0; i < _vertices.size(); i += 6)
+	std::vector<float>::iterator	it;
+	std::vector<float>				vec;
+
+	vec.resize(_vertices.size() * sizeof(vertex));
+	it = vec.begin();
+	for (vertex &vert : _vertices)
 	{
-		_vertices[i] -= _vertexAvg[0];
-		_vertices[i + 1] -= _vertexAvg[1];
-		_vertices[i + 2] -= _vertexAvg[2];
+		*it++ = vert.x;
+		*it++ = vert.y;
+		*it++ = vert.z;
+		*it++ = 0.7f;
+		*it++ = 0.7f;
+		*it++ = 0.7f;
 	}
-	return _vertices;
+	return (vec);
 }
 
-std::vector<unsigned int>	Obj::get_indices(void)
+std::vector<unsigned int>	Obj::getIndices(void)
 {
-	return _indices;
+	std::vector<unsigned int>::iterator	it;
+	std::vector<unsigned int>			vec;
+
+	vec.resize(_indices.size() * sizeof(triangle));
+	it = vec.begin();
+	for (triangle &tri : _indices)
+	{
+		*it++ = tri.v1;
+		*it++ = tri.v2;
+		*it++ = tri.v3;
+	}
+	return (vec);
+}
+
+vertex	Obj::getVertexAvg(void)
+{
+	return	(_vertexAvg);
 }
