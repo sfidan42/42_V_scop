@@ -52,5 +52,4 @@ public:
 	void						read(const char *file_path);
 	std::vector<float>			getVertices(void);
 	std::vector<unsigned int>	getIndices(void);
-	vertex						getVertexAvg(void);
 };

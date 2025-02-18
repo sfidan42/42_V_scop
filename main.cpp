@@ -12,7 +12,7 @@ void	processInput(GLFWwindow *window)
 		glfwSetWindowShouldClose(window, true);
 }
 
-void	useShader(unsigned int shaderProgram, glm::vec3 relPos)
+void	useShader(unsigned int shaderProgram, float distance)
 {
 	glUseProgram(shaderProgram);
 
@@ -21,7 +21,7 @@ void	useShader(unsigned int shaderProgram, glm::vec3 relPos)
 
 	glm::mat4 view = glm::mat4(1.0f);
 	// note that we’re translating the scene in the reverse direction
-	view = glm::translate(view, relPos);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -distance));
 
 	glm::mat4 model = glm::mat4(1.0f);
 	float angle = 180.0f * sin(glfwGetTime());
@@ -35,14 +35,20 @@ void	useShader(unsigned int shaderProgram, glm::vec3 relPos)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	glUniform3f(glGetUniformLocation(shaderProgram, "lightColor"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), relPos.x, relPos.y, relPos.z);
+	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), 0.0f, 0.0f, -distance);
 }
 
-int	main(void)
+int	main(int c, char **av)
 {
 	GLFWwindow	*window;
 	Shader		shader;
 	Obj			obj;
+
+	if (c != 2)
+	{
+		std::cerr << "provide .obj path!" << std::endl;
+		return (1);
+	}
 
 	if (!glfwInit())
 		return (-1);
@@ -68,7 +74,7 @@ int	main(void)
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	obj.read("res/objects/42.obj");
+	obj.read(av[1]);
 	std::vector<float>			vertices = obj.getVertices();
 	std::vector<unsigned int>	indices = obj.getIndices();
 
@@ -97,17 +103,12 @@ int	main(void)
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	vertex		vertAvg = obj.getVertexAvg();
-	glm::vec3	relativePosition = glm::vec3(0.0f, 0.0f, 0.0f);
 	float		distance = 0.0f;
 	for (const auto& vertex : vertices)
 	{
 		distance = std::max(distance, std::abs(vertex));
 	}
 	distance *= 2.0f;
-	relativePosition.x += vertAvg.x;
-	relativePosition.y += vertAvg.y;
-	relativePosition.z += vertAvg.z - distance;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -117,7 +118,7 @@ int	main(void)
 
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		useShader(shaderProgram, relativePosition);
+		useShader(shaderProgram, distance);
 		glBindVertexArray(*VAOs);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

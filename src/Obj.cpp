@@ -52,17 +52,18 @@ std::vector<float>	Obj::getVertices(void)
 {
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
+	color							col { .r = 0.7f, .g = 0.7f, .b = 0.7f };
 
-	vec.resize(_vertices.size() * sizeof(vertex));
+	vec.resize(_vertices.size() * (sizeof(vertex) + sizeof(color)));
 	it = vec.begin();
 	for (vertex &vert : _vertices)
 	{
-		*it++ = vert.x;
-		*it++ = vert.y;
-		*it++ = vert.z;
-		*it++ = 0.7f;
-		*it++ = 0.7f;
-		*it++ = 0.7f;
+		*it++ = vert.x - _vertexAvg.x;
+		*it++ = vert.y - _vertexAvg.y;
+		*it++ = vert.z - _vertexAvg.z;
+		*it++ = col.r;
+		*it++ = col.g;
+		*it++ = col.b;
 	}
 	return (vec);
 }
@@ -81,9 +82,4 @@ std::vector<unsigned int>	Obj::getIndices(void)
 		*it++ = tri.v3;
 	}
 	return (vec);
-}
-
-vertex	Obj::getVertexAvg(void)
-{
-	return	(_vertexAvg);
 }
