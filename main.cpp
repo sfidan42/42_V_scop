@@ -17,7 +17,7 @@ void	useShader(unsigned int shaderProgram, float distance)
 	glUseProgram(shaderProgram);
 
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	glm::mat4 view = glm::mat4(1.0f);
 	// note that we’re translating the scene in the reverse direction

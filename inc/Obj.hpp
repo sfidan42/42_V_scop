@@ -15,7 +15,7 @@ typedef union
 		float	z;
 	};
 	float		data[3];
-}				vertex;
+}				uVertex;
 
 
 typedef union
@@ -27,7 +27,7 @@ typedef union
 		float	b;
 	};
 	float		data[3];
-}				color;
+}				uColor;
 
 typedef union
 {
@@ -38,14 +38,14 @@ typedef union
 		unsigned int	v3;
 	};
 	unsigned int		data[3];
-}						triangle;
+}						uIndex;
 
 class Obj
 {
 private:
-	std::list<vertex>	_vertices;
-	vertex				_vertexAvg;
-	std::list<triangle>	_indices;
+	std::list<uVertex>	_vertices;
+	uVertex				_vertexAvg;
+	std::list<uIndex>	_indices;
 public:
 	Obj(void);
 	~Obj();

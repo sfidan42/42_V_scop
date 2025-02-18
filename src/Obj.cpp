@@ -13,8 +13,8 @@ void	Obj::read(const char *file_path)
 	std::ifstream	file(file_path);
 	std::string		line;
 	std::string		word;
-	vertex			vert;
-	triangle		tri;
+	uVertex			vert;
+	uIndex			idx;
 
 	_vertices.clear();
 	_indices.clear();
@@ -32,18 +32,24 @@ void	Obj::read(const char *file_path)
 		}
 		else if (word == "f")
 		{
-			iss >> tri.v1 >> tri.v2 >> tri.v3;
-			tri.data[0] -= 1;
-			tri.data[1] -= 1;
-			tri.data[2] -= 1;
-			_indices.push_back(tri);
+			std::string		fword[3];
+			iss >> fword[0] >> fword[1] >> fword[2];
+			std::istringstream(fword[0]) >> idx.v1;
+			std::istringstream(fword[1]) >> idx.v2;
+			std::istringstream(fword[2]) >> idx.v3;
+			//iss >> idx.v1 >> idx.v2 >> idx.v3;
+			idx.v1 -= 1;
+			idx.v2 -= 1;
+			idx.v3 -= 1;
+			_indices.push_back(idx);
 		}
+		word.clear();
 	}
 	_vertexAvg.x /= _vertices.size();
 	_vertexAvg.y /= _vertices.size();
 	_vertexAvg.z /= _vertices.size();
-	std::cout << "size of vertices: " << _vertices.size() << std::endl;
-	std::cout << "size of indices: " << _indices.size() << std::endl;
+	std::cout << "number of vertices: " << _vertices.size() << std::endl;
+	std::cout << "number of indices: " << _indices.size() << std::endl;
 	std::cout << "size of the object: " << (float)(_vertices.size() * sizeof(float) + _indices.size() * sizeof(unsigned int)) / 1024.0f << "kB" << std::endl;
 	std::cout << "average of vertices: " << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << " " << std::endl;
 }
@@ -52,11 +58,11 @@ std::vector<float>	Obj::getVertices(void)
 {
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
-	color							col { .r = 0.7f, .g = 0.7f, .b = 0.7f };
+	uColor							col { .r = 0.7f, .g = 0.7f, .b = 0.7f };
 
-	vec.resize(_vertices.size() * (sizeof(vertex) + sizeof(color)));
+	vec.resize(_vertices.size() * (sizeof(uVertex) + sizeof(uColor)));
 	it = vec.begin();
-	for (vertex &vert : _vertices)
+	for (uVertex &vert : _vertices)
 	{
 		*it++ = vert.x - _vertexAvg.x;
 		*it++ = vert.y - _vertexAvg.y;
@@ -73,13 +79,13 @@ std::vector<unsigned int>	Obj::getIndices(void)
 	std::vector<unsigned int>::iterator	it;
 	std::vector<unsigned int>			vec;
 
-	vec.resize(_indices.size() * sizeof(triangle));
+	vec.resize(_indices.size() * sizeof(uIndex));
 	it = vec.begin();
-	for (triangle &tri : _indices)
+	for (uIndex &idx : _indices)
 	{
-		*it++ = tri.v1;
-		*it++ = tri.v2;
-		*it++ = tri.v3;
+		*it++ = idx.v1;
+		*it++ = idx.v2;
+		*it++ = idx.v3;
 	}
 	return (vec);
 }
