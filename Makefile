@@ -14,7 +14,7 @@ CXX     =   c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g -lm
 FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 all: $(STB) $(GLM) $(GLAD) $(GLFW) $(EXE)
-	./$(EXE) res/objects/max-planck.obj || echo "Error: $(EXE) failed"
+	./$(EXE) res/objects/other/max-planck.obj || echo "Error: $(EXE) failed"
 
 bin/%.o: src/%.cpp
 	$(CXX) -c $< -o $@

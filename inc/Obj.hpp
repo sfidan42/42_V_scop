@@ -5,51 +5,41 @@
 # include <sstream>
 # include <iostream>
 # include <algorithm>
+# include <cmath>
 
-typedef union
+typedef struct
 {
-	struct
-	{
-		float	x;
-		float	y;
-		float	z;
-	};
-	float		data[3];
-}				uVertex;
+	float	x;
+	float	y;
+	float	z;
+}			tVertex;
 
-
-typedef union
+typedef struct
 {
-	struct
-	{
-		float	r;
-		float	g;
-		float	b;
-	};
-	float		data[3];
-}				uColor;
+	float	r;
+	float	g;
+	float	b;
+}			tColor;
 
-typedef union
+typedef struct
 {
-	struct
-	{
-		unsigned int	v1;
-		unsigned int	v2;
-		unsigned int	v3;
-	};
-	unsigned int		data[3];
-}						uIndex;
+	unsigned int	v1;
+	unsigned int	v2;
+	unsigned int	v3;
+}					tIndex;
 
 class Obj
 {
 private:
-	std::list<uVertex>	_vertices;
-	uVertex				_vertexAvg;
-	std::list<uIndex>	_indices;
+	std::list<tVertex>		_vertices;
+	tVertex					_vertexAvg;
+	std::list<tIndex>		_indices;
+	std::vector<tVertex>	_vertexNormals;
 public:
 	Obj(void);
 	~Obj();
 	void						read(const char *file_path);
 	std::vector<float>			getVertices(void);
 	std::vector<unsigned int>	getIndices(void);
+	void						findVertexNormals(void);
 };

@@ -13,8 +13,8 @@ void	Obj::read(const char *file_path)
 	std::ifstream	file(file_path);
 	std::string		line;
 	std::string		word;
-	uVertex			vert;
-	uIndex			idx;
+	tVertex			vert;
+	tIndex			idx;
 
 	_vertices.clear();
 	_indices.clear();
@@ -54,15 +54,78 @@ void	Obj::read(const char *file_path)
 	std::cout << "average of vertices: " << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << " " << std::endl;
 }
 
+void	Obj::findVertexNormals(void)
+{
+	std::vector<tIndex>		indices(_indices.begin(), _indices.end());
+	std::vector<tVertex>	vertices(_vertices.begin(), _vertices.end());
+
+	std::vector<tVertex>	triangleNormals(indices.size());
+	std::vector<tVertex>	vertexNormals(vertices.size());
+	std::vector<int>		vertexCount(vertices.size(), 0);
+
+	for (size_t i = 0; i < indices.size(); i++)
+	{
+		tIndex	&idx = indices[i];
+		tVertex	&v1 = vertices[idx.v1];
+		tVertex	&v2 = vertices[idx.v2];
+		tVertex	&v3 = vertices[idx.v3];
+		tVertex	&normal = triangleNormals[i];
+
+		tVertex	edge1 = { .x = v2.x - v1.x, .y = v2.y - v1.y, .z = v2.z - v1.z };
+		tVertex	edge2 = { .x = v3.x - v1.x, .y = v3.y - v1.y, .z = v3.z - v1.z };
+
+		normal.x = edge1.y * edge2.z - edge1.z * edge2.y;
+		normal.y = edge1.z * edge2.x - edge1.x * edge2.z;
+		normal.z = edge1.x * edge2.y - edge1.y * edge2.x;
+
+		float	length = sqrtf(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
+		normal.x /= length;
+		normal.y /= length;
+		normal.z /= length;
+
+		vertexNormals[idx.v1].x += normal.x;
+		vertexNormals[idx.v1].y += normal.y;
+		vertexNormals[idx.v1].z += normal.z;
+
+		vertexNormals[idx.v2].x += normal.x;
+		vertexNormals[idx.v2].y += normal.y;
+		vertexNormals[idx.v2].z += normal.z;
+		
+		vertexNormals[idx.v3].x += normal.x;
+		vertexNormals[idx.v3].y += normal.y;
+		vertexNormals[idx.v3].z += normal.z;
+
+		vertexCount[idx.v1]++;
+		vertexCount[idx.v2]++;
+		vertexCount[idx.v3]++;
+	}
+
+	for (size_t i = 0; i < vertexNormals.size(); i++)
+	{
+		tVertex	&normal = vertexNormals[i];
+		float	count = vertexCount[i];
+
+		normal.x /= count;
+		normal.y /= count;
+		normal.z /= count;
+
+	}
+
+	_vertexNormals = vertexNormals;
+
+}
+
 std::vector<float>	Obj::getVertices(void)
 {
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
-	uColor							col { .r = 0.7f, .g = 0.7f, .b = 0.7f };
+	tColor							col { .r = 0.7f, .g = 0.7f, .b = 0.7f };
 
-	vec.resize(_vertices.size() * (sizeof(uVertex) + sizeof(uColor)));
+	vec.resize(_vertices.size() * (2 * sizeof(tVertex) + sizeof(tColor)));
 	it = vec.begin();
-	for (uVertex &vert : _vertices)
+	unsigned int i = 0;
+	this->findVertexNormals();
+	for (tVertex &vert : _vertices)
 	{
 		*it++ = vert.x - _vertexAvg.x;
 		*it++ = vert.y - _vertexAvg.y;
@@ -70,6 +133,10 @@ std::vector<float>	Obj::getVertices(void)
 		*it++ = col.r;
 		*it++ = col.g;
 		*it++ = col.b;
+		*it++ = _vertexNormals[i].x;
+		*it++ = _vertexNormals[i].y;
+		*it++ = _vertexNormals[i].z;
+		i++;
 	}
 	return (vec);
 }
@@ -79,9 +146,9 @@ std::vector<unsigned int>	Obj::getIndices(void)
 	std::vector<unsigned int>::iterator	it;
 	std::vector<unsigned int>			vec;
 
-	vec.resize(_indices.size() * sizeof(uIndex));
+	vec.resize(_indices.size() * sizeof(tIndex));
 	it = vec.begin();
-	for (uIndex &idx : _indices)
+	for (tIndex &idx : _indices)
 	{
 		*it++ = idx.v1;
 		*it++ = idx.v2;

@@ -35,7 +35,7 @@ void	useShader(unsigned int shaderProgram, float distance)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	glUniform3f(glGetUniformLocation(shaderProgram, "lightColor"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), 0.0f, 0.0f, -distance);
+	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), distance, -distance, -distance);
 }
 
 int	main(int c, char **av)
@@ -82,7 +82,7 @@ int	main(int c, char **av)
 	unsigned int	VAOs[2];
 	unsigned int	EBO;
 
-	glGenVertexArrays(2, VAOs);
+	glGenVertexArrays(3, VAOs);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 
@@ -90,10 +90,12 @@ int	main(int c, char **av)
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
 	glBindVertexArray(*VAOs);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
