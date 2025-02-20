@@ -16,7 +16,7 @@ void	main()
 {
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
 	FragPos = vec3(model * vec4(aPos, 1.0));
-	Normal = -vec3(model * vec4(aNormal, 1.0));
+	Normal = -vec3(model * vec4(aNormal, 0.0));
 	//Normal = -FragPos;
 	Color = aColor;
 }
@@ -27,23 +27,25 @@ void	main()
 in		vec3	Color;
 in		vec3	Normal;
 in		vec3	FragPos;
-uniform	vec3	lightColor;
+uniform	vec3	ambientColor;
+uniform	vec3	diffuseColor;
+uniform	vec3	specularColor;
 uniform	vec3	lightPos;
 uniform vec3    viewPos;
 out		vec4	FragColor;
 
 void    main()
 {
-	vec3	ambient = vec3(0.1, 0.1, 0.1);
+	vec3	ambient = ambientColor;
 	vec3	norm = normalize(Normal);
 	vec3	lightDir = normalize(lightPos - FragPos);
 	float	diff = max(dot(norm, lightDir), 0.0);
-	vec3	diffuse = diff * lightColor;
+	vec3	diffuse = diff * diffuseColor;
 	float   specularStrength = 0.5;
     vec3    viewDir = normalize(viewPos - FragPos);
     vec3    reflectDir = reflect(-lightDir, norm);
     float   spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3    specular = specularStrength * spec * lightColor;
+    vec3    specular = specularStrength * spec * specularColor;
 	vec3    result = (ambient + diffuse + specular) * Color;
     FragColor = vec4(result, 1.0);
 }

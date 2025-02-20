@@ -28,18 +28,36 @@ typedef struct
 	unsigned int	v3;
 }					tIndex;
 
+typedef struct
+{
+	std::string		name; // Wood
+	tColor			ka; // 1.000000 1.000000 1.000000
+	tColor			kd; // 0.640000 0.640000 0.640000
+	tColor			ks; // 0.500000 0.500000 0.500000
+	float			ns; // 96.078431
+	float			ni; // 1.000000
+	float			d; // 1.000000
+	unsigned int	illum; // 0
+	std::string		map_Kd; // woodtexture.jpg
+}					tMaterial;
+
 class Obj
 {
 private:
 	std::list<tVertex>		_vertices;
-	tVertex					_vertexAvg;
 	std::list<tIndex>		_indices;
+private:
+	tVertex					_vertexAvg;
+private:
 	std::vector<tVertex>	_vertexNormals;
+private:
+	tMaterial				_mat;
 public:
 	Obj(void);
 	~Obj();
-	void						read(const char *file_path);
+	void						read(const std::string objPath, const std::string mtlPath);
 	std::vector<float>			getVertices(void);
 	std::vector<unsigned int>	getIndices(void);
+	tMaterial					getMaterial(void);
 	void						findVertexNormals(void);
 };

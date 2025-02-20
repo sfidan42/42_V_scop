@@ -19,8 +19,6 @@ void	processInput(GLFWwindow *window)
 
 void	useShader(unsigned int shaderProgram, float distance)
 {
-	glUseProgram(shaderProgram);
-
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(70.0f), window_width / window_height, 0.1f, 1000.0f);
 
@@ -38,9 +36,6 @@ void	useShader(unsigned int shaderProgram, float distance)
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-	glUniform3f(glGetUniformLocation(shaderProgram, "lightColor"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), distance, -distance, -distance);
 }
 
 int	main(int c, char **av)
@@ -51,7 +46,7 @@ int	main(int c, char **av)
 
 	if (c != 2)
 	{
-		std::cerr << "provide .obj path!" << std::endl;
+		std::cerr << "provide a file (present it without .obj in its path)" << std::endl;
 		return (1);
 	}
 
@@ -79,9 +74,13 @@ int	main(int c, char **av)
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	obj.read(av[1]);
+	std::string				path(av[1]);
+
+	obj.read(path + ".obj", (path + ".mtl"));
+	
 	std::vector<float>			vertices = obj.getVertices();
 	std::vector<unsigned int>	indices = obj.getIndices();
+	tMaterial					mat = obj.getMaterial();
 
 	unsigned int	VBO;
 	unsigned int	VAOs[2];
@@ -116,6 +115,14 @@ int	main(int c, char **av)
 		distance = std::max(distance, std::abs(vertex));
 	}
 	distance *= 2.0f;
+
+	glUseProgram(shaderProgram);
+
+	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), distance, -distance, -distance);
+
+	glUniform3f(glGetUniformLocation(shaderProgram, "ambientColor"), mat.ka.r, mat.ka.g, mat.ka.b);
+	glUniform3f(glGetUniformLocation(shaderProgram, "diffuseColor"), mat.kd.r, mat.kd.g, mat.kd.b);
+	glUniform3f(glGetUniformLocation(shaderProgram, "specularColor"), mat.ks.r, mat.ks.g, mat.ks.b);
 
 	glEnable(GL_DEPTH_TEST);
 

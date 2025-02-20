@@ -2,22 +2,32 @@
 
 Obj::Obj(void) : _vertexAvg{0.0f, 0.0f, 0.0f}
 {
+	_mat.kd = { .r = 1.0f, .g = 1.0f, .b = 1.0f };
+	_mat.ka = { .r = 0.1f, .g = 0.1f, .b = 0.1f };
+	_mat.ks = { .r = 0.7f, .g = 0.7f, .b = 0.7f };
 }
 
 Obj::~Obj()
 {
 }
 
-void	Obj::read(const char *file_path)
+void	Obj::read(const std::string objPath, const std::string mtlPath)
 {
-	std::ifstream	file(file_path);
+	std::ifstream	objFile(objPath);
+	std::ifstream	mtlFile(mtlPath);
 	std::string		line;
 	tVertex			vert;
+	tMaterial		mat;
 	tIndex			idx;
 
+	if (!objFile.is_open())
+	{
+		std::cerr << "could not open file: " << objPath << std::endl;
+		return ;
+	}
 	_vertices.clear();
 	_indices.clear();
-	while (std::getline(file, line))
+	while (std::getline(objFile, line))
 	{
 		std::istringstream	iss(line);
 		std::string			word;
@@ -57,6 +67,54 @@ void	Obj::read(const char *file_path)
 	std::cout << "number of indices: " << _indices.size() << std::endl;
 	std::cout << "size of the object: " << (float)(_vertices.size() * sizeof(float) + _indices.size() * sizeof(unsigned int)) / 1024.0f << "kB" << std::endl;
 	std::cout << "average of vertices: " << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << " " << std::endl;
+
+	if (!mtlFile.is_open())
+	{
+		std::cout << "could not open .mtl file" << std::endl;
+		std::cout << "using the default material" << std::endl;
+		return ;
+	}
+	while (getline(mtlFile, line))
+	{
+		if (line.size() == 0)
+			continue ;
+		std::istringstream	iss(line);
+		std::string			word;
+		iss >> word;
+
+		if (word == "newmtl")
+		{
+			iss >> _mat.name;
+		}
+		else if (word == "Kd")
+		{
+			iss >> _mat.kd.r >> _mat.kd.g >> _mat.kd.b;
+		}
+		else if (word == "Ka")
+		{
+			iss >> _mat.ka.r >> _mat.ka.g >> _mat.ka.b;
+		}
+		else if (word == "Ks")
+		{
+			iss >> _mat.ks.r >> _mat.ks.g >> _mat.ks.b;
+		}
+		else if (word == "Ns")
+		{
+			iss >> _mat.ns;
+		}
+		else if (word == "Ni")
+		{
+			iss >> _mat.ni;
+		}
+		else if (word == "d")
+		{
+			iss >> _mat.d;
+		}
+		else if (word == "illum")
+		{
+			iss >> _mat.illum;
+		}
+	}
 }
 
 void	Obj::findVertexNormals(void)
@@ -113,11 +171,9 @@ void	Obj::findVertexNormals(void)
 		normal.x /= count;
 		normal.y /= count;
 		normal.z /= count;
-
 	}
 
 	_vertexNormals = vertexNormals;
-
 }
 
 std::vector<float>	Obj::getVertices(void)
@@ -160,4 +216,9 @@ std::vector<unsigned int>	Obj::getIndices(void)
 		*it++ = idx.v3;
 	}
 	return (vec);
+}
+
+tMaterial	Obj::getMaterial(void)
+{
+	return (_mat);
 }
