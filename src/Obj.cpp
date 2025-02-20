@@ -12,7 +12,6 @@ void	Obj::read(const char *file_path)
 {
 	std::ifstream	file(file_path);
 	std::string		line;
-	std::string		word;
 	tVertex			vert;
 	tIndex			idx;
 
@@ -21,6 +20,7 @@ void	Obj::read(const char *file_path)
 	while (std::getline(file, line))
 	{
 		std::istringstream	iss(line);
+		std::string			word;
 		iss >> word;
 		if (word == "v")
 		{
@@ -32,8 +32,8 @@ void	Obj::read(const char *file_path)
 		}
 		else if (word == "f")
 		{
-			std::string		fword[3];
-			iss >> fword[0] >> fword[1] >> fword[2];
+			std::string		fword[4];
+			iss >> fword[0] >> fword[1] >> fword[2] >> fword[3];
 			std::istringstream(fword[0]) >> idx.v1;
 			std::istringstream(fword[1]) >> idx.v2;
 			std::istringstream(fword[2]) >> idx.v3;
@@ -42,8 +42,13 @@ void	Obj::read(const char *file_path)
 			idx.v2 -= 1;
 			idx.v3 -= 1;
 			_indices.push_back(idx);
+			if (fword[3].size())
+			{
+				std::istringstream(fword[3]) >> idx.v2;
+				idx.v2 -= 1;
+				_indices.push_back(idx);
+			}
 		}
-		word.clear();
 	}
 	_vertexAvg.x /= _vertices.size();
 	_vertexAvg.y /= _vertices.size();

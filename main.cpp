@@ -1,8 +1,13 @@
 #include <scop.hpp>
 
+float	window_width = 800.0f;
+float	window_height = 600.0f;
+
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	(void)window;
+	window_width = width;
+	window_height = height;
 	glViewport(0, 0, width, height);
 }
 
@@ -17,7 +22,7 @@ void	useShader(unsigned int shaderProgram, float distance)
 	glUseProgram(shaderProgram);
 
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+	projection = glm::perspective(glm::radians(70.0f), window_width / window_height, 0.1f, 1000.0f);
 
 	glm::mat4 view = glm::mat4(1.0f);
 	// note that we’re translating the scene in the reverse direction
@@ -69,7 +74,7 @@ int	main(int c, char **av)
 		return (-1);
 	}
 
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, window_width, window_height);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
