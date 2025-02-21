@@ -7,12 +7,16 @@
 # include <algorithm>
 # include <cmath>
 
-typedef struct
+typedef union
 {
-	float	x;
-	float	y;
-	float	z;
-}			tVertex;
+	struct
+	{
+		float	x;
+		float	y;
+		float	z;
+	};
+	float		data[3];
+}				uVertex;
 
 typedef struct
 {
@@ -44,20 +48,16 @@ typedef struct
 class Obj
 {
 private:
-	std::list<tVertex>		_vertices;
-	std::list<tIndex>		_indices;
-private:
-	tVertex					_vertexAvg;
-private:
-	std::vector<tVertex>	_vertexNormals;
-private:
-	tMaterial				_mat;
+	std::list<uVertex>	_vertices;
+	std::list<tIndex>	_indices;
+	std::list<uVertex>	_vertNorms;
+	uVertex				_vertexAvg;
+	tMaterial			_mat;
 public:
 	Obj(void);
 	~Obj();
 	void						read(const std::string objPath, const std::string mtlPath);
-	std::vector<float>			getVertices(void);
-	std::vector<unsigned int>	getIndices(void);
-	tMaterial					getMaterial(void);
-	void						findVertexNormals(void);
+	const std::vector<float>			getVertices(void);
+	const std::vector<unsigned int>		getIndices(void);
+	const tMaterial						getMaterial(void);
 };
