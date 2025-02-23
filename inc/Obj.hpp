@@ -25,12 +25,16 @@ typedef struct
 	float	b;
 }			tColor;
 
-typedef struct
+typedef union
 {
-	unsigned int	v1;
-	unsigned int	v2;
-	unsigned int	v3;
-}					tIndex;
+	struct
+	{
+		unsigned int	v1;
+		unsigned int	v2;
+		unsigned int	v3;
+	};
+	unsigned int		data[3];
+}						uIndex;
 
 typedef struct
 {
@@ -49,7 +53,7 @@ class Obj
 {
 private:
 	std::list<uVertex>	_vertices;
-	std::list<tIndex>	_indices;
+	std::list<uIndex>	_indices;
 	std::list<uVertex>	_vertNorms;
 	uVertex				_vertexAvg;
 	tMaterial			_mat;

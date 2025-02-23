@@ -33,7 +33,7 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		std::string		line;
 		uVertex			vert;
 		tMaterial		mat;
-		tIndex			idx;
+		uIndex			idx;
 
 		if (!objFile.is_open())
 		{
@@ -81,7 +81,7 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		std::cout << "\tnumber of _indices: " << _indices.size() << std::endl;
 		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(uVertex) +
 												(_vertNorms.size() * sizeof(uVertex)) +
-												_indices.size() * sizeof(tIndex))
+												_indices.size() * sizeof(uIndex))
 												/ 1024.0f << "kB" << std::endl;
 		std::cout << "\taverage of vertices: " << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << " " << std::endl;
 	}
@@ -90,14 +90,11 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		std::vector<uVertex>	vertNorms(_vertices.size(), { .x = 0.0f, .y = 0.0f, .z = 0.0f });
 		std::list<uVertex>		vertNormsP2;
 
-		for (tIndex &idx : _indices)
+		for (uIndex &idx : _indices)
 		{
 			uVertex	&v1 = vertices[idx.v1];
 			uVertex	&v2 = vertices[idx.v2];
 			uVertex	&v3 = vertices[idx.v3];
-			uVertex	&n1 = vertNorms[idx.v1];
-			uVertex	&n2 = vertNorms[idx.v2];
-			uVertex	&n3 = vertNorms[idx.v3];
 			uVertex	norm;
 
 			uVertex	edge1 = { .x = v3.x - v1.x, .y = v3.y - v1.y, .z = v3.z - v1.z };
@@ -107,36 +104,20 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 			norm.y = edge1.z * edge2.x - edge1.x * edge2.z;
 			norm.z = edge1.x * edge2.y - edge1.y * edge2.x;
 
-			float	length = sqrtf(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
-			norm.x /= length;
-			norm.y /= length;
-			norm.z /= length;
-
-			if (zerosNormal(n1))
-				n1 = norm;
-			else if (!sameNormal(n1, norm))
+			for (unsigned int i = 0; i < 3; i++)
 			{
-				idx.v1 = (unsigned int)_vertices.size();
-				_vertices.push_back(v1);
-				vertNormsP2.push_back(norm);
-			}
-
-			if (zerosNormal(n2))
-				n2 = norm;
-			else if (!sameNormal(n2, norm))
-			{
-				idx.v2 = (unsigned int)_vertices.size();
-				_vertices.push_back(v2);
-				vertNormsP2.push_back(norm);
-			}
-
-			if (zerosNormal(n3))
-				n3 = norm;
-			else if (!sameNormal(n3, norm))
-			{
-				idx.v3 = (unsigned int)_vertices.size();
-				_vertices.push_back(v3);
-				vertNormsP2.push_back(norm);
+				uVertex	&n = vertNorms[idx.data[i]];
+				
+				if (zerosNormal(n))
+					n = norm;
+				else if (!sameNormal(n, norm))
+				{
+					unsigned int oldIdx = idx.data[i];
+					unsigned int newIdx = (unsigned int)_vertices.size();
+					idx.data[i] = newIdx;
+					_vertices.push_back(vertices[oldIdx]);
+					vertNormsP2.push_back(norm);
+				}
 			}
 		}
 
@@ -145,6 +126,14 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 			_vertNorms.push_back(norm);
 		for (uVertex &norm : vertNormsP2)
 			_vertNorms.push_back(norm);
+		
+		for (uVertex &norm : _vertNorms)
+		{
+			float	normLen = sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
+			norm.x /= normLen;
+			norm.y /= normLen;
+			norm.z /= normLen;
+		}
 
 		std::cout << "After computing normals" << std::endl;
 		std::cout << "\tnumber of _vertices: " << _vertices.size() << std::endl;
@@ -152,25 +141,25 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		std::cout << "\tnumber of _indices: " << _indices.size() << std::endl;
 		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(uVertex) +
 												(_vertNorms.size() * sizeof(uVertex)) +
-												_indices.size() * sizeof(tIndex))
+												_indices.size() * sizeof(uIndex))
 												/ 1024.0f << "kB" << std::endl;
-		{
-			std::vector<uVertex>	newVertNorms(_vertNorms.begin(), _vertNorms.end());
-			std::vector<uVertex>	newVertices(_vertices.begin(), _vertices.end());
-			for (tIndex &idx : _indices)
-			{
-				uVertex &n1 = newVertNorms[idx.v1];
-				uVertex &n2 = newVertNorms[idx.v2];
-				uVertex &n3 = newVertNorms[idx.v3];
-				uVertex &v1 = newVertices[idx.v1];
-				uVertex &v2 = newVertices[idx.v2];
-				uVertex &v3 = newVertices[idx.v3];
-				std::cout << "Face:" << std::endl;
-				std::cout << "\t[" << n1.x << "," << n1.y << "," << n1.z << "]\t(" << v1.x << "," << v1.y << "," << v1.z << ")" << std::endl;
-				std::cout << "\t[" << n2.x << "," << n2.y << "," << n2.z << "]\t(" << v2.x << "," << v2.y << "," << v2.z << ")" << std::endl;
-				std::cout << "\t[" << n3.x << "," << n3.y << "," << n3.z << "]\t(" << v3.x << "," << v3.y << "," << v3.z << ")" << std::endl;
-			}
-		}
+		//{
+		//	std::vector<uVertex>	newVertNorms(_vertNorms.begin(), _vertNorms.end());
+		//	std::vector<uVertex>	newVertices(_vertices.begin(), _vertices.end());
+		//	for (uIndex &idx : _indices)
+		//	{
+		//		uVertex &n1 = newVertNorms[idx.v1];
+		//		uVertex &n2 = newVertNorms[idx.v2];
+		//		uVertex &n3 = newVertNorms[idx.v3];
+		//		uVertex &v1 = newVertices[idx.v1];
+		//		uVertex &v2 = newVertices[idx.v2];
+		//		uVertex &v3 = newVertices[idx.v3];
+		//		std::cout << "Face:" << std::endl;
+		//		std::cout << "\t[" << n1.x << "," << n1.y << "," << n1.z << "]\t(" << v1.x << "," << v1.y << "," << v1.z << ")" << std::endl;
+		//		std::cout << "\t[" << n2.x << "," << n2.y << "," << n2.z << "]\t(" << v2.x << "," << v2.y << "," << v2.z << ")" << std::endl;
+		//		std::cout << "\t[" << n3.x << "," << n3.y << "," << n3.z << "]\t(" << v3.x << "," << v3.y << "," << v3.z << ")" << std::endl;
+		//	}
+		//}
 	}
 	{
 		std::ifstream	mtlFile(mtlPath);
@@ -254,9 +243,9 @@ const std::vector<unsigned int>	Obj::getIndices(void)
 	std::vector<unsigned int>::iterator	it;
 	std::vector<unsigned int>			vec;
 
-	vec.resize(_indices.size() * sizeof(tIndex));
+	vec.resize(_indices.size() * sizeof(uIndex));
 	it = vec.begin();
-	for (tIndex &idx : _indices)
+	for (uIndex &idx : _indices)
 	{
 		*it++ = idx.v1;
 		*it++ = idx.v2;
