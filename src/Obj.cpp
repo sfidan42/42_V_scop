@@ -11,14 +11,19 @@ Obj::~Obj()
 {
 }
 
+static int	fcmp(float f1, float f2)
+{
+	return (fabs(f1 - f2) < 0.001f);
+}
+
 static int	sameNormal(const uVertex &n1, const uVertex &n2)
 {
-	return (n1.x == n2.x && n1.y == n2.y && n1.z == n2.z);
+	return (fcmp(n1.x, n2.x) && fcmp(n1.y, n2.y) && fcmp(n1.z, n2.z));
 }
 
 static int	zerosNormal(const uVertex &n)
 {
-	return (n.x == 0.0f && n.y == 0.0f && n.z == 0.0f);
+	return (fcmp(n.x, 0.0f) && fcmp(n.y, 0.0f) && fcmp(n.z, 0.0f));
 }
 
 void	Obj::read(const std::string objPath, const std::string mtlPath)
@@ -75,7 +80,7 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		std::cout << "\tnumber of _vertices: " << _vertices.size() << std::endl;
 		std::cout << "\tnumber of _indices: " << _indices.size() << std::endl;
 		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(uVertex) +
-												(float)(_vertNorms.size() * sizeof(uVertex)) +
+												(_vertNorms.size() * sizeof(uVertex)) +
 												_indices.size() * sizeof(tIndex))
 												/ 1024.0f << "kB" << std::endl;
 		std::cout << "\taverage of vertices: " << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << " " << std::endl;
@@ -146,27 +151,27 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		std::cout << "\tnumber of _vertNorms: " << _vertNorms.size() << std::endl;
 		std::cout << "\tnumber of _indices: " << _indices.size() << std::endl;
 		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(uVertex) +
-												(float)(_vertNorms.size() * sizeof(uVertex)) +
+												(_vertNorms.size() * sizeof(uVertex)) +
 												_indices.size() * sizeof(tIndex))
 												/ 1024.0f << "kB" << std::endl;
-		//{
-		//	std::vector<uVertex>	newVertNorms(_vertNorms.begin(), _vertNorms.end());
-		//	std::vector<uVertex>	newVertices(_vertices.begin(), _vertices.end());
-		//	for (tIndex &idx : _indices)
-		//	{
-		//		uVertex &n1 = newVertNorms[idx.v1];
-		//		uVertex &n2 = newVertNorms[idx.v2];
-		//		uVertex &n3 = newVertNorms[idx.v3];
-		//		uVertex &v1 = newVertices[idx.v1];
-		//		uVertex &v2 = newVertices[idx.v2];
-		//		uVertex &v3 = newVertices[idx.v3];
-		//		std::cout << "Face:" << std::endl;
-		//		std::cout << "\t[" << n1.x << "," << n1.y << "," << n1.z << "]\t(" << v1.x << "," << v1.y << "," << v1.z << ")" << std::endl;
-		//		std::cout << "\t[" << n2.x << "," << n2.y << "," << n2.z << "]\t(" << v2.x << "," << v2.y << "," << v2.z << ")" << std::endl;
-		//		std::cout << "\t[" << n3.x << "," << n3.y << "," << n3.z << "]\t(" << v3.x << "," << v3.y << "," << v3.z << ")" << std::endl;
-		//	}
-		//}
+		{
+			std::vector<uVertex>	newVertNorms(_vertNorms.begin(), _vertNorms.end());
+			std::vector<uVertex>	newVertices(_vertices.begin(), _vertices.end());
+			for (tIndex &idx : _indices)
+			{
+				uVertex &n1 = newVertNorms[idx.v1];
+				uVertex &n2 = newVertNorms[idx.v2];
+				uVertex &n3 = newVertNorms[idx.v3];
+				uVertex &v1 = newVertices[idx.v1];
+				uVertex &v2 = newVertices[idx.v2];
+				uVertex &v3 = newVertices[idx.v3];
+				std::cout << "Face:" << std::endl;
+				std::cout << "\t[" << n1.x << "," << n1.y << "," << n1.z << "]\t(" << v1.x << "," << v1.y << "," << v1.z << ")" << std::endl;
+				std::cout << "\t[" << n2.x << "," << n2.y << "," << n2.z << "]\t(" << v2.x << "," << v2.y << "," << v2.z << ")" << std::endl;
+				std::cout << "\t[" << n3.x << "," << n3.y << "," << n3.z << "]\t(" << v3.x << "," << v3.y << "," << v3.z << ")" << std::endl;
+			}
 		}
+	}
 	{
 		std::ifstream	mtlFile(mtlPath);
 		std::string		line;
@@ -228,7 +233,7 @@ const std::vector<float>	Obj::getVertices(void)
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
 
-	vec.resize(_vertices.size() * (2 * sizeof(uVertex) / sizeof(float)));
+	vec.resize(_vertices.size() * (3 * sizeof(uVertex) / sizeof(float)));
 	for (it = vec.begin(); itv != _vertices.end(); itv++, itn++)
 	{
 		*it++ = itv->x - _vertexAvg.x;
@@ -237,6 +242,9 @@ const std::vector<float>	Obj::getVertices(void)
 		*it++ = itn->x;
 		*it++ = itn->y;
 		*it++ = itn->z;
+		*it++ = itv->x - _vertexAvg.x - 0.1f * itn->x;
+		*it++ = itv->y - _vertexAvg.y - 0.1f * itn->y;
+		*it++ = itv->z - _vertexAvg.z - 0.1f * itn->z;
 	}
 	return (vec);
 }

@@ -56,8 +56,9 @@ private:
 public:
 	Obj(void);
 	~Obj();
-	void						read(const std::string objPath, const std::string mtlPath);
+	void								read(const std::string objPath, const std::string mtlPath);
 	const std::vector<float>			getVertices(void);
+	const std::vector<float>			getNormalEnds(void);
 	const std::vector<unsigned int>		getIndices(void);
 	const tMaterial						getMaterial(void);
 };
