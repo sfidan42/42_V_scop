@@ -16,14 +16,23 @@ static int	fcmp(float f1, float f2)
 	return (fabs(f1 - f2) < 0.001f);
 }
 
-static int	sameNormal(const uVertex &n1, const uVertex &n2)
+static float sameNormals(const Vertex &n1, const Vertex &n2)
 {
 	return (fcmp(n1.x, n2.x) && fcmp(n1.y, n2.y) && fcmp(n1.z, n2.z));
 }
 
-static int	zerosNormal(const uVertex &n)
+static int	zerosNormal(const Vertex &n)
 {
 	return (fcmp(n.x, 0.0f) && fcmp(n.y, 0.0f) && fcmp(n.z, 0.0f));
+}
+
+static void	normalizeVertex(Vertex &v)
+{
+	float	len = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+
+	v.x /= len;
+	v.y /= len;
+	v.z /= len;
 }
 
 void	Obj::read(const std::string objPath, const std::string mtlPath)
@@ -31,7 +40,7 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 	{
 		std::ifstream	objFile(objPath);
 		std::string		line;
-		uVertex			vert;
+		Vertex			vert;
 		tMaterial		mat;
 		uIndex			idx;
 
@@ -79,26 +88,26 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		_vertexAvg.z /= _vertices.size();
 		std::cout << "\tnumber of _vertices: " << _vertices.size() << std::endl;
 		std::cout << "\tnumber of _indices: " << _indices.size() << std::endl;
-		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(uVertex) +
-												(_vertNorms.size() * sizeof(uVertex)) +
+		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(Vertex) +
+												(_vertNorms.size() * sizeof(Vertex)) +
 												_indices.size() * sizeof(uIndex))
 												/ 1024.0f << "kB" << std::endl;
 		std::cout << "\taverage of vertices: " << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << " " << std::endl;
 	}
 	{
-		std::vector<uVertex>	vertices(_vertices.begin(), _vertices.end());
-		std::vector<uVertex>	vertNorms(_vertices.size(), { .x = 0.0f, .y = 0.0f, .z = 0.0f });
-		std::list<uVertex>		vertNormsP2;
+		std::vector<Vertex>	vertices(_vertices.begin(), _vertices.end());
+		std::vector<Vertex>	vertNorms(_vertices.size());
+		std::list<Vertex>	vertNormsP2;
 
 		for (uIndex &idx : _indices)
 		{
-			uVertex	&v1 = vertices[idx.v1];
-			uVertex	&v2 = vertices[idx.v2];
-			uVertex	&v3 = vertices[idx.v3];
-			uVertex	norm;
+			Vertex	&v1 = vertices[idx.v1];
+			Vertex	&v2 = vertices[idx.v2];
+			Vertex	&v3 = vertices[idx.v3];
+			Vertex	norm;
 
-			uVertex	edge1 = { .x = v3.x - v1.x, .y = v3.y - v1.y, .z = v3.z - v1.z };
-			uVertex	edge2 = { .x = v2.x - v1.x, .y = v2.y - v1.y, .z = v2.z - v1.z };
+			Vertex	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
+			Vertex	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
 
 			norm.x = edge1.y * edge2.z - edge1.z * edge2.y;
 			norm.y = edge1.z * edge2.x - edge1.x * edge2.z;
@@ -106,11 +115,17 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 
 			for (unsigned int i = 0; i < 3; i++)
 			{
-				uVertex	&n = vertNorms[idx.data[i]];
-				
+				Vertex	&n = vertNorms[idx.data[i]];
+
 				if (zerosNormal(n))
+				{
 					n = norm;
-				else if (!sameNormal(n, norm))
+					continue ;
+				}
+
+				int same = sameNormals(n, norm);
+
+				if (!same)
 				{
 					unsigned int oldIdx = idx.data[i];
 					unsigned int newIdx = (unsigned int)_vertices.size();
@@ -122,38 +137,33 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 		}
 
 		_vertNorms.clear();
-		for (uVertex &norm : vertNorms)
+		for (Vertex &norm : vertNorms)
 			_vertNorms.push_back(norm);
-		for (uVertex &norm : vertNormsP2)
+		for (Vertex &norm : vertNormsP2)
 			_vertNorms.push_back(norm);
-		
-		for (uVertex &norm : _vertNorms)
-		{
-			float	normLen = sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
-			norm.x /= normLen;
-			norm.y /= normLen;
-			norm.z /= normLen;
-		}
+
+		for (Vertex &norm : _vertNorms)
+			normalizeVertex(norm);
 
 		std::cout << "After computing normals" << std::endl;
 		std::cout << "\tnumber of _vertices: " << _vertices.size() << std::endl;
 		std::cout << "\tnumber of _vertNorms: " << _vertNorms.size() << std::endl;
 		std::cout << "\tnumber of _indices: " << _indices.size() << std::endl;
-		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(uVertex) +
-												(_vertNorms.size() * sizeof(uVertex)) +
+		std::cout << "\tsize of the object: " << (float)(_vertices.size() * sizeof(Vertex) +
+												(_vertNorms.size() * sizeof(Vertex)) +
 												_indices.size() * sizeof(uIndex))
 												/ 1024.0f << "kB" << std::endl;
 		//{
-		//	std::vector<uVertex>	newVertNorms(_vertNorms.begin(), _vertNorms.end());
-		//	std::vector<uVertex>	newVertices(_vertices.begin(), _vertices.end());
+		//	std::vector<Vertex>	newVertNorms(_vertNorms.begin(), _vertNorms.end());
+		//	std::vector<Vertex>	newVertices(_vertices.begin(), _vertices.end());
 		//	for (uIndex &idx : _indices)
 		//	{
-		//		uVertex &n1 = newVertNorms[idx.v1];
-		//		uVertex &n2 = newVertNorms[idx.v2];
-		//		uVertex &n3 = newVertNorms[idx.v3];
-		//		uVertex &v1 = newVertices[idx.v1];
-		//		uVertex &v2 = newVertices[idx.v2];
-		//		uVertex &v3 = newVertices[idx.v3];
+		//		Vertex &n1 = newVertNorms[idx.v1];
+		//		Vertex &n2 = newVertNorms[idx.v2];
+		//		Vertex &n3 = newVertNorms[idx.v3];
+		//		Vertex &v1 = newVertices[idx.v1];
+		//		Vertex &v2 = newVertices[idx.v2];
+		//		Vertex &v3 = newVertices[idx.v3];
 		//		std::cout << "Face:" << std::endl;
 		//		std::cout << "\t[" << n1.x << "," << n1.y << "," << n1.z << "]\t(" << v1.x << "," << v1.y << "," << v1.z << ")" << std::endl;
 		//		std::cout << "\t[" << n2.x << "," << n2.y << "," << n2.z << "]\t(" << v2.x << "," << v2.y << "," << v2.z << ")" << std::endl;
@@ -180,49 +190,35 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 			iss >> word;
 
 			if (word == "newmtl")
-			{
 				iss >> _mat.name;
-			}
 			else if (word == "Kd")
-			{
 				iss >> _mat.kd.r >> _mat.kd.g >> _mat.kd.b;
-			}
 			else if (word == "Ka")
-			{
 				iss >> _mat.ka.r >> _mat.ka.g >> _mat.ka.b;
-			}
 			else if (word == "Ks")
-			{
 				iss >> _mat.ks.r >> _mat.ks.g >> _mat.ks.b;
-			}
 			else if (word == "Ns")
-			{
 				iss >> _mat.ns;
-			}
 			else if (word == "Ni")
-			{
 				iss >> _mat.ni;
-			}
 			else if (word == "d")
-			{
 				iss >> _mat.d;
-			}
 			else if (word == "illum")
-			{
 				iss >> _mat.illum;
-			}
+			else
+				std::cout << "unknown word: " << word << std::endl;
 		}
 	}
 }
 
 const std::vector<float>	Obj::getVertices(void)
 {
-	std::list<uVertex>::iterator	itv = _vertices.begin();
-	std::list<uVertex>::iterator	itn = _vertNorms.begin();
+	std::list<Vertex>::iterator	itv = _vertices.begin();
+	std::list<Vertex>::iterator	itn = _vertNorms.begin();
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
 
-	vec.resize(_vertices.size() * (3 * sizeof(uVertex) / sizeof(float)));
+	vec.resize(_vertices.size() * (3 * sizeof(Vertex) / sizeof(float)));
 	for (it = vec.begin(); itv != _vertices.end(); itv++, itn++)
 	{
 		*it++ = itv->x - _vertexAvg.x;

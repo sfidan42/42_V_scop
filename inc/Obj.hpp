@@ -6,17 +6,7 @@
 # include <iostream>
 # include <algorithm>
 # include <cmath>
-
-typedef union
-{
-	struct
-	{
-		float	x;
-		float	y;
-		float	z;
-	};
-	float		data[3];
-}				uVertex;
+# include "Vertex.hpp"
 
 typedef struct
 {
@@ -52,10 +42,10 @@ typedef struct
 class Obj
 {
 private:
-	std::list<uVertex>	_vertices;
+	std::list<Vertex>	_vertices;
 	std::list<uIndex>	_indices;
-	std::list<uVertex>	_vertNorms;
-	uVertex				_vertexAvg;
+	std::list<Vertex>	_vertNorms;
+	Vertex				_vertexAvg;
 	tMaterial			_mat;
 public:
 	Obj(void);

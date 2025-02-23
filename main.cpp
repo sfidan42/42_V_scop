@@ -1,35 +1,40 @@
 #include <scop.hpp>
 
-float	window_width = 800.0f;
-float	window_height = 600.0f;
+float	g_window_width = 800.0f;
+float	g_window_height = 600.0f;
+bool	g_pause = false;
+float	g_time = 0.0f;
 
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	(void)window;
-	window_width = width;
-	window_height = height;
+	g_window_width = width;
+	g_window_height = height;
 	glViewport(0, 0, width, height);
 }
 
 void	processInput(GLFWwindow *window)
 {
-	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+		g_pause = !g_pause;
 }
 
 void	setMatricesProjectViewModel(unsigned int shaderProgram, float distance)
 {
-
 	glm::mat4 model = glm::mat4(1.0f);
-	float angle = 180.0f * sinf(glfwGetTime());
-	model = glm::rotate(model, glm::radians(angle), glm::vec3(-0.51f, 1.0f, 0.4f));
+	if (!g_pause)
+		g_time = glfwGetTime();
+	float angle = 180.0f * sinf(g_time);
+	model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glm::mat4 view = glm::mat4(1.0f);
 	// note that we’re translating the scene in the reverse and up direction
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -distance));
 
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(70.0f), window_width / window_height, 0.1f, 1000.0f);
+	projection = glm::perspective(glm::radians(70.0f), g_window_width / g_window_height, 0.1f, 1000.0f);
 
 	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
 	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
@@ -70,7 +75,7 @@ int	main(int c, char **av)
 		return (-1);
 	}
 
-	glViewport(0, 0, window_width, window_height);
+	glViewport(0, 0, g_window_width, g_window_height);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
@@ -131,10 +136,10 @@ int	main(int c, char **av)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window);
-
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		processInput(window);
 
 		glUseProgram(shaderProgram);
 		glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), distance, -distance, -distance);
@@ -146,20 +151,15 @@ int	main(int c, char **av)
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-		glPointSize(3.0f);
-		for (std::size_t i = 0; i < vertices.size(); i += 9)
-		{
-			glDrawArrays(GL_POINTS, i / 9, 1);
-		}
+		glPointSize(10.0f);
+		for (unsigned int idx : indices)
+			glDrawArrays(GL_POINTS, idx, 1);
 
 		glUseProgram(nShaderProgram);
 		setMatricesProjectViewModel(nShaderProgram, distance);
 		glPointSize(5.0f);
-		for (std::size_t i = 0; i < vertices.size(); i += 9)
-		{
-			glDrawArrays(GL_POINTS, i / 9 + 2, 1);
-		}
-		
+		for (unsigned int idx : indices)
+			glDrawArrays(GL_POINTS, idx, 1);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
