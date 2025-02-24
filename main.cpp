@@ -1,21 +1,15 @@
 #include <scop.hpp>
 
-float			g_width = 800.0f;
-float			g_height = 600.0f;
-float			g_hStep = 0.0f;
-float			g_vStep = 0.0f;
-unsigned int	g_shaderProgram;
+float	g_hStep = 0.0f;
+float	g_vStep = 0.0f;
+Shader	shader;
 
-void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void	framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
 	(void)window;
-	g_width = width;
-	g_height = height;
-	glViewport(0, 0, g_width, g_height);
-	std::cout << "width: " << g_width << " height: " << g_height << std::endl;
-
-	glm::mat4	projection = glm::perspective(glm::radians(70.0f), g_width / g_height, 0.1f, 1000.0f);
-	glUniformMatrix4fv(glGetUniformLocation(g_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glViewport(0, 0, w, h);
+	glm::mat4	projection = glm::perspective(glm::radians(70.0f), (float)w / h, 0.1f, 1000.0f);
+	shader.setMat4fv("projection", glm::value_ptr(projection));
 }
 
 void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -53,7 +47,6 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 int	main(int c, char **av)
 {
 	GLFWwindow	*window;
-	Shader		shader;
 	Obj			obj;
 
 	if (c != 2)
@@ -65,7 +58,7 @@ int	main(int c, char **av)
 	if (!glfwInit())
 		return (-1);
 
-	window = glfwCreateWindow(g_width, g_height, "scop", NULL, NULL);
+	window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Failed to create GLFW window" << std::endl;
@@ -81,7 +74,7 @@ int	main(int c, char **av)
 		return (-1);
 	}
 
-	glViewport(0, 0, g_width, g_height);
+	glViewport(0, 0, 800, 600);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetKeyCallback(window, key_callback);
@@ -126,20 +119,20 @@ int	main(int c, char **av)
 	distance = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
 
 	shader.parse("res/shaders/specular.shader");
-	g_shaderProgram = shader.create();
+	shader.create();
 
 	glm::mat4	model = glm::mat4(1.0f);
 	glm::mat4	view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -distance));
 	glm::mat4	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
-	glUseProgram(g_shaderProgram);
-	glUniform3f(glGetUniformLocation(g_shaderProgram, "lightPos"), distance, -distance, -distance);
-	glUniform3f(glGetUniformLocation(g_shaderProgram, "ambientColor"), mat.ka.r, mat.ka.g, mat.ka.b);
-	glUniform3f(glGetUniformLocation(g_shaderProgram, "diffuseColor"), mat.kd.r, mat.kd.g, mat.kd.b);
-	glUniform3f(glGetUniformLocation(g_shaderProgram, "specularColor"), mat.ks.r, mat.ks.g, mat.ks.b);
-	glUniformMatrix4fv(glGetUniformLocation(g_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(glGetUniformLocation(g_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(glGetUniformLocation(g_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	shader.use();
+	shader.set3f("lightPos", distance, -distance, -distance);
+	shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
+	shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);
+	shader.set3f("specularColor", mat.ks.r, mat.ks.g, mat.ks.b);
+	shader.setMat4fv("model", glm::value_ptr(model));
+	shader.setMat4fv("view", glm::value_ptr(view));
+	shader.setMat4fv("projection", glm::value_ptr(projection));
 
 	glBindVertexArray(VAOs);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -153,10 +146,10 @@ int	main(int c, char **av)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		model = glm::rotate(model, glm::radians((float)M_PI / 5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(glGetUniformLocation(g_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		shader.setMat4fv("model", glm::value_ptr(model));
 
 		view = glm::translate(view, glm::vec3(g_hStep * distance, g_vStep * distance, 0.0f));
-		glUniformMatrix4fv(glGetUniformLocation(g_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		shader.setMat4fv("view", glm::value_ptr(view));
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 

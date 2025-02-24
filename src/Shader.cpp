@@ -50,7 +50,7 @@ void	Shader::_compile(unsigned int shader, const char *shader_source)
 	}
 }
 
-unsigned int	Shader::create(void)
+void	Shader::create(void)
 {
 	const char		*vertexShaderSource = _vertex_shader.c_str();
 	const char		*fragmentShaderSource = _fragment_shader.c_str();
@@ -77,5 +77,10 @@ unsigned int	Shader::create(void)
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	return (shaderProgram);
+	_id = shaderProgram;
+}
+
+void	Shader::use(void)
+{
+	glUseProgram(_id);
 }
