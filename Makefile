@@ -45,6 +45,10 @@ all: $(STB) $(GLM) $(GLAD) $(GLFW) $(EXE)
 	./$(EXE) res/objects/chinese_coin.obj \
 			res/materials/chinese_coin.mtl \
 			res/textures/chinese_coin.jpg		|| echo "Error: $(EXE) failed"
+#	@echo "______________Helmet_________________"
+#	./$(EXE) res/objects/other/Helmet.obj \
+#			res/objects/other/Helmet.mtl \
+#			res/objects/other/Helmet_1.png		|| echo "Error: $(EXE) failed"
 
 bin/%.o: src/%.cpp
 	$(CXX) -c $< -o $@

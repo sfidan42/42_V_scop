@@ -21,6 +21,8 @@ void	Obj::stats(const char *title)
 	std::cout << "\tnumber of _texIndices: " << _texIndices.size() << std::endl;
 	std::cout << "\tsize of the object: " << (_vertices.size() * sizeof(Vertex) +
 											(_vertNorms.size() * sizeof(Vertex)) +
-											_indices.size() * sizeof(uIndex))
-											/ 1024.0f << "kB" << std::endl;
+											_indices.size() * sizeof(uIndex) +
+											_texCoords.size() * sizeof(Vertex) +
+											_texIndices.size() * sizeof(uIndex))
+											/ 1024.0f / 1024.0f << "MB" << std::endl;
 }
