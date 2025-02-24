@@ -2,10 +2,8 @@
 
 float	g_width = 800.0f;
 float	g_height = 600.0f;
-bool	g_wPressed = false;
-bool	g_aPressed = false;
-bool	g_sPressed = false;
-bool	g_dPressed = false;
+float	g_hStep = 0.0f;
+float	g_vStep = 0.0f;
 
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -27,10 +25,10 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		{
 			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
-			case GLFW_KEY_W: g_wPressed = true; break;
-			case GLFW_KEY_A: g_aPressed = true; break;
-			case GLFW_KEY_S: g_sPressed = true; break;
-			case GLFW_KEY_D: g_dPressed = true; break;
+			case GLFW_KEY_W: g_vStep += 0.01f; break;
+			case GLFW_KEY_A: g_hStep -= 0.01f; break;
+			case GLFW_KEY_S: g_vStep -= 0.01f; break;
+			case GLFW_KEY_D: g_hStep += 0.01f; break;
 			default: break;
 		}
 	}
@@ -39,10 +37,10 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		switch (key)
 		{
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
-			case GLFW_KEY_W: g_wPressed = false; break;
-			case GLFW_KEY_A: g_aPressed = false; break;
-			case GLFW_KEY_S: g_sPressed = false; break;
-			case GLFW_KEY_D: g_dPressed = false; break;
+			case GLFW_KEY_W: g_vStep = 0.0f; break;
+			case GLFW_KEY_A: g_hStep = 0.0f; break;
+			case GLFW_KEY_S: g_vStep = 0.0f; break;
+			case GLFW_KEY_D: g_hStep = 0.0f; break;
 			default: break;
 		}
 	}
@@ -153,25 +151,8 @@ int	main(int c, char **av)
 		model = glm::rotate(model, glm::radians((float)M_PI / 5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
-		if (g_wPressed || g_aPressed || g_sPressed || g_dPressed)
-		{
-			Vertex	m;
-
-			if (g_wPressed)
-				m.y += 0.01f;
-			if (g_aPressed)
-				m.x -= 0.01f;
-			if (g_sPressed)
-				m.y -= 0.01f;
-			if (g_dPressed)
-				m.x += 0.01f;
-			view = glm::translate(view, glm::vec3(m.x, m.y, m.z));
-			glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-		}
-
-		projection = glm::perspective(glm::radians(70.0f), g_width / g_height, 0.1f, 1000.0f);
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-	
+		view = glm::translate(view, glm::vec3(g_hStep * distance, g_vStep * distance, 0.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
