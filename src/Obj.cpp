@@ -115,7 +115,8 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 
 			for (unsigned int i = 0; i < 3; i++)
 			{
-				Vertex	&n = vertNorms[idx.data[i]];
+				uint	vIdx = idx.data[i];
+				Vertex	&n = vertNorms[vIdx];
 
 				if (zerosNormal(n))
 				{
@@ -127,10 +128,8 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 
 				if (!same)
 				{
-					unsigned int oldIdx = idx.data[i];
-					unsigned int newIdx = (unsigned int)_vertices.size();
-					idx.data[i] = newIdx;
-					_vertices.push_back(vertices[oldIdx]);
+					idx.data[i] = (unsigned int)_vertices.size();
+					_vertices.push_back(vertices[vIdx]);
 					vertNormsP2.push_back(norm);
 				}
 			}
