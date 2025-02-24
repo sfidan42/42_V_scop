@@ -1,43 +1,51 @@
 #include <scop.hpp>
 
-float	g_window_width = 800.0f;
-float	g_window_height = 600.0f;
+float	g_width = 800.0f;
+float	g_height = 600.0f;
+bool	g_wPressed = false;
+bool	g_aPressed = false;
+bool	g_sPressed = false;
+bool	g_dPressed = false;
 
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	(void)window;
-	g_window_width = width;
-	g_window_height = height;
+	g_width = width;
+	g_height = height;
 	glViewport(0, 0, width, height);
+	std::cout << "width: " << width << " height: " << height << std::endl;
 }
 
-void	processInput(GLFWwindow *window)
+void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-}
+	(void)scancode;
+	(void)mods;
 
-void	setMVP(unsigned int shaderProgram, float distance)
-{
-	float angle = 180.0f * sinf(glfwGetTime());
-
-	glm::mat4	model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	glm::mat4	view = glm::mat4(1.0f);
-	// note that we’re translating the scene in the reverse and up direction
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -distance));
-
-	glm::mat4	projection;
-	projection = glm::perspective(glm::radians(70.0f), g_window_width / g_window_height, 0.1f, 1000.0f);
-
-	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
-	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
-	unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
+	if (action == GLFW_PRESS)
+	{
+		switch (key)
+		{
+			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
+			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
+			case GLFW_KEY_W: g_wPressed = true; break;
+			case GLFW_KEY_A: g_aPressed = true; break;
+			case GLFW_KEY_S: g_sPressed = true; break;
+			case GLFW_KEY_D: g_dPressed = true; break;
+			default: break;
+		}
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		switch (key)
+		{
+			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
+			case GLFW_KEY_W: g_wPressed = false; break;
+			case GLFW_KEY_A: g_aPressed = false; break;
+			case GLFW_KEY_S: g_sPressed = false; break;
+			case GLFW_KEY_D: g_dPressed = false; break;
+			default: break;
+		}
+	}
 }
 
 int	main(int c, char **av)
@@ -55,7 +63,7 @@ int	main(int c, char **av)
 	if (!glfwInit())
 		return (-1);
 
-	window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
+	window = glfwCreateWindow(g_width, g_height, "scop", NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Failed to create GLFW window" << std::endl;
@@ -71,31 +79,33 @@ int	main(int c, char **av)
 		return (-1);
 	}
 
-	glViewport(0, 0, g_window_width, g_window_height);
+	glViewport(0, 0, g_width, g_height);
+
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetKeyCallback(window, key_callback);
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	std::string				path(av[1]);
+	std::string	path(av[1]);
 
 	obj.read(path + ".obj", (path + ".mtl"));
-	
+
 	std::vector<float>			vertices = obj.getVertices();
 	std::vector<unsigned int>	indices = obj.getIndices();
 	tMaterial					mat = obj.getMaterial();
 
 	unsigned int	VBO;
-	unsigned int	VAOs[2];
+	unsigned int	VAOs;
 	unsigned int	EBO;
 
-	glGenVertexArrays(3, VAOs);
+	glGenVertexArrays(3, &VAOs);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-	glBindVertexArray(*VAOs);
+	glBindVertexArray(VAOs);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -106,25 +116,32 @@ int	main(int c, char **av)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
-	float		distance = 0.0f;
+	float	distance = 0.0f;
 	for (const auto& vertex : vertices)
 	{
 		distance = std::max(distance, std::abs(vertex));
 	}
-	distance *= 2.0f;
+	distance = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
 
 	shader.parse("res/shaders/specular.shader");
 	unsigned int	shaderProgram = shader.create();
+
+	glm::mat4	model = glm::mat4(1.0f);
+	glm::mat4	view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -distance));
+	glm::mat4	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	glUseProgram(shaderProgram);
 	glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"), distance, -distance, -distance);
 	glUniform3f(glGetUniformLocation(shaderProgram, "ambientColor"), mat.ka.r, mat.ka.g, mat.ka.b);
 	glUniform3f(glGetUniformLocation(shaderProgram, "diffuseColor"), mat.kd.r, mat.kd.g, mat.kd.b);
 	glUniform3f(glGetUniformLocation(shaderProgram, "specularColor"), mat.ks.r, mat.ks.g, mat.ks.b);
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-	
-
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBindVertexArray(VAOs);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -132,18 +149,34 @@ int	main(int c, char **av)
 	{
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		processInput(window);
 
-		setMVP(shaderProgram, distance);
-		glBindVertexArray(*VAOs);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		model = glm::rotate(model, glm::radians((float)M_PI / 5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+		if (g_wPressed || g_aPressed || g_sPressed || g_dPressed)
+		{
+			Vertex	m;
+
+			if (g_wPressed)
+				m.y += 0.01f;
+			if (g_aPressed)
+				m.x -= 0.01f;
+			if (g_sPressed)
+				m.y -= 0.01f;
+			if (g_dPressed)
+				m.x += 0.01f;
+			view = glm::translate(view, glm::vec3(m.x, m.y, m.z));
+			glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		}
+
+		projection = glm::perspective(glm::radians(70.0f), g_width / g_height, 0.1f, 1000.0f);
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	
+
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
 	}
 
 	glfwTerminate();
