@@ -77,8 +77,9 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 				_indices.push_back(idx);
 				if (fword[3].size())
 				{
-					std::istringstream(fword[3]) >> idx.v2;
-					idx.v2 -= 1;
+					idx.v2 = idx.v3;
+					std::istringstream(fword[3]) >> idx.v3;
+					idx.v3 -= 1;
 					_indices.push_back(idx);
 				}
 			}
