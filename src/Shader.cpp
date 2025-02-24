@@ -8,7 +8,7 @@ Shader::~Shader(void)
 {
 }
 
-void	Shader::parse(const char *filepath)
+void	Shader::read(const char *filepath)
 {
 	int					i;
 	std::string			line;
@@ -37,46 +37,45 @@ void	Shader::parse(const char *filepath)
 	_fragment_shader = ss[1].str();
 }
 
-void	Shader::_compile(unsigned int shader, const char *shader_source)
+static void	compile(unsigned int shader, const char *shader_source)
 {
+	int		success;
+	char	infoLog[512];
+
 	glShaderSource(shader, 1, &shader_source, NULL);
 	glCompileShader(shader);
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &_success);
-	if (!_success)
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success)
 	{
-		glGetShaderInfoLog(shader, 512, NULL, _infoLog);
-		std::cerr << "shader compilation failed\n" << _infoLog << std::endl;
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		std::cerr << "shader compilation failed\n" << infoLog << std::endl;
 		std::cerr << shader_source << std::endl;
 	}
 }
 
 void	Shader::create(void)
 {
+	int				success;
+	char			infoLog[512];
 	const char		*vertexShaderSource = _vertex_shader.c_str();
 	const char		*fragmentShaderSource = _fragment_shader.c_str();
-
 	unsigned int	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	unsigned int	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int	shaderProgram = glCreateProgram();
 
-	_compile(vertexShader, vertexShaderSource);
-	_compile(fragmentShader, fragmentShaderSource);
-	
-	unsigned int shaderProgram = glCreateProgram();
-
+	compile(vertexShader, vertexShaderSource);
+	compile(fragmentShader, fragmentShaderSource);
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
-	
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &_success);
-	if (!_success)
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	if (!success)
 	{
-		glGetProgramInfoLog(shaderProgram, 512, NULL, _infoLog);
-		std::cerr << "Shader program linking failed\n" << _infoLog << std::endl;
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		std::cerr << "Shader program linking failed\n" << infoLog << std::endl;
 	}
-
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-
 	_id = shaderProgram;
 }
 

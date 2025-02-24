@@ -23,10 +23,10 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		{
 			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
-			case GLFW_KEY_W: g_vStep += 0.01f; break;
-			case GLFW_KEY_A: g_hStep -= 0.01f; break;
-			case GLFW_KEY_S: g_vStep -= 0.01f; break;
-			case GLFW_KEY_D: g_hStep += 0.01f; break;
+			case GLFW_KEY_W: g_vStep += 0.015f; break;
+			case GLFW_KEY_A: g_hStep -= 0.015f; break;
+			case GLFW_KEY_S: g_vStep -= 0.015f; break;
+			case GLFW_KEY_D: g_hStep += 0.015f; break;
 			default: break;
 		}
 	}
@@ -35,10 +35,10 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		switch (key)
 		{
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
-			case GLFW_KEY_W: g_vStep = 0.0f; break;
-			case GLFW_KEY_A: g_hStep = 0.0f; break;
-			case GLFW_KEY_S: g_vStep = 0.0f; break;
-			case GLFW_KEY_D: g_hStep = 0.0f; break;
+			case GLFW_KEY_W: g_vStep -= 0.015f; break;
+			case GLFW_KEY_A: g_hStep += 0.015f; break;
+			case GLFW_KEY_S: g_vStep += 0.015f; break;
+			case GLFW_KEY_D: g_hStep -= 0.015f; break;
 			default: break;
 		}
 	}
@@ -118,7 +118,7 @@ int	main(int c, char **av)
 	}
 	distance = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
 
-	shader.parse("res/shaders/specular.shader");
+	shader.read("res/shaders/specular.shader");
 	shader.create();
 
 	glm::mat4	model = glm::mat4(1.0f);
