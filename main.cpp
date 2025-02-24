@@ -21,19 +21,19 @@ void	processInput(GLFWwindow *window)
 		g_pause = !g_pause;
 }
 
-void	setMatricesProjectViewModel(unsigned int shaderProgram, float distance)
+void	setMVP(unsigned int shaderProgram, float distance)
 {
-	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4	model = glm::mat4(1.0f);
 	if (!g_pause)
 		g_time = glfwGetTime();
 	float angle = 180.0f * sinf(g_time);
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4	view = glm::mat4(1.0f);
 	// note that we’re translating the scene in the reverse and up direction
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -distance));
 
-	glm::mat4 projection;
+	glm::mat4	projection;
 	projection = glm::perspective(glm::radians(70.0f), g_window_width / g_window_height, 0.1f, 1000.0f);
 
 	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
@@ -42,6 +42,11 @@ void	setMatricesProjectViewModel(unsigned int shaderProgram, float distance)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+	glm::mat4	normalMatrix = glm::transpose(glm::inverse(model));
+
+	unsigned int normalMatrixLoc = glGetUniformLocation(shaderProgram, "normalMatrix");
+	glUniformMatrix4fv(normalMatrixLoc, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 }
 
 int	main(int c, char **av)
@@ -112,8 +117,6 @@ int	main(int c, char **av)
 
 	shader.parse("res/shaders/specular.shader");
 	unsigned int	shaderProgram = shader.create();
-	shader.parse("res/shaders/normal.shader");
-	unsigned int	nShaderProgram = shader.create();
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -123,14 +126,6 @@ int	main(int c, char **av)
 		distance = std::max(distance, std::abs(vertex));
 	}
 	distance *= 2.0f;
-
-	//for (std::size_t i = 0; i < vertices.size(); i += 9)
-	//{
-	//	std::cout << "Vertex " << i / 6 << std::endl;
-	//	std::cout << "\tv:\t\t" << vertices[i + 0] << ", " << vertices[i + 1] << ", " << vertices[i + 2] << std::endl;
-	//	std::cout << "\tn:\t\t" << vertices[i + 3] << ", " << vertices[i + 4] << ", " << vertices[i + 5] << std::endl;
-	//	std::cout << "\tend:\t" << vertices[i + 6] << ", " << vertices[i + 7] << ", " << vertices[i + 8] << std::endl;
-	//}
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -146,18 +141,12 @@ int	main(int c, char **av)
 		glUniform3f(glGetUniformLocation(shaderProgram, "ambientColor"), mat.ka.r, mat.ka.g, mat.ka.b);
 		glUniform3f(glGetUniformLocation(shaderProgram, "diffuseColor"), mat.kd.r, mat.kd.g, mat.kd.b);
 		glUniform3f(glGetUniformLocation(shaderProgram, "specularColor"), mat.ks.r, mat.ks.g, mat.ks.b);
-		setMatricesProjectViewModel(shaderProgram, distance);
+		setMVP(shaderProgram, distance);
 		glBindVertexArray(*VAOs);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glPointSize(10.0f);
-		for (unsigned int idx : indices)
-			glDrawArrays(GL_POINTS, idx, 1);
-
-		glUseProgram(nShaderProgram);
-		setMatricesProjectViewModel(nShaderProgram, distance);
-		glPointSize(5.0f);
 		for (unsigned int idx : indices)
 			glDrawArrays(GL_POINTS, idx, 1);
 
