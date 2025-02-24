@@ -11,19 +11,14 @@ Obj::~Obj()
 {
 }
 
-static int	fcmp(float f1, float f2)
+static int	similarity(const Vertex &v1, const Vertex &v2)
 {
-	return (fabs(f1 - f2) < 0.001f);
-}
-
-static float sameNormals(const Vertex &n1, const Vertex &n2)
-{
-	return (fcmp(n1.x, n2.x) && fcmp(n1.y, n2.y) && fcmp(n1.z, n2.z));
-}
-
-static int	zerosNormal(const Vertex &n)
-{
-	return (fcmp(n.x, 0.0f) && fcmp(n.y, 0.0f) && fcmp(n.z, 0.0f));
+	float	ans = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+	
+	ans /= sqrtf(v1.x * v1.x + v1.y * v1.y + v1.z * v1.z);
+	ans /= sqrtf(v2.x * v2.x + v2.y * v2.y + v2.z * v2.z);
+	ans = acosf(ans);
+	return (ans < M_PI / 8.0f);
 }
 
 static void	normalizeVertex(Vertex &v)
@@ -119,15 +114,19 @@ void	Obj::read(const std::string objPath, const std::string mtlPath)
 				uint	vIdx = idx.data[i];
 				Vertex	&n = vertNorms[vIdx];
 
-				if (zerosNormal(n))
+				if (n == 0.0f)
 				{
 					n = norm;
-					continue ;
 				}
-
-				int same = sameNormals(n, norm);
-
-				if (!same)
+				else if (n == norm)
+				{
+					// do nothing
+				}
+				else if (similarity(n, norm))
+				{
+					n += norm;
+				}
+				else
 				{
 					idx.data[i] = (unsigned int)_vertices.size();
 					_vertices.push_back(vertices[vIdx]);
