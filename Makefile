@@ -1,4 +1,4 @@
-SRC     =   error.cpp Vertex.cpp \
+SRC     =   error.cpp Vertex.cpp texture.cpp \
 			Shader.cpp Shader.set.cpp \
 			Obj.cpp Obj.read.cpp Obj.get.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
@@ -10,24 +10,41 @@ NAME    =   libscop.a
 GLFW    =   dep/lib/src/libglfw3.a
 GLAD    =   dep/lib/bin/glad.o
 GLM		=   dep/lib/inc/glm/glm.hpp
+STB		=   dep/lib/inc/stb_image.h
 
-CXX     =   c++ -Wall -Wextra -Werror -std=c++20 -Iinc -Idep/lib/inc -g -lm
+CXX     =   c++ -Wall -Wextra -std=c++20 -Iinc -Idep/lib/inc -g -lm
 
 FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 all: $(STB) $(GLM) $(GLAD) $(GLFW) $(EXE)
-	@echo "_______________face___________________"
-	@./$(EXE) res/objects/face		|| echo "Error: $(EXE) failed"
-	@echo "_______________cube___________________"
-	@./$(EXE) res/objects/cube		|| echo "Error: $(EXE) failed"
+	@echo "______________face__________________"
+	./$(EXE) res/objects/face.obj "" ""			|| echo "Error: $(EXE) failed"
+	@echo "______________cube__________________"
+	./$(EXE) res/objects/cube.obj "" ""			|| echo "Error: $(EXE) failed"
 	@echo "_______________42___________________"
-	@./$(EXE) res/objects/42			|| echo "Error: $(EXE) failed"
-	@echo "_______________teapot___________________"
-	@./$(EXE) res/objects/teapot		|| echo "Error: $(EXE) failed"
-	@echo "_______________teapot2___________________"
-	@./$(EXE) res/objects/teapot2	|| echo "Error: $(EXE) failed"
-	@echo "________________max-planck___________________"
-	@./$(EXE) res/objects/max-planck	|| echo "Error: $(EXE) failed"
+	./$(EXE) res/objects/42.obj \
+				res/materials/42.mtl \
+				""								|| echo "Error: $(EXE) failed"
+	@echo "_____________capsule________________"
+	./$(EXE) res/objects/capsule.obj \
+			res/materials/capsule.mtl \
+			res/textures/capsule.jpg			|| echo "Error: $(EXE) failed"
+	@echo "_____________teapot_________________"
+	./$(EXE) res/objects/teapot.obj ""	""		|| echo "Error: $(EXE) failed"
+	@echo "_____________teapot2________________"
+	./$(EXE) res/objects/teapot2.obj \
+			res/objects/teapot2.mtl \
+			""									|| echo "Error: $(EXE) failed"
+	@echo "____________max-planck______________"
+	./$(EXE) res/objects/max-planck.obj "" ""	|| echo "Error: $(EXE) failed"
+	@echo "______________Flower________________"
+	./$(EXE) res/objects/Flower.obj \
+			res/materials/Flower.mtl \
+			res/textures/Flower.jpg				|| echo "Error: $(EXE) failed"
+	@echo "___________Chinese Coin_____________"
+	./$(EXE) res/objects/chinese_coin.obj \
+			res/materials/chinese_coin.mtl \
+			res/textures/chinese_coin.jpg		|| echo "Error: $(EXE) failed"
 
 bin/%.o: src/%.cpp
 	$(CXX) -c $< -o $@
@@ -41,6 +58,8 @@ $(GLAD):
 	make -C dep glad
 $(GLM):
 	make -C dep glm
+$(STB):
+	make -C dep stb
 
 $(NAME): bin $(OBJ)
 	ar rcs $(NAME) $(OBJ) $(GLAD)

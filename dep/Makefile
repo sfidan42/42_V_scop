@@ -3,6 +3,7 @@ CC		=	gcc -Wall -Wextra -Werror -std=c11 -g -Ilib/inc
 GLAD	=	lib/bin/glad.o
 GLFW	=	lib/src/libglfw3.a
 GLM		=	lib/inc/glm/glm.hpp
+STB		=	lib/inc/stb_image.h
 
 all: glfw glad glm stb
 
@@ -14,6 +15,7 @@ prepare:
 glfw: prepare $(GLFW)
 glad: prepare $(GLAD)
 glm: prepare $(GLM)
+stb: prepare $(STB)
 
 $(GLFW):
 	unzip glfw-3.4.zip
@@ -35,7 +37,10 @@ $(GLM):
 	mv glm/glm lib/inc
 	rm -rf glm
 
+$(STB):
+	cp stb_image.h lib/inc
+
 clean:
 	rm -rf lib glfw-3.4 glad
 
-.PHONY: all glfw glad glm clean prepare
+.PHONY: all glfw glad glm stb clean prepare

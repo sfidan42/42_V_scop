@@ -10,3 +10,17 @@ Obj::Obj(void) : _vertexAvg{0.0f, 0.0f, 0.0f}
 Obj::~Obj()
 {
 }
+
+void	Obj::stats(const char *title)
+{
+	std::cout << title << std::endl;
+	std::cout << "\tnumber of _vertices: " << _vertices.size() << std::endl;
+	std::cout << "\tnumber of _vertNorms: " << _vertNorms.size() << std::endl;
+	std::cout << "\tnumber of _indices: " << _indices.size() << std::endl;
+	std::cout << "\tnumber of _texCoords: " << _texCoords.size() << std::endl;
+	std::cout << "\tnumber of _texIndices: " << _texIndices.size() << std::endl;
+	std::cout << "\tsize of the object: " << (_vertices.size() * sizeof(Vertex) +
+											(_vertNorms.size() * sizeof(Vertex)) +
+											_indices.size() * sizeof(uIndex))
+											/ 1024.0f << "kB" << std::endl;
+}

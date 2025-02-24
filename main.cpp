@@ -49,10 +49,10 @@ int	main(int c, char **av)
 	GLFWwindow	*window;
 	Obj			obj;
 
-	if (c != 2)
+	if (c != 4)
 	{
-		std::cerr << "provide a file (present it without .obj in its path)" << std::endl;
-		return (1);
+		std::cerr << "usage: ./program [.obj] [.mtl] [.{png, jpg}]" << std::endl;
+		return (-1);
 	}
 
 	if (!glfwInit())
@@ -81,9 +81,7 @@ int	main(int c, char **av)
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	std::string	path(av[1]);
-
-	obj.read(path + ".obj", (path + ".mtl"));
+	obj.read(av[1], av[2]);
 
 	std::vector<float>			vertices = obj.getVertices();
 	std::vector<unsigned int>	indices = obj.getIndices();
@@ -101,11 +99,11 @@ int	main(int c, char **av)
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
 	glBindVertexArray(VAOs);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -118,7 +116,14 @@ int	main(int c, char **av)
 	}
 	distance = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
 
-	shader.read("res/shaders/specular.shader");
+	if (loadTexture(av[3]))
+		shader.read("res/shaders/specular.textured.shader");
+	else
+	{
+		shader.read("res/shaders/specular.shader");
+		std::cerr << "Failed to load texture" << std::endl;
+	}
+	
 	shader.create();
 
 	glm::mat4	model = glm::mat4(1.0f);
@@ -142,7 +147,7 @@ int	main(int c, char **av)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
+		glClearColor(mat.ka.r, mat.ka.g, mat.ka.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		model = glm::rotate(model, glm::radians((float)M_PI / 5.0f), glm::vec3(0.0f, 1.0f, 0.0f));

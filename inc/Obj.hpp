@@ -39,20 +39,33 @@ typedef struct
 	std::string		map_Kd; // woodtexture.jpg
 }					tMaterial;
 
+typedef union
+{
+	struct
+	{
+		float	u;
+		float	v;
+	};
+	float		data[2];
+}				uTex;
+
 class Obj
 {
 private:
 	std::list<Vertex>	_vertices;
 	std::list<uIndex>	_indices;
+	std::list<uTex>		_texCoords;
+	std::list<uIndex>	_texIndices;
 	std::list<Vertex>	_vertNorms;
 	Vertex				_vertexAvg;
 	tMaterial			_mat;
 public:
 	Obj(void);
 	~Obj();
-	void								read(const std::string objPath, const std::string mtlPath);
+	void								read(const std::string &objPath, const std::string &mtlPath);
 	const std::vector<float>			getVertices(void);
 	const std::vector<float>			getNormalEnds(void);
 	const std::vector<unsigned int>		getIndices(void);
 	const tMaterial						getMaterial(void);
+	void								stats(const char *title);
 };
