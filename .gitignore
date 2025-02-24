@@ -1,1 +1,6 @@
 .vscode
+res/objects/other/
+bin/
+dep/lib
+libscop.a
+scop
