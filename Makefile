@@ -1,4 +1,4 @@
-SRC     =   error.cpp Shader.cpp Obj.cpp Vertex.cpp
+SRC     =   error.cpp Shader.cpp Obj.cpp Obj.read.cpp Obj.get.cpp Vertex.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
 
 EXE     =   scop
@@ -9,7 +9,7 @@ GLFW    =   dep/lib/src/libglfw3.a
 GLAD    =   dep/lib/bin/glad.o
 GLM		=   dep/lib/inc/glm/glm.hpp
 
-CXX     =   c++ -Wall -Wextra -Werror -std=c++11 -Iinc -Idep/lib/inc -g -lm
+CXX     =   c++ -Wall -Wextra -Werror -std=c++20 -Iinc -Idep/lib/inc -g -lm
 
 FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 

@@ -38,6 +38,14 @@ Vertex    &Vertex::operator+=(float num)
     return (*this);
 }
 
+Vertex    &Vertex::operator*=(float num)
+{
+    x *= num;
+    y *= num;
+    z *= num;
+    return (*this);
+}
+
 Vertex::~Vertex(void) {};
 
 Vertex  operator+(const Vertex &a, const Vertex &b)
@@ -68,4 +76,9 @@ bool    operator==(const Vertex &a, float num)
 bool    operator!=(const Vertex &a, float num)
 {
     return (fabs(a.x - num) >= 0.00001f || fabs(a.y - num) >= 0.00001f || fabs(a.z - num) >= 0.00001f);
+}
+
+float  dot(const Vertex &a, const Vertex &b)
+{
+    return (a.x * b.x + a.y * b.y + a.z * b.z);
 }

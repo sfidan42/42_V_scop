@@ -21,6 +21,7 @@ public:
 	Vertex	&operator+=(const Vertex &other);
 	Vertex	&operator=(float num);
 	Vertex	&operator+=(float num);
+	Vertex	&operator*=(float num);
 	~Vertex(void);
 };
 
@@ -30,3 +31,4 @@ bool	operator!=(const Vertex &a, const Vertex &b);
 Vertex	operator+(const Vertex &a, float num);
 bool	operator==(const Vertex &a, float num);
 bool	operator!=(const Vertex &a, float num);
+float	dot(const Vertex &a, const Vertex &b);
