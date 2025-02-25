@@ -240,6 +240,8 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 
 		this->stats("After computing normals");
 	}
+	std::cout << "Average of vertices" << std::endl;
+	std::cout << "\t" << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << std::endl;
 	{
 		std::ifstream	mtlFile(mtlPath);
 		std::string		line;

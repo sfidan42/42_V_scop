@@ -2,13 +2,14 @@
 
 float	g_hStep = 0.0f;
 float	g_vStep = 0.0f;
+float	g_vRotate = 0.0f;
 Shader	shader;
 
 void	framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
 	(void)window;
 	glViewport(0, 0, w, h);
-	glm::mat4	projection = glm::perspective(glm::radians(70.0f), (float)w / h, 0.1f, 1000.0f);
+	glm::mat4	projection = glm::perspective(glm::radians(70.0f), (float)w / h, 0.1f, 20000.0f);
 	shader.setMat4fv("projection", glm::value_ptr(projection));
 }
 
@@ -27,6 +28,8 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			case GLFW_KEY_A: g_hStep -= 0.015f; break;
 			case GLFW_KEY_S: g_vStep -= 0.015f; break;
 			case GLFW_KEY_D: g_hStep += 0.015f; break;
+			case GLFW_KEY_LEFT: g_vRotate -= M_PI / 5.0f; break;
+			case GLFW_KEY_RIGHT: g_vRotate += M_PI / 5.0f; break;
 			default: break;
 		}
 	}
@@ -39,6 +42,8 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			case GLFW_KEY_A: g_hStep += 0.015f; break;
 			case GLFW_KEY_S: g_vStep += 0.015f; break;
 			case GLFW_KEY_D: g_hStep -= 0.015f; break;
+			case GLFW_KEY_LEFT: g_vRotate += M_PI / 5.0f; break;
+			case GLFW_KEY_RIGHT: g_vRotate -= M_PI / 5.0f; break;
 			default: break;
 		}
 	}
@@ -128,7 +133,7 @@ int	main(int c, char **av)
 
 	glm::mat4	model = glm::mat4(1.0f);
 	glm::mat4	view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -distance));
-	glm::mat4	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+	glm::mat4	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 
 	shader.use();
 	shader.set3f("lightPos", distance, -distance, -distance);
@@ -150,7 +155,8 @@ int	main(int c, char **av)
 		glClearColor(mat.ka.r, mat.ka.g, mat.ka.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		model = glm::rotate(model, glm::radians((float)M_PI / 5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		
+		model = glm::rotate(model, glm::radians(g_vRotate), glm::vec3(0.0f, 1.0f, 0.0f));
 		shader.setMat4fv("model", glm::value_ptr(model));
 
 		view = glm::translate(view, glm::vec3(g_hStep * distance, g_vStep * distance, 0.0f));

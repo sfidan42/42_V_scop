@@ -25,7 +25,7 @@ const std::vector<float>	Obj::getVertices(void)
 			*it++ = itn->y;
 			*it++ = itn->z;
 			*it++ = itt->u;
-			*it++ = 1.0f - itt->v;
+			*it++ = itt->v;
 		}
 	}
 	else
