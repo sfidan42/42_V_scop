@@ -8,10 +8,6 @@ const std::vector<float>	Obj::getVertices(void)
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
 
-	std::cout << "number of _vertices: " << _vertices.size() << std::endl;
-	std::cout << "number of _vertNorms: " << _vertNorms.size() << std::endl;
-	std::cout << "number of _texCoords: " << _texCoords.size() << std::endl;
-
 	vec.resize(_vertices.size() * ((2 * sizeof(Vertex) + sizeof(uTex)) / sizeof(float)));
 
 	if (_texCoords.size())

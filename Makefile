@@ -18,51 +18,51 @@ FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi 
 
 all: $(STB) $(GLM) $(GLAD) $(GLFW) $(EXE)
 	@echo "______________face__________________"
-	./$(EXE) res/objects/face.obj "" ""			|| echo "Error: $(EXE) failed"
+	@./$(EXE) res/objects/face.obj "" ""			|| echo "Error: $(EXE) failed"
 	@echo "______________cube__________________"
-	./$(EXE) res/objects/cube.obj "" ""			|| echo "Error: $(EXE) failed"
+	@./$(EXE) res/objects/cube.obj "" ""			|| echo "Error: $(EXE) failed"
 	@echo "_______________42___________________"
-	./$(EXE) res/objects/42.obj \
+	@./$(EXE) res/objects/42.obj \
 				res/materials/42.mtl \
 				""								|| echo "Error: $(EXE) failed"
 	@echo "_____________capsule________________"
-	./$(EXE) res/objects/capsule.obj \
+	@./$(EXE) res/objects/capsule.obj \
 			res/materials/capsule.mtl \
 			res/textures/capsule.jpg			|| echo "Error: $(EXE) failed"
 	@echo "_____________teapot_________________"
-	./$(EXE) res/objects/teapot.obj ""	""		|| echo "Error: $(EXE) failed"
+	@./$(EXE) res/objects/teapot.obj ""	""		|| echo "Error: $(EXE) failed"
 	@echo "_____________teapot2________________"
-	./$(EXE) res/objects/teapot2.obj \
+	@./$(EXE) res/objects/teapot2.obj \
 			res/objects/teapot2.mtl \
 			""									|| echo "Error: $(EXE) failed"
 	@echo "____________max-planck______________"
-	./$(EXE) res/objects/max-planck.obj "" ""	|| echo "Error: $(EXE) failed"
+	@./$(EXE) res/objects/max-planck.obj "" ""	|| echo "Error: $(EXE) failed"
 	@echo "______________Flower________________"
-	./$(EXE) res/objects/other/Flower.obj \
+	@./$(EXE) res/objects/other/Flower.obj \
 			res/objects/other/Flower.mtl \
 			res/objects/other/Flower.jpg				|| echo "Error: $(EXE) failed"
 	@echo "___________Chinese Coin_____________"
-	./$(EXE) res/objects/other/chinese_coin.obj \
+	@./$(EXE) res/objects/other/chinese_coin.obj \
 			res/objects/other/chinese_coin.mtl \
 			res/objects/other/chinese_coin.jpg		|| echo "Error: $(EXE) failed"
 	@echo "______________Helmet_________________"
-	./$(EXE) res/objects/other/Helmet.obj \
+	@./$(EXE) res/objects/other/Helmet.obj \
 			res/objects/other/Helmet.mtl \
 			res/objects/other/Helmet_1.png		|| echo "Error: $(EXE) failed"
 	@echo "______________Axe_________________"
-	./$(EXE) res/objects/other/Axe.obj \
+	@./$(EXE) res/objects/other/Axe.obj \
 			res/objects/other/Axe.mtl \
 			res/objects/other/Axe_1.png		|| echo "Error: $(EXE) failed"
 	@echo "______________Classic side table_________________"
-	./$(EXE) res/objects/other/Classic\ side\ table.obj \
+	@./$(EXE) res/objects/other/Classic\ side\ table.obj \
 			res/objects/other/Classic\ side\ table.mtl \
 			res/objects/other/Classic\ side\ table_0.jpg		|| echo "Error: $(EXE) failed"
 	@echo "______________Stanley Screwdriver-obj_________________"
-	./$(EXE) res/objects/other/Stanley\ Screwdriver-obj.obj \
+	@./$(EXE) res/objects/other/Stanley\ Screwdriver-obj.obj \
 			res/objects/other/Stanley\ Screwdriver-obj.mtl \
 			res/objects/other/Stanley\ Screwdriver-obj_0.jpg		|| echo "Error: $(EXE) failed"
 	@echo "______________Fountain_________________"
-	./$(EXE) res/objects/other/Fountain.obj \
+	@./$(EXE) res/objects/other/Fountain.obj \
 			res/objects/other/Fountain.mtl \
 			res/objects/other/Fountain_0.png		|| echo "Error: $(EXE) failed"
 

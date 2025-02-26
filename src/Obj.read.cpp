@@ -97,7 +97,6 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 		_vertexAvg.x /= _vertices.size();
 		_vertexAvg.y /= _vertices.size();
 		_vertexAvg.z /= _vertices.size();
-		this->stats("Before computing normals");
 	}
 	if (_texCoords.size())
 	{
@@ -181,7 +180,6 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 		for (uTex &tex : texCoords2)
 			_texCoords.push_back(tex);
 
-		this->stats("After computing normals");
 	}
 	else
 	{
@@ -238,10 +236,8 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 		for (Vertex &norm : _vertNorms)
 			norm *= Q_rsqrt(dot(norm, norm));
 
-		this->stats("After computing normals");
 	}
-	std::cout << "Average of vertices" << std::endl;
-	std::cout << "\t" << _vertexAvg.x << " " << _vertexAvg.y << " " << _vertexAvg.z << std::endl;
+	this->stats(objPath.c_str());
 	{
 		std::ifstream	mtlFile(mtlPath);
 		std::string		line;
