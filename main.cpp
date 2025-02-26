@@ -1,12 +1,23 @@
 #include <scop.hpp>
 
-float	g_hStep = 0.0f;
-float	g_vStep = 0.0f;
 float	g_vRotate = 0.0f;
 float	g_hRotate = 0.0f;
 Shader	shader;
 bool	g_texLoaded;
-tColor	g_clearColor;
+
+glm::vec3	cameraPos   = glm::vec3(0.0f, 0.0f,  0.0f);
+glm::vec3	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3	cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+float	deltaTime = 0.0f;
+float	lastFrame = 0.0f;
+
+glm::vec3	cameraSpeed = glm::vec3(0.0f);
+glm::vec3	cameraUpSpeed = glm::vec3(0.0f);
+glm::vec3	cameraDownSpeed = glm::vec3(0.0f);
+glm::vec3	cameraRightSpeed = glm::vec3(0.0f);
+glm::vec3	cameraLeftSpeed = glm::vec3(0.0f);
+float		speedCoeff;
 
 void	framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
@@ -27,14 +38,10 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		{
 			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
-			case GLFW_KEY_W: g_vStep += 0.015f; break;
-			case GLFW_KEY_A: g_hStep -= 0.015f; break;
-			case GLFW_KEY_S: g_vStep -= 0.015f; break;
-			case GLFW_KEY_D: g_hStep += 0.015f; break;
-			case GLFW_KEY_LEFT: g_vRotate -= M_PI / 5.0f; break;
-			case GLFW_KEY_RIGHT: g_vRotate += M_PI / 5.0f; break;
-			case GLFW_KEY_UP: g_hRotate += M_PI / 5.0f; break;
-			case GLFW_KEY_DOWN: g_hRotate -= M_PI / 5.0f; break;
+			case GLFW_KEY_W: cameraUpSpeed = speedCoeff * deltaTime * cameraFront; cameraSpeed += cameraUpSpeed; break;
+			case GLFW_KEY_S: cameraDownSpeed = speedCoeff * deltaTime * cameraFront; cameraSpeed -= cameraDownSpeed; break;
+			case GLFW_KEY_D: cameraRightSpeed = speedCoeff * deltaTime * glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed += cameraRightSpeed; break;
+			case GLFW_KEY_A: cameraLeftSpeed = speedCoeff * deltaTime * glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed -= cameraLeftSpeed; break;
 			case GLFW_KEY_T: g_texLoaded = !g_texLoaded; g_texLoaded ? shader.use(1): shader.use(0); break;
 			default: break;
 		}
@@ -43,15 +50,11 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		switch (key)
 		{
+			case GLFW_KEY_W: cameraSpeed -= cameraUpSpeed; break;
+			case GLFW_KEY_S: cameraSpeed += cameraDownSpeed; break;
+			case GLFW_KEY_D: cameraSpeed -= cameraRightSpeed; break;
+			case GLFW_KEY_A: cameraSpeed += cameraLeftSpeed; break;
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
-			case GLFW_KEY_W: g_vStep -= 0.015f; break;
-			case GLFW_KEY_A: g_hStep += 0.015f; break;
-			case GLFW_KEY_S: g_vStep += 0.015f; break;
-			case GLFW_KEY_D: g_hStep -= 0.015f; break;
-			case GLFW_KEY_LEFT: g_vRotate += M_PI / 5.0f; break;
-			case GLFW_KEY_RIGHT: g_vRotate -= M_PI / 5.0f; break;
-			case GLFW_KEY_UP: g_hRotate -= M_PI / 5.0f; break;
-			case GLFW_KEY_DOWN: g_hRotate += M_PI / 5.0f; break;
 			default: break;
 		}
 	}
@@ -127,14 +130,16 @@ int	main(int c, char **av)
 	{
 		distance = std::max(distance, std::abs(vertex));
 	}
-	distance = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
+	cameraPos.z = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
+
+	speedCoeff = distance * 5.0f;
 
 	shader.read("res/shaders/specular.shader");
 	shader.read("res/shaders/specular.textured.shader");
 	shader.create();
 
 	glm::mat4	model = glm::mat4(1.0f);
-	glm::mat4	view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -distance));
+	glm::mat4	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	glm::mat4	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 
 	g_texLoaded = loadTexture(av[3]);
@@ -170,10 +175,16 @@ int	main(int c, char **av)
 		glClearColor(mat.ka.r, mat.ka.g, mat.ka.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		model = glm::rotate(model, glm::radians(g_vRotate), glm::vec3(0.0f, 1.0f, 0.0f));
+		float	currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;  
+
+		model = glm::rotate(model, glm::radians((float)M_PI / 10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		shader.setMat4fv("model", glm::value_ptr(model));
 
-		view = glm::translate(view, glm::vec3(g_hStep * distance, g_vStep * distance, 0.0f));
+		std::cout << "camera speed: " << cameraSpeed.x << " " << cameraSpeed.y << " " << cameraSpeed.z << std::endl;
+		cameraPos += cameraSpeed;
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setMat4fv("view", glm::value_ptr(view));
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
