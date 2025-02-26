@@ -3,7 +3,10 @@
 float	g_hStep = 0.0f;
 float	g_vStep = 0.0f;
 float	g_vRotate = 0.0f;
+float	g_hRotate = 0.0f;
 Shader	shader;
+bool	g_texLoaded;
+tColor	g_clearColor;
 
 void	framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
@@ -30,6 +33,9 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			case GLFW_KEY_D: g_hStep += 0.015f; break;
 			case GLFW_KEY_LEFT: g_vRotate -= M_PI / 5.0f; break;
 			case GLFW_KEY_RIGHT: g_vRotate += M_PI / 5.0f; break;
+			case GLFW_KEY_UP: g_hRotate += M_PI / 5.0f; break;
+			case GLFW_KEY_DOWN: g_hRotate -= M_PI / 5.0f; break;
+			case GLFW_KEY_T: g_texLoaded = !g_texLoaded; g_texLoaded ? shader.use(1): shader.use(0); break;
 			default: break;
 		}
 	}
@@ -44,6 +50,8 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			case GLFW_KEY_D: g_hStep -= 0.015f; break;
 			case GLFW_KEY_LEFT: g_vRotate += M_PI / 5.0f; break;
 			case GLFW_KEY_RIGHT: g_vRotate -= M_PI / 5.0f; break;
+			case GLFW_KEY_UP: g_hRotate -= M_PI / 5.0f; break;
+			case GLFW_KEY_DOWN: g_hRotate += M_PI / 5.0f; break;
 			default: break;
 		}
 	}
@@ -121,21 +129,17 @@ int	main(int c, char **av)
 	}
 	distance = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
 
-	if (loadTexture(av[3]))
-		shader.read("res/shaders/specular.textured.shader");
-	else
-	{
-		shader.read("res/shaders/specular.shader");
-		std::cerr << "Failed to load texture" << std::endl;
-	}
-	
+	shader.read("res/shaders/specular.shader");
+	shader.read("res/shaders/specular.textured.shader");
 	shader.create();
 
 	glm::mat4	model = glm::mat4(1.0f);
 	glm::mat4	view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -distance));
 	glm::mat4	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 
-	shader.use();
+	g_texLoaded = loadTexture(av[3]);
+
+	shader.use(0);
 	shader.set3f("lightPos", distance, -distance, -distance);
 	shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
 	shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);
@@ -143,6 +147,17 @@ int	main(int c, char **av)
 	shader.setMat4fv("model", glm::value_ptr(model));
 	shader.setMat4fv("view", glm::value_ptr(view));
 	shader.setMat4fv("projection", glm::value_ptr(projection));
+
+	shader.use(1);
+	shader.set3f("lightPos", distance, -distance, -distance);
+	shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
+	shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);
+	shader.set3f("specularColor", mat.ks.r, mat.ks.g, mat.ks.b);
+	shader.setMat4fv("model", glm::value_ptr(model));
+	shader.setMat4fv("view", glm::value_ptr(view));
+	shader.setMat4fv("projection", glm::value_ptr(projection));
+
+	g_texLoaded ? shader.use(1) : shader.use(0);
 
 	glBindVertexArray(VAOs);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -155,7 +170,6 @@ int	main(int c, char **av)
 		glClearColor(mat.ka.r, mat.ka.g, mat.ka.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
 		model = glm::rotate(model, glm::radians(g_vRotate), glm::vec3(0.0f, 1.0f, 0.0f));
 		shader.setMat4fv("model", glm::value_ptr(model));
 

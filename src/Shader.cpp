@@ -33,8 +33,7 @@ void	Shader::read(const char *filepath)
 		else if (i != -1)
 			ss[i] << line << '\n';
 	}
-	_vertex_shader = ss[0].str();
-	_fragment_shader = ss[1].str();
+	_shaders.push_back({ss[0].str(), ss[1].str()});
 }
 
 static void	compile(unsigned int shader, const char *shader_source)
@@ -57,29 +56,39 @@ void	Shader::create(void)
 {
 	int				success;
 	char			infoLog[512];
-	const char		*vertexShaderSource = _vertex_shader.c_str();
-	const char		*fragmentShaderSource = _fragment_shader.c_str();
-	unsigned int	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	unsigned int	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	unsigned int	shaderProgram = glCreateProgram();
 
-	compile(vertexShader, vertexShaderSource);
-	compile(fragmentShader, fragmentShaderSource);
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success)
+	for (unsigned int i = 0; i < _shaders.size(); i++)
 	{
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cerr << "Shader program linking failed\n" << infoLog << std::endl;
+		const char		*vertexShaderSource = _shaders[i].vertex.c_str();
+		const char		*fragmentShaderSource = _shaders[i].fragment.c_str();
+		unsigned int	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		unsigned int	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		unsigned int	shaderProgram = glCreateProgram();
+
+		compile(vertexShader, vertexShaderSource);
+		compile(fragmentShader, fragmentShaderSource);
+		glAttachShader(shaderProgram, vertexShader);
+		glAttachShader(shaderProgram, fragmentShader);
+		glLinkProgram(shaderProgram);
+		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+		if (!success)
+		{
+			glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+			std::cerr << "Shader program linking failed\n" << infoLog << std::endl;
+		}
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		_programs.push_back(shaderProgram);
 	}
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-	_id = shaderProgram;
 }
 
-void	Shader::use(void)
+void	Shader::use(unsigned int index)
 {
-	glUseProgram(_id);
+	if (index >= _programs.size())
+	{
+		std::cerr << "Invalid program index: " << index << std::endl;
+		return ;
+	}
+	_program = _programs[index];
+	glUseProgram(_program);
 }
