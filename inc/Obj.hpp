@@ -53,10 +53,11 @@ class Obj
 {
 private:
 	std::list<Vertex>	_vertices;
-	std::list<uIndex>	_indices;
-	std::list<uTex>		_texCoords;
-	std::list<uIndex>	_texIndices;
 	std::list<Vertex>	_vertNorms;
+	std::list<uTex>		_texCoords;
+	std::list<uIndex>	_indices;
+	std::list<uIndex>	_texIndices;
+	std::list<uIndex>	_normIndices;
 	Vertex				_vertexAvg;
 	tMaterial			_mat;
 public:

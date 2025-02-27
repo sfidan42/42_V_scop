@@ -37,6 +37,7 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 		uTex			tex;
 		uIndex			idx;
 		uIndex			texIdx;
+		uIndex			normIdx;
 		tMaterial		mat;
 
 		if (!objFile.is_open())
@@ -45,9 +46,11 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 			return ;
 		}
 		_vertices.clear();
-		_indices.clear();
 		_texCoords.clear();
+		_vertNorms.clear();
+		_indices.clear();
 		_texIndices.clear();
+		_normIndices.clear();
 		while (std::getline(objFile, line))
 		{
 			std::istringstream	iss(line);
@@ -66,14 +69,22 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 				iss >> tex.u >> tex.v;
 				_texCoords.push_back(tex);
 			}
+			else if (word == "vn")
+			{
+				iss >> vert.x >> vert.y >> vert.z;
+				vert.x = -vert.x;
+				vert.y = -vert.y;
+				vert.z = -vert.z;
+				_vertNorms.push_back(vert);
+			}
 			else if (word == "f")
 			{
 				std::string		fword[4];
 				char			c;
 				iss >> fword[0] >> fword[1] >> fword[2] >> fword[3];
-				std::istringstream(fword[0]) >> idx.v1 >> c >> texIdx.v1;
-				std::istringstream(fword[1]) >> idx.v2 >> c >> texIdx.v2;
-				std::istringstream(fword[2]) >> idx.v3 >> c >> texIdx.v3;
+				std::istringstream(fword[0]) >> idx.v1 >> c >> texIdx.v1 >> c >> normIdx.v1;
+				std::istringstream(fword[1]) >> idx.v2 >> c >> texIdx.v2 >> c >> normIdx.v2;
+				std::istringstream(fword[2]) >> idx.v3 >> c >> texIdx.v3 >> c >> normIdx.v3;
 				idx.v1 -= 1;
 				idx.v2 -= 1;
 				idx.v3 -= 1;
@@ -82,15 +93,22 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 				texIdx.v2 -= 1;
 				texIdx.v3 -= 1;
 				_texIndices.push_back(texIdx);
+				normIdx.v1 -= 1;
+				normIdx.v2 -= 1;
+				normIdx.v3 -= 1;
+				_normIndices.push_back(normIdx);
 				if (fword[3].size())
 				{
 					idx.v2 = idx.v3;
 					texIdx.v2 = texIdx.v3;
-					std::istringstream(fword[3]) >> idx.v3 >> c >> texIdx.v3;
+					normIdx.v2 = normIdx.v3;
+					std::istringstream(fword[3]) >> idx.v3 >> c >> texIdx.v3 >> c >> normIdx.v3;
 					idx.v3 -= 1;
 					texIdx.v3 -= 1;
+					normIdx.v3 -= 1;
 					_indices.push_back(idx);
 					_texIndices.push_back(texIdx);
+					_normIndices.push_back(normIdx);
 				}
 			}
 		}
@@ -99,12 +117,14 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 		_vertexAvg.z /= _vertices.size();
 	}
 	std::vector<Vertex>	vertices(_vertices.begin(), _vertices.end());
-	std::vector<Vertex>	vertNorms(_vertices.size());
+	std::vector<Vertex>	vertNorms(_vertNorms.begin(), _vertNorms.end());
+	std::vector<Vertex>	vertNorms1(_vertices.size());
 	std::list<Vertex>	vertNorms2;
 	std::vector<uTex>	texCoords(_texCoords.begin(), _texCoords.end());
 	std::vector<uTex>	texCoords1(_vertices.size());
 	std::list<uTex>		texCoords2;
 	std::list<uIndex>::iterator	itt;
+	std::list<uIndex>::iterator	itn;
 
 	if (_texCoords.size())
 	{
@@ -123,24 +143,32 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 	}
 
 	itt = _texIndices.begin();
+	itn = _normIndices.begin();
 	for (uIndex &idx : _indices)
 	{
 		Vertex	&v1 = vertices[idx.v1];
 		Vertex	&v2 = vertices[idx.v2];
 		Vertex	&v3 = vertices[idx.v3];
-		Vertex	norm;
+		Vertex	normCalc;
 
 		Vertex	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
 		Vertex	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
 
-		norm.x = edge1.y * edge2.z - edge1.z * edge2.y;
-		norm.y = edge1.z * edge2.x - edge1.x * edge2.z;
-		norm.z = edge1.x * edge2.y - edge1.y * edge2.x;
+		normCalc.x = edge1.y * edge2.z - edge1.z * edge2.y;
+		normCalc.y = edge1.z * edge2.x - edge1.x * edge2.z;
+		normCalc.z = edge1.x * edge2.y - edge1.y * edge2.x;
 
 		for (unsigned int i = 0; i < 3; i++)
 		{
 			unsigned int	vIdx = idx.data[i];
-			Vertex			&n = vertNorms[vIdx];
+			unsigned int	nIdx = itn->data[i];
+			Vertex			&n = vertNorms1[vIdx];
+			Vertex			norm;
+
+			if (nIdx < vertNorms.size())
+				norm = vertNorms[nIdx];
+			else
+				norm = normCalc;
 
 			if (n == 0.0f)
 			{
@@ -164,10 +192,11 @@ void	Obj::read(const std::string &objPath, const std::string &mtlPath)
 			}
 		}
 		itt++;
+		itn++;
 	}
 
 	_vertNorms.clear();
-	for (Vertex &norm : vertNorms)
+	for (Vertex &norm : vertNorms1)
 		_vertNorms.push_back(norm);
 	for (Vertex &norm : vertNorms2)
 		_vertNorms.push_back(norm);
