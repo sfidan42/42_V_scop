@@ -1,4 +1,4 @@
-SRC     =   error.cpp Vertex.cpp texture.cpp \
+SRC     =   error.cpp Vertex.cpp texture.cpp Scop/Scop.cpp \
 			Shader/Shader.cpp Shader/Shader.set.cpp \
 			WavefrontObj/WavefrontObj.cpp WavefrontObj/WavefrontObj.read.cpp WavefrontObj/WavefrontObj.get.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
@@ -70,7 +70,7 @@ bin/%.o: src/%.cpp
 	$(CXX) -c $< -o $@
 
 bin:
-	mkdir -p bin/WavefrontObj bin/Shader
+	mkdir -p bin/WavefrontObj bin/Shader bin/Scop
 
 $(GLFW):
 	make -C dep glfw
