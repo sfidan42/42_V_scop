@@ -8,6 +8,14 @@
 # include <glm/gtc/matrix_transform.hpp>
 # include <glm/gtc/type_ptr.hpp>
 
+typedef struct
+{
+	bool	up;
+	bool	left;
+	bool	down;
+	bool	right;
+}			tArrows;
+
 class Scop
 {
 public:
@@ -22,13 +30,15 @@ private:
 	float	deltaTime;
 	float	lastFrame;
 private:
+	static bool			arrowsPressed[4];
+	static bool			texLoaded;
 	static bool			leftButtonPressed;
 	static bool			firstMouse;
+private:
 	static float		yaw;
 	static float		pitch;
 	static double		lastX;
 	static double		lastY;
-	static bool			texLoaded;
 	static glm::vec3	cameraPos;
 	static glm::vec3	cameraFront;
 	static glm::vec3	cameraUp;
@@ -41,6 +51,7 @@ public: // .
 	~Scop();
 	void	moveCamera(glm::vec3 dist);
 	void	locateCamera(glm::vec3 loc);
+	void	rotateObject(void); // automatic detection of the angle and axis
 	void	rotateObject(float angle, glm::vec3 axis);
 	void	calcDeltaTime(void);
 	void	useShader(void); // automatic detection of the shader to use

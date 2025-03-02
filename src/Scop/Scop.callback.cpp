@@ -24,6 +24,10 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 			case GLFW_KEY_A: cameraLeftSpeed = glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed -= cameraLeftSpeed; break;
 			case GLFW_KEY_S: cameraDownSpeed = cameraFront; cameraSpeed -= cameraDownSpeed; break;
 			case GLFW_KEY_D: cameraRightSpeed = glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed += cameraRightSpeed; break;
+			case GLFW_KEY_UP: arrowsPressed[0] = true; break;
+			case GLFW_KEY_LEFT: arrowsPressed[1] = true; break;
+			case GLFW_KEY_DOWN: arrowsPressed[2] = true; break;
+			case GLFW_KEY_RIGHT: arrowsPressed[3] = true; break;
 			default: break;
 		}
 	}
@@ -36,6 +40,10 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 			case GLFW_KEY_A: cameraSpeed += cameraLeftSpeed; break;
 			case GLFW_KEY_S: cameraSpeed += cameraDownSpeed; break;
 			case GLFW_KEY_D: cameraSpeed -= cameraRightSpeed; break;
+			case GLFW_KEY_UP: arrowsPressed[0] = false; break;
+			case GLFW_KEY_LEFT: arrowsPressed[1] = false; break;
+			case GLFW_KEY_DOWN: arrowsPressed[2] = false; break;
+			case GLFW_KEY_RIGHT: arrowsPressed[3] = false; break;
 			default: break;
 		}
 	}

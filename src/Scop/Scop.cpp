@@ -10,9 +10,7 @@ Scop::Scop(void)
 	lastFrame = 0.0f;
 }
 
-Scop::~Scop(void)
-{
-}
+Scop::~Scop(void) { }
 
 void	Scop::moveCamera(glm::vec3 speed)
 {
@@ -29,6 +27,25 @@ void	Scop::locateCamera(glm::vec3 loc)
 	cameraPos = loc;
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	shader.setMat4fv("view", glm::value_ptr(view));
+}
+
+void	Scop::rotateObject()
+{
+	if (arrowsPressed[0])
+		model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	else if (arrowsPressed[1])
+		model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	else if (arrowsPressed[2])
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	else if (arrowsPressed[3])
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	else
+	{
+		float 		angle = M_PI / 10.0f;
+		glm::vec3	axis = glm::vec3(0.0f, 1.0f, 0.0f);
+		model = glm::rotate(model, glm::radians(angle), axis);
+	}
+	shader.setMat4fv("model", glm::value_ptr(model));
 }
 
 void	Scop::rotateObject(float angle, glm::vec3 axis)
@@ -50,13 +67,16 @@ void	Scop::useShader(void)
 }
 
 Shader		Scop::shader;
+
+bool		Scop::arrowsPressed[4] = {false, false, false, false};
+bool		Scop::texLoaded = false;
 bool		Scop::leftButtonPressed = false;
 bool		Scop::firstMouse = true;
+
 float		Scop::yaw = -90.0f;
 float		Scop::pitch = 0.0f;
 double		Scop::lastX;
 double		Scop::lastY;
-bool		Scop::texLoaded = false;
 glm::vec3	Scop::cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
 glm::vec3	Scop::cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3	Scop::cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);
