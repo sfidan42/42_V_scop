@@ -8,13 +8,14 @@
 # include <glm/gtc/matrix_transform.hpp>
 # include <glm/gtc/type_ptr.hpp>
 
-typedef struct
+enum class Arrow
 {
-	bool	up;
-	bool	left;
-	bool	down;
-	bool	right;
-}			tArrows;
+	UP,
+	LEFT,
+	DOWN,
+	RIGHT,
+	NONE
+};
 
 class Scop
 {
@@ -25,20 +26,20 @@ private:
 	glm::mat4	model;
 	glm::mat4	view;
 	glm::mat4	projection;
-private:
+	private:
 	float	speedCoeff;
 	float	deltaTime;
 	float	lastFrame;
 private:
-	static bool			arrowsPressed[4];
-	static bool			texLoaded;
-	static bool			leftButtonPressed;
-	static bool			firstMouse;
+	static Arrow	arrow;
+	static bool		texLoaded;
+	static bool		leftButtonPressed;
+	static bool		firstMouse;
 private:
-	static float		yaw;
-	static float		pitch;
-	static double		lastX;
-	static double		lastY;
+	static float	yaw;
+	static float	pitch;
+	static double	lastX;
+	static double	lastY;
 	static glm::vec3	cameraPos;
 	static glm::vec3	cameraFront;
 	static glm::vec3	cameraUp;
