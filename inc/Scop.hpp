@@ -11,16 +11,13 @@
 class Scop
 {
 public:
-	static Shader	shader;
-public:
-	static bool		texLoaded;
-
-	static float		deltaTime;
-	static float		lastFrame;
-
-	static float		speedCoeff;
+	static Shader		shader;
 	static glm::vec3	cameraSpeed;
 private:
+	static bool			texLoaded;
+	static float		speedCoeff;
+	static float		deltaTime;
+	static float		lastFrame;
 	static glm::vec3	cameraPos;
 	static glm::vec3	cameraFront;
 	static glm::vec3	cameraUp;
@@ -37,15 +34,15 @@ public:
 	static void	framebuffer_size_callback(GLFWwindow* window, int w, int h);
 	static void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void	loadTexture(const char *texPath);
-	void	moveCamera(glm::vec3 dist) { cameraPos += dist; view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); shader.setMat4fv("view", glm::value_ptr(view)); }
-	void	rotateObject(float angle, glm::vec3 axis) { model = glm::rotate(model, glm::radians(angle), axis); shader.setMat4fv("model", glm::value_ptr(model)); }
-	glm::vec3	getCameraPos() { return cameraPos; }
-	glm::vec3	getCameraFront() { return cameraFront; }
-	glm::vec3	getCameraUp() { return cameraUp; }
-	glm::mat4	getModel() { return model; }
-	glm::mat4	getView() { return view; }
-	glm::mat4	getProjection() { return projection; }
-	
+	void	moveCamera(glm::vec3 dist);
+	void	locateCamera(glm::vec3 loc);
+	void	rotateObject(float angle, glm::vec3 axis);
+	void	calcDeltaTime(void);
+	void	setMVP(void);
+	void	setLightPos(glm::vec3 lightPos);
+	void	setMaterial(tMaterial mat);
+	void	setSpeedCoeff(float speedCoeff);
+	void	useShader(void); // automatic detection of the shader to use
 };
 
 #endif

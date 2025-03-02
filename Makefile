@@ -1,4 +1,5 @@
-SRC     =   error.cpp Vertex.cpp texture.cpp Scop/Scop.cpp \
+SRC     =   error.cpp Vertex.cpp \
+			Scop/Scop.cpp Scop/Scop.load.cpp Scop/Scop.callback.cpp Scop/Scop.set.cpp \
 			Shader/Shader.cpp Shader/Shader.set.cpp \
 			WavefrontObj/WavefrontObj.cpp WavefrontObj/WavefrontObj.read.cpp WavefrontObj/WavefrontObj.get.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))

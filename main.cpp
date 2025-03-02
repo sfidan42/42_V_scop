@@ -1,6 +1,5 @@
 #include <Scop.hpp>
 
-
 int	main(int c, char **av)
 {
 	GLFWwindow		*window;
@@ -71,12 +70,11 @@ int	main(int c, char **av)
 	for (const auto& vertex : vertices)
 	{
 		distance = std::max(distance, std::abs(vertex));
-	}
-	glm::vec3	dist = glm::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
-	
-	scop.moveCamera(dist);
+	}	
+	glm::vec3	location = glm::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
 
-	Scop::speedCoeff = distance * 5.0f;
+	scop.locateCamera(location);
+	scop.setSpeedCoeff(distance * 5.0f);
 
 	Scop::shader.read("res/shaders/specular.shader");
 	Scop::shader.read("res/shaders/specular.textured.shader");
@@ -84,25 +82,19 @@ int	main(int c, char **av)
 
 	Scop::loadTexture(av[3]);
 
+	glm::vec3	lightPos = glm::vec3(distance, -distance, -distance);
+
 	Scop::shader.use(0);
-	Scop::shader.set3f("lightPos", distance, -distance, -distance);
-	Scop::shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
-	Scop::shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);
-	Scop::shader.set3f("specularColor", mat.ks.r, mat.ks.g, mat.ks.b);
-	Scop::shader.setMat4fv("model", glm::value_ptr(scop.getModel()));
-	Scop::shader.setMat4fv("view", glm::value_ptr(scop.getView()));
-	Scop::shader.setMat4fv("projection", glm::value_ptr(scop.getProjection()));
+	scop.setLightPos(lightPos);
+	scop.setMaterial(mat);
+	scop.setMVP();
 
 	Scop::shader.use(1);
-	Scop::shader.set3f("lightPos", distance, -distance, -distance);
-	Scop::shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
-	Scop::shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);
-	Scop::shader.set3f("specularColor", mat.ks.r, mat.ks.g, mat.ks.b);
-	Scop::shader.setMat4fv("model", glm::value_ptr(scop.getModel()));
-	Scop::shader.setMat4fv("view", glm::value_ptr(scop.getView()));
-	Scop::shader.setMat4fv("projection", glm::value_ptr(scop.getProjection()));
+	scop.setLightPos(lightPos);
+	scop.setMaterial(mat);
+	scop.setMVP();
 
-	Scop::texLoaded ? Scop::shader.use(1) : Scop::shader.use(0);
+	scop.useShader();
 
 	glBindVertexArray(VAOs);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -115,12 +107,8 @@ int	main(int c, char **av)
 		glClearColor(mat.ka.r, mat.ka.g, mat.ka.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		float	currentFrame = glfwGetTime();
-		Scop::deltaTime = currentFrame - Scop::lastFrame;
-		Scop::lastFrame = currentFrame;
-
+		scop.calcDeltaTime();
 		scop.rotateObject((float)M_PI / 10.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-
 		scop.moveCamera(Scop::cameraSpeed);
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
