@@ -31,26 +31,17 @@ void	Scop::locateCamera(glm::vec3 loc)
 
 void	Scop::rotateObject(void)
 {
+	float		angle;
+	glm::vec3	axis;
 	switch (arrow)
 	{
-	case Arrow::UP:
-		model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		break;
-	case Arrow::LEFT:
-		model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		break;
-	case Arrow::DOWN:
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		break;
-	case Arrow::RIGHT:	
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		break;
-	default:
-		float 		angle = M_PI / 10.0f;
-		glm::vec3	axis = glm::vec3(0.0f, 1.0f, 0.0f);
-		model = glm::rotate(model, glm::radians(angle), axis);
-		break;
+		case Arrow::UP: angle = -2.0f; axis = glm::vec3(1.0f, 0.0f, 0.0f); break;
+		case Arrow::LEFT: angle = -2.0f; axis = glm::vec3(0.0f, 1.0f, 0.0f); break;
+		case Arrow::DOWN: angle = 2.0f; axis = glm::vec3(1.0f, 0.0f, 0.0f); break;
+		case Arrow::RIGHT: angle = 2.0f; axis = glm::vec3(0.0f, 1.0f, 0.0f); break;
+		default: angle = M_PI / 10.0f; axis = glm::vec3(0.0f, 1.0f, 0.0f); break;
 	}
+	model = glm::rotate(model, glm::radians(angle), axis);
 	shader.setMat4fv("model", glm::value_ptr(model));
 }
 
