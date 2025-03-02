@@ -2,20 +2,12 @@
 
 Scop::Scop(void)
 {
-	cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
-	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-	cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);
 	model = glm::mat4(1.0f);
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 	speedCoeff = 0.0f;
 	deltaTime = 0.0f;
 	lastFrame = 0.0f;
-	cameraSpeed = glm::vec3(0.0f);
-	cameraUpSpeed = glm::vec3(0.0f);
-	cameraDownSpeed = glm::vec3(0.0f);
-	cameraRightSpeed = glm::vec3(0.0f);
-	cameraLeftSpeed = glm::vec3(0.0f);
 }
 
 Scop::~Scop(void)
@@ -59,17 +51,11 @@ void	Scop::useShader(void)
 
 Shader		Scop::shader;
 bool		Scop::texLoaded;
-float		Scop::deltaTime;
-float		Scop::lastFrame;
-float		Scop::speedCoeff;
-glm::vec3	Scop::cameraPos;
-glm::vec3	Scop::cameraFront;
-glm::vec3	Scop::cameraUp;
-glm::mat4	model;
-glm::mat4	view;
-glm::mat4	projection;
-glm::vec3	Scop::cameraSpeed;
-glm::vec3	Scop::cameraUpSpeed;
-glm::vec3	Scop::cameraDownSpeed;
-glm::vec3	Scop::cameraRightSpeed;
-glm::vec3	Scop::cameraLeftSpeed;
+glm::vec3	Scop::cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
+glm::vec3	Scop::cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3	Scop::cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);
+glm::vec3	Scop::cameraSpeed = glm::vec3(0.0f);
+glm::vec3	Scop::cameraUpSpeed = glm::vec3(0.0f);
+glm::vec3	Scop::cameraDownSpeed = glm::vec3(0.0f);
+glm::vec3	Scop::cameraRightSpeed = glm::vec3(0.0f);
+glm::vec3	Scop::cameraLeftSpeed = glm::vec3(0.0f);

@@ -71,18 +71,17 @@ int	main(int c, char **av)
 	{
 		distance = std::max(distance, std::abs(vertex));
 	}	
-	glm::vec3	location = glm::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
+	glm::vec3	camLoc = glm::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
+	glm::vec3	lightPos = glm::vec3(distance, -distance, -distance);
 
-	scop.locateCamera(location);
+	scop.locateCamera(camLoc);
 	scop.setSpeedCoeff(distance * 5.0f);
+
+	scop.loadTexture(av[3]);
 
 	Scop::shader.read("res/shaders/specular.shader");
 	Scop::shader.read("res/shaders/specular.textured.shader");
 	Scop::shader.create();
-
-	Scop::loadTexture(av[3]);
-
-	glm::vec3	lightPos = glm::vec3(distance, -distance, -distance);
 
 	Scop::shader.use(0);
 	scop.setLightPos(lightPos);

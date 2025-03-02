@@ -14,16 +14,18 @@ public:
 	static Shader		shader;
 	static glm::vec3	cameraSpeed;
 private:
+	glm::mat4	model;
+	glm::mat4	view;
+	glm::mat4	projection;
+private:
+	float	speedCoeff;
+	float	deltaTime;
+	float	lastFrame;
+private:
 	static bool			texLoaded;
-	static float		speedCoeff;
-	static float		deltaTime;
-	static float		lastFrame;
 	static glm::vec3	cameraPos;
 	static glm::vec3	cameraFront;
 	static glm::vec3	cameraUp;
-	glm::mat4			model;
-	glm::mat4			view;
-	glm::mat4			projection;
 	static glm::vec3	cameraUpSpeed;
 	static glm::vec3	cameraDownSpeed;
 	static glm::vec3	cameraRightSpeed;
@@ -33,7 +35,7 @@ public:
 	~Scop();
 	static void	framebuffer_size_callback(GLFWwindow* window, int w, int h);
 	static void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void	loadTexture(const char *texPath);
+	void	loadTexture(const char *texPath);
 	void	moveCamera(glm::vec3 dist);
 	void	locateCamera(glm::vec3 loc);
 	void	rotateObject(float angle, glm::vec3 axis);
