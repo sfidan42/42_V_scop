@@ -5,6 +5,7 @@ int	main(int c, char **av)
 {
 	GLFWwindow		*window;
 	WavefrontObj	obj;
+	Scop			scop;
 
 	if (c != 4)
 	{
@@ -71,7 +72,9 @@ int	main(int c, char **av)
 	{
 		distance = std::max(distance, std::abs(vertex));
 	}
-	Scop::cameraPos.z = distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f));
+	glm::vec3	dist = glm::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
+	
+	scop.moveCamera(dist);
 
 	Scop::speedCoeff = distance * 5.0f;
 
@@ -79,29 +82,25 @@ int	main(int c, char **av)
 	Scop::shader.read("res/shaders/specular.textured.shader");
 	Scop::shader.create();
 
-	glm::mat4	model = glm::mat4(1.0f);
-	glm::mat4	view = glm::lookAt(Scop::cameraPos, Scop::cameraPos + Scop::cameraFront, Scop::cameraUp);
-	glm::mat4	projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
-
-	Scop::texLoaded = loadTexture(av[3]);
+	Scop::loadTexture(av[3]);
 
 	Scop::shader.use(0);
 	Scop::shader.set3f("lightPos", distance, -distance, -distance);
 	Scop::shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
 	Scop::shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);
 	Scop::shader.set3f("specularColor", mat.ks.r, mat.ks.g, mat.ks.b);
-	Scop::shader.setMat4fv("model", glm::value_ptr(model));
-	Scop::shader.setMat4fv("view", glm::value_ptr(view));
-	Scop::shader.setMat4fv("projection", glm::value_ptr(projection));
+	Scop::shader.setMat4fv("model", glm::value_ptr(scop.getModel()));
+	Scop::shader.setMat4fv("view", glm::value_ptr(scop.getView()));
+	Scop::shader.setMat4fv("projection", glm::value_ptr(scop.getProjection()));
 
 	Scop::shader.use(1);
 	Scop::shader.set3f("lightPos", distance, -distance, -distance);
 	Scop::shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
 	Scop::shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);
 	Scop::shader.set3f("specularColor", mat.ks.r, mat.ks.g, mat.ks.b);
-	Scop::shader.setMat4fv("model", glm::value_ptr(model));
-	Scop::shader.setMat4fv("view", glm::value_ptr(view));
-	Scop::shader.setMat4fv("projection", glm::value_ptr(projection));
+	Scop::shader.setMat4fv("model", glm::value_ptr(scop.getModel()));
+	Scop::shader.setMat4fv("view", glm::value_ptr(scop.getView()));
+	Scop::shader.setMat4fv("projection", glm::value_ptr(scop.getProjection()));
 
 	Scop::texLoaded ? Scop::shader.use(1) : Scop::shader.use(0);
 
@@ -118,14 +117,11 @@ int	main(int c, char **av)
 
 		float	currentFrame = glfwGetTime();
 		Scop::deltaTime = currentFrame - Scop::lastFrame;
-		Scop::lastFrame = currentFrame;  
+		Scop::lastFrame = currentFrame;
 
-		model = glm::rotate(model, glm::radians((float)M_PI / 10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		Scop::shader.setMat4fv("model", glm::value_ptr(model));
+		scop.rotateObject((float)M_PI / 10.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		Scop::cameraPos += Scop::cameraSpeed;
-		view = glm::lookAt(Scop::cameraPos, Scop::cameraPos + Scop::cameraFront, Scop::cameraUp);
-		Scop::shader.setMat4fv("view", glm::value_ptr(view));
+		scop.moveCamera(Scop::cameraSpeed);
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 

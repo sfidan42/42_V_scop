@@ -1,20 +1,39 @@
 #include <Scop.hpp>
 
-float	Scop::vRotate = 0.0f;
-float	Scop::hRotate = 0.0f;
+Scop::Scop(void)
+{
+    cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);
+    model = glm::mat4(1.0f);
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
+}
+
+Scop::~Scop(void)
+{
+}
+
 Shader	Scop::shader;
 bool	Scop::texLoaded;
-glm::vec3	Scop::cameraPos   = glm::vec3(0.0f, 0.0f,  0.0f);
-glm::vec3	Scop::cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3	Scop::cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+glm::vec3	Scop::cameraPos;
+glm::vec3	Scop::cameraFront;
+glm::vec3	Scop::cameraUp;
+glm::mat4	model;
+glm::mat4	view;
+glm::mat4	projection;
+
 float	Scop::deltaTime = 0.0f;
 float	Scop::lastFrame = 0.0f;
+
+float		Scop::speedCoeff;
+
 glm::vec3	Scop::cameraSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraUpSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraDownSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraRightSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraLeftSpeed = glm::vec3(0.0f);
-float		Scop::speedCoeff;
 
 void	Scop::framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
@@ -55,4 +74,33 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 			default: break;
 		}
 	}
+}
+
+# define STB_IMAGE_IMPLEMENTATION
+# include <stb_image.h>
+
+void    Scop::loadTexture(const char *texPath)
+{
+	unsigned int	texture;
+
+	stbi_set_flip_vertically_on_load(true);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	// load and generate the texture
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load(texPath, &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(data);
+		texLoaded = true;
+	}
+    else
+    {
+        std::cerr << "Failed to load texture" << std::endl;
+        texLoaded = false;
+    }
 }
