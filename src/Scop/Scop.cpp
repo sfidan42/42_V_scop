@@ -75,7 +75,7 @@ float		Scop::pitch = 0.0f;
 double		Scop::lastX;
 double		Scop::lastY;
 glm::vec3	Scop::cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
-glm::vec3	Scop::cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3	Scop::cameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
 glm::vec3	Scop::cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);
 glm::vec3	Scop::cameraSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraUpSpeed = glm::vec3(0.0f);

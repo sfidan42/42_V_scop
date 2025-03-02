@@ -9,7 +9,6 @@ const std::vector<float>	WavefrontObj::getVertices(void)
 	std::vector<float>				vec;
 
 	vec.resize(_vertices.size() * ((2 * sizeof(Vertex) + sizeof(uTex)) / sizeof(float)));
-
 	if (_texCoords.size())
 	{
 		for (it = vec.begin(); itv != _vertices.end(); itv++, itn++, itt++)
