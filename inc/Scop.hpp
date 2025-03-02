@@ -1,7 +1,7 @@
 #ifndef SCOP_H
 # define SCOP_H
 # include "Shader.hpp"
-# include "Obj.hpp"
+# include "WavefrontObj.hpp"
 # include "texture.h"
 # include <iostream>
 # include <math.h>

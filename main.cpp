@@ -1,4 +1,4 @@
-#include <scop.hpp>
+#include <Scop.hpp>
 
 float	g_vRotate = 0.0f;
 float	g_hRotate = 0.0f;
@@ -62,8 +62,8 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 int	main(int c, char **av)
 {
-	GLFWwindow	*window;
-	Obj			obj;
+	GLFWwindow		*window;
+	WavefrontObj	obj;
 
 	if (c != 4)
 	{

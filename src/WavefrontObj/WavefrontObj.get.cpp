@@ -1,6 +1,6 @@
-#include <Obj.hpp>
+#include <WavefrontObj.hpp>
 
-const std::vector<float>	Obj::getVertices(void)
+const std::vector<float>	WavefrontObj::getVertices(void)
 {
 	std::list<Vertex>::iterator		itv = _vertices.begin();
 	std::list<Vertex>::iterator		itn = _vertNorms.begin();
@@ -41,7 +41,7 @@ const std::vector<float>	Obj::getVertices(void)
 	return (vec);
 }
 
-const std::vector<unsigned int>	Obj::getIndices(void)
+const std::vector<unsigned int>	WavefrontObj::getIndices(void)
 {
 	std::vector<unsigned int>::iterator	it;
 	std::vector<unsigned int>			vec;
@@ -57,7 +57,7 @@ const std::vector<unsigned int>	Obj::getIndices(void)
 	return (vec);
 }
 
-const tMaterial	Obj::getMaterial(void)
+const tMaterial	WavefrontObj::getMaterial(void)
 {
 	return (_mat);
 }

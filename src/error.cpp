@@ -1,4 +1,4 @@
-#include <scop.hpp>
+#include <Scop.hpp>
 
 void	GLClearError(void)
 {

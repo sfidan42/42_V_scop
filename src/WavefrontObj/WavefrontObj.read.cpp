@@ -1,4 +1,4 @@
-#include <Obj.hpp>
+#include <WavefrontObj.hpp>
 
 static float	Q_rsqrt( float y )
 {
@@ -28,7 +28,7 @@ static int	similarity(const Vertex &v1, const Vertex &v2)
 	return (ans < 30.0f);
 }
 
-void	Obj::read(const std::string &objPath, const std::string &mtlPath)
+void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 {
 	{
 		std::ifstream	objFile(objPath);

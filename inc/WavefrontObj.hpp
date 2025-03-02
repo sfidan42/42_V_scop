@@ -49,7 +49,7 @@ typedef union
 	float		data[2];
 }				uTex;
 
-class Obj
+class WavefrontObj
 {
 private:
 	std::list<Vertex>	_vertices;
@@ -61,8 +61,8 @@ private:
 	Vertex				_vertexAvg;
 	tMaterial			_mat;
 public:
-	Obj(void);
-	~Obj();
+	WavefrontObj(void);
+	~WavefrontObj();
 	void								read(const std::string &objPath, const std::string &mtlPath);
 	const std::vector<float>			getVertices(void);
 	const std::vector<float>			getNormalEnds(void);
