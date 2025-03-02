@@ -50,20 +50,12 @@ void	Scop::mouse_button_callback(GLFWwindow* window, int button, int action, int
 		switch (button)
 		{
 			case GLFW_MOUSE_BUTTON_LEFT:
-				leftButtonPressed = true;
+				leftButtonPressed = !leftButtonPressed;
 				firstMouse = true;
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
-				break;
-			default: break;
-		}
-	}
-	else if (action == GLFW_RELEASE)
-	{
-		switch (button)
-		{
-			case GLFW_MOUSE_BUTTON_LEFT:
-				leftButtonPressed = false;
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				if (leftButtonPressed)
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				else
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				break;
 			default: break;
 		}
