@@ -35,6 +35,8 @@ int	main(int c, char **av)
 
 	glfwSetFramebufferSizeCallback(window, Scop::framebuffer_size_callback);
 	glfwSetKeyCallback(window, Scop::key_callback);
+	glfwSetMouseButtonCallback(window, Scop::mouse_button_callback);
+	glfwSetCursorPosCallback(window, Scop::mouse_callback);
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 

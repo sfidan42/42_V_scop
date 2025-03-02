@@ -25,7 +25,7 @@ static int	similarity(const Vertex &v1, const Vertex &v2)
 	ans *= Q_rsqrt(dot(v2, v2));
 	ans = acosf(ans);
 	ans *= 180.0f / M_PI;
-	return (ans < 30.0f);
+	return (ans < 20.0f);
 }
 
 void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)

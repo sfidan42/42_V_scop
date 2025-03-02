@@ -40,3 +40,70 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 		}
 	}
 }
+
+void	Scop::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	(void)window;
+	(void)mods;
+	if (action == GLFW_PRESS)
+	{
+		switch (button)
+		{
+			case GLFW_MOUSE_BUTTON_LEFT:
+				leftButtonPressed = true;
+				firstMouse = true;
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+				break;
+			default: break;
+		}
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		switch (button)
+		{
+			case GLFW_MOUSE_BUTTON_LEFT:
+				leftButtonPressed = false;
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				break;
+			default: break;
+		}
+	}
+}
+
+void	Scop::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	(void)window;
+
+	if (leftButtonPressed)
+	{
+		if (firstMouse)
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+	
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos; 
+		lastX = xpos;
+		lastY = ypos;
+	
+		float sensitivity = 0.5f;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+	
+		yaw   += xoffset;
+		pitch += yoffset;
+	
+		if(pitch > 89.0f)
+			pitch = 89.0f;
+		if(pitch < -89.0f)
+			pitch = -89.0f;
+	
+		glm::vec3 direction;
+		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+		direction.y = sin(glm::radians(pitch));
+		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+		cameraFront = glm::normalize(direction);
+	}
+}

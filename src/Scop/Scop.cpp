@@ -50,7 +50,13 @@ void	Scop::useShader(void)
 }
 
 Shader		Scop::shader;
-bool		Scop::texLoaded;
+bool		Scop::leftButtonPressed = false;
+bool		Scop::firstMouse = true;
+float		Scop::yaw = -90.0f;
+float		Scop::pitch = 0.0f;
+double		Scop::lastX;
+double		Scop::lastY;
+bool		Scop::texLoaded = false;
 glm::vec3	Scop::cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
 glm::vec3	Scop::cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3	Scop::cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);

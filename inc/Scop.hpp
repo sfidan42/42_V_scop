@@ -22,6 +22,12 @@ private:
 	float	deltaTime;
 	float	lastFrame;
 private:
+	static bool			leftButtonPressed;
+	static bool			firstMouse;
+	static float		yaw;
+	static float		pitch;
+	static double		lastX;
+	static double		lastY;
 	static bool			texLoaded;
 	static glm::vec3	cameraPos;
 	static glm::vec3	cameraFront;
@@ -30,21 +36,26 @@ private:
 	static glm::vec3	cameraDownSpeed;
 	static glm::vec3	cameraRightSpeed;
 	static glm::vec3	cameraLeftSpeed;
-public:
+public: // .
 	Scop();
 	~Scop();
-	static void	framebuffer_size_callback(GLFWwindow* window, int w, int h);
-	static void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	void	loadTexture(const char *texPath);
 	void	moveCamera(glm::vec3 dist);
 	void	locateCamera(glm::vec3 loc);
 	void	rotateObject(float angle, glm::vec3 axis);
 	void	calcDeltaTime(void);
+	void	useShader(void); // automatic detection of the shader to use
+public: // .callback
+	static void	framebuffer_size_callback(GLFWwindow* window, int w, int h);
+	static void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void	mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+	static void	mouse_callback(GLFWwindow* window, double xpos, double ypos);
+public: // .load
+	void	loadTexture(const char *texPath);
+public: // .set
 	void	setMVP(void);
 	void	setLightPos(glm::vec3 lightPos);
 	void	setMaterial(tMaterial mat);
 	void	setSpeedCoeff(float speedCoeff);
-	void	useShader(void); // automatic detection of the shader to use
 };
 
 #endif
