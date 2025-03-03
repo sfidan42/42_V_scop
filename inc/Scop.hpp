@@ -8,13 +8,15 @@
 # include <glm/gtc/matrix_transform.hpp>
 # include <glm/gtc/type_ptr.hpp>
 
-enum class Arrow
+enum class Rotate
 {
-	UP,
-	LEFT,
-	DOWN,
-	RIGHT,
-	NONE
+	NONE,
+	PITCH_PLUS,
+	PITCH_MINUS,
+	YAW_PLUS,
+	YAW_MINUS,
+	ROLL_PLUS,
+	ROLL_MINUS
 };
 
 class Scop
@@ -31,7 +33,7 @@ private:
 	float	deltaTime;
 	float	lastFrame;
 private:
-	static Arrow	arrow;
+	static Rotate	rotate;
 	static bool		texLoaded;
 	static bool		leftButtonPressed;
 	static bool		firstMouse;
@@ -47,13 +49,14 @@ private:
 	static glm::vec3	cameraDownSpeed;
 	static glm::vec3	cameraRightSpeed;
 	static glm::vec3	cameraLeftSpeed;
+	static glm::vec3	cameraFrontSpeed;
+	static glm::vec3	cameraBackwardSpeed;
 public: // .
 	Scop();
 	~Scop();
 	void	moveCamera(glm::vec3 dist);
 	void	locateCamera(glm::vec3 loc);
-	void	rotateObject(void); // automatic detection of the angle and axis
-	void	rotateObject(float angle, glm::vec3 axis);
+	void	transformObject(void);
 	void	calcDeltaTime(void);
 	void	useShader(void); // automatic detection of the shader to use
 public: // .callback

@@ -109,7 +109,7 @@ int	main(int c, char **av)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		scop.calcDeltaTime();
-		scop.rotateObject();
+		scop.transformObject();
 		scop.moveCamera(Scop::cameraSpeed);
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
