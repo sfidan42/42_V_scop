@@ -29,27 +29,21 @@ void	Scop::locateCamera(glm::vec3 loc)
 	shader.setMat4fv("view", glm::value_ptr(view));
 }
 
-void	Scop::rotateObject()
+void	Scop::transformObject(void)
 {
-	if (arrowsPressed[0])
-		model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	else if (arrowsPressed[1])
-		model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	else if (arrowsPressed[2])
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	else if (arrowsPressed[3])
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	else
-	{
-		float 		angle = M_PI / 10.0f;
-		glm::vec3	axis = glm::vec3(0.0f, 1.0f, 0.0f);
-		model = glm::rotate(model, glm::radians(angle), axis);
-	}
-	shader.setMat4fv("model", glm::value_ptr(model));
-}
+	float		angle;
+	glm::vec3	axis;
 
-void	Scop::rotateObject(float angle, glm::vec3 axis)
-{
+	switch (rotate)
+	{
+		case Rotate::PITCH_PLUS: angle = 1.0f; axis = glm::vec3(1.0f, 0.0f, 0.0f); break;
+		case Rotate::PITCH_MINUS: angle = -1.0f; axis = glm::vec3(1.0f, 0.0f, 0.0f); break;
+		case Rotate::YAW_PLUS: angle = 1.0f; axis = glm::vec3(0.0f, 1.0f, 0.0f); break;
+		case Rotate::YAW_MINUS: angle = -1.0f; axis = glm::vec3(0.0f, 1.0f, 0.0f); break;
+		case Rotate::ROLL_PLUS: angle = 1.0f; axis = glm::vec3(0.0f, 0.0f, 1.0f); break;
+		case Rotate::ROLL_MINUS: angle = -1.0f; axis = glm::vec3(0.0f, 0.0f, 1.0f); break;
+		default: angle = M_PI / 10.0f; axis = glm::vec3(0.0f, 1.0f, 0.0f); break;
+	}
 	model = glm::rotate(model, glm::radians(angle), axis);
 	shader.setMat4fv("model", glm::value_ptr(model));
 }
@@ -66,12 +60,12 @@ void	Scop::useShader(void)
 	texLoaded ? Scop::shader.use(1) : Scop::shader.use(0);
 }
 
-Shader		Scop::shader;
+Shader	Scop::shader;
 
-bool		Scop::arrowsPressed[4] = {false, false, false, false};
-bool		Scop::texLoaded = false;
-bool		Scop::leftButtonPressed = false;
-bool		Scop::firstMouse = true;
+Rotate	Scop::rotate = Rotate::NONE;
+bool	Scop::texLoaded = false;
+bool	Scop::leftButtonPressed = false;
+bool	Scop::firstMouse = true;
 
 float		Scop::yaw = -90.0f;
 float		Scop::pitch = 0.0f;
@@ -85,3 +79,5 @@ glm::vec3	Scop::cameraUpSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraDownSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraRightSpeed = glm::vec3(0.0f);
 glm::vec3	Scop::cameraLeftSpeed = glm::vec3(0.0f);
+glm::vec3	Scop::cameraFrontSpeed = glm::vec3(0.0f);
+glm::vec3	Scop::cameraBackwardSpeed = glm::vec3(0.0f);

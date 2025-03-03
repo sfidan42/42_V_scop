@@ -20,14 +20,18 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
 			case GLFW_KEY_T: texLoaded = !texLoaded; texLoaded ? shader.use(1): shader.use(0); break;
-			case GLFW_KEY_W: cameraUpSpeed = cameraFront; cameraSpeed += cameraUpSpeed; break;
-			case GLFW_KEY_A: cameraLeftSpeed = glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed -= cameraLeftSpeed; break;
-			case GLFW_KEY_S: cameraDownSpeed = cameraFront; cameraSpeed -= cameraDownSpeed; break;
-			case GLFW_KEY_D: cameraRightSpeed = glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed += cameraRightSpeed; break;
-			case GLFW_KEY_UP: arrowsPressed[0] = true; break;
-			case GLFW_KEY_LEFT: arrowsPressed[1] = true; break;
-			case GLFW_KEY_DOWN: arrowsPressed[2] = true; break;
-			case GLFW_KEY_RIGHT: arrowsPressed[3] = true; break;
+			case GLFW_KEY_W: cameraUpSpeed = cameraUp; cameraSpeed -= cameraUpSpeed; break;
+			case GLFW_KEY_A: cameraLeftSpeed = glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed += cameraLeftSpeed; break;
+			case GLFW_KEY_S: cameraDownSpeed = cameraUp; cameraSpeed += cameraDownSpeed; break;
+			case GLFW_KEY_D: cameraRightSpeed = glm::normalize(glm::cross(cameraFront, cameraUp)); cameraSpeed -= cameraRightSpeed; break;
+			case GLFW_KEY_X: cameraFrontSpeed = cameraFront; cameraSpeed -= cameraFrontSpeed; break;
+			case GLFW_KEY_Z: cameraBackwardSpeed = cameraFront; cameraSpeed += cameraBackwardSpeed; break;
+			case GLFW_KEY_UP: rotate = Rotate::PITCH_MINUS; break;
+			case GLFW_KEY_DOWN: rotate = Rotate::PITCH_PLUS; break;
+			case GLFW_KEY_RIGHT: rotate = Rotate::YAW_PLUS; break;
+			case GLFW_KEY_LEFT: rotate = Rotate::YAW_MINUS; break;
+			case GLFW_KEY_N: rotate = Rotate::ROLL_PLUS; break;
+			case GLFW_KEY_M: rotate = Rotate::ROLL_MINUS; break;
 			default: break;
 		}
 	}
@@ -36,14 +40,18 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 		switch (key)
 		{
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
-			case GLFW_KEY_W: cameraSpeed -= cameraUpSpeed; break;
-			case GLFW_KEY_A: cameraSpeed += cameraLeftSpeed; break;
-			case GLFW_KEY_S: cameraSpeed += cameraDownSpeed; break;
-			case GLFW_KEY_D: cameraSpeed -= cameraRightSpeed; break;
-			case GLFW_KEY_UP: arrowsPressed[0] = false; break;
-			case GLFW_KEY_LEFT: arrowsPressed[1] = false; break;
-			case GLFW_KEY_DOWN: arrowsPressed[2] = false; break;
-			case GLFW_KEY_RIGHT: arrowsPressed[3] = false; break;
+			case GLFW_KEY_W: cameraSpeed += cameraUpSpeed; break;
+			case GLFW_KEY_A: cameraSpeed -= cameraLeftSpeed; break;
+			case GLFW_KEY_S: cameraSpeed -= cameraDownSpeed; break;
+			case GLFW_KEY_D: cameraSpeed += cameraRightSpeed; break;
+			case GLFW_KEY_X: cameraSpeed += cameraFrontSpeed; break;
+			case GLFW_KEY_Z: cameraSpeed -= cameraBackwardSpeed; break;
+			case GLFW_KEY_UP: rotate = Rotate::NONE; break;
+			case GLFW_KEY_DOWN: rotate = Rotate::NONE; break;
+			case GLFW_KEY_RIGHT: rotate = Rotate::NONE; break;
+			case GLFW_KEY_LEFT: rotate = Rotate::NONE; break;
+			case GLFW_KEY_N: rotate = Rotate::NONE; break;
+			case GLFW_KEY_M: rotate = Rotate::NONE; break;
 			default: break;
 		}
 	}
@@ -70,40 +78,45 @@ void	Scop::mouse_button_callback(GLFWwindow* window, int button, int action, int
 	}
 }
 
-void	Scop::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void Scop::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	(void)window;
+    (void)window;
 
-	if (leftButtonPressed)
-	{
-		if (firstMouse)
-		{
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
-	
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos; 
-		lastX = xpos;
-		lastY = ypos;
-	
-		float sensitivity = 0.5f;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-	
-		yaw   += xoffset;
-		pitch += yoffset;
-	
-		if(pitch > 89.0f)
-			pitch = 89.0f;
-		if(pitch < -89.0f)
-			pitch = -89.0f;
-	
-		glm::vec3 direction;
-		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		cameraFront = glm::normalize(direction);
-	}
+    if (leftButtonPressed)
+    {
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; 
+        lastX = xpos;
+        lastY = ypos;
+
+        float sensitivity = 0.5f;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        yaw   += xoffset;
+        pitch += yoffset;
+
+        if(pitch > 89.0f)
+            pitch = 89.0f;
+        if(pitch < -89.0f)
+            pitch = -89.0f;
+
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        cameraFront = glm::normalize(direction);
+
+        // Calculate the Right and Up vectors
+        glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
+        cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
+    }
 }
