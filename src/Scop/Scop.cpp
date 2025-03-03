@@ -62,17 +62,10 @@ void	Scop::useShader(void)
 
 Shader	Scop::shader;
 
-<<<<<<< HEAD
-Arrow		Scop::arrow = Arrow::NONE;
-bool		Scop::texLoaded = false;
-bool		Scop::leftButtonPressed = false;
-bool		Scop::firstMouse = true;
-=======
 Rotate	Scop::rotate = Rotate::NONE;
 bool	Scop::texLoaded = false;
 bool	Scop::leftButtonPressed = false;
 bool	Scop::firstMouse = true;
->>>>>>> S04_object
 
 float		Scop::yaw = -90.0f;
 float		Scop::pitch = 0.0f;
