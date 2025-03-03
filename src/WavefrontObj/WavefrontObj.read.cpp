@@ -116,101 +116,100 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		_vertexAvg.y /= _vertices.size();
 		_vertexAvg.z /= _vertices.size();
 	}
-	{
+	std::vector<Vertex>	vertices(_vertices.begin(), _vertices.end());
+	std::vector<Vertex>	vertNorms(_vertNorms.begin(), _vertNorms.end());
+	std::vector<Vertex>	vertNorms1(_vertices.size());
+	std::list<Vertex>	vertNorms2;
+	std::vector<uTex>	texCoords(_texCoords.begin(), _texCoords.end());
+	std::vector<uTex>	texCoords1(_vertices.size());
+	std::list<uTex>		texCoords2;
+	std::list<uIndex>::iterator	itt;
+	std::list<uIndex>::iterator	itn;
 
-		std::vector<Vertex>	vertices(_vertices.begin(), _vertices.end());
-		std::vector<Vertex>	vertNorms(_vertNorms.begin(), _vertNorms.end());
-		std::vector<Vertex>	vertNorms1(_vertices.size());
-		std::list<Vertex>	vertNorms2;
-		std::vector<uTex>	texCoords(_texCoords.begin(), _texCoords.end());
-		std::vector<uTex>	texCoords1(_vertices.size());
-		std::list<uTex>		texCoords2;
-		std::list<uIndex>::iterator	itt;
-		std::list<uIndex>::iterator	itn;
-		
-		if (_texCoords.size())
-		{
-			itt = _texIndices.begin();
-			for (uIndex &idx : _indices)
-			{
-				for (unsigned int i = 0; i < 3; i++)
-				{
-					unsigned int	vIdx = idx.data[i];
-					unsigned int	tIdx = itt->data[i];
-					
-					texCoords1[vIdx] = texCoords[tIdx];
-				}
-				itt++;
-			}
-		}
-		
+	if (_texCoords.size())
+	{
 		itt = _texIndices.begin();
-		itn = _normIndices.begin();
 		for (uIndex &idx : _indices)
 		{
-			Vertex	&v1 = vertices[idx.v1];
-			Vertex	&v2 = vertices[idx.v2];
-			Vertex	&v3 = vertices[idx.v3];
-			Vertex	normCalc;
-
-			Vertex	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
-			Vertex	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
-			
-			normCalc.x = edge1.y * edge2.z - edge1.z * edge2.y;
-			normCalc.y = edge1.z * edge2.x - edge1.x * edge2.z;
-			normCalc.z = edge1.x * edge2.y - edge1.y * edge2.x;
-
 			for (unsigned int i = 0; i < 3; i++)
 			{
 				unsigned int	vIdx = idx.data[i];
-				unsigned int	nIdx = itn->data[i];
-				Vertex			&n = vertNorms1[vIdx];
-				Vertex			norm;
+				unsigned int	tIdx = itt->data[i];
 
-				if (nIdx < vertNorms.size())
-				norm = vertNorms[nIdx];
-				else
-					norm = normCalc;
-					
-				if (n == 0.0f)
-				{
-					n = norm;
-				}
-				else if (n == norm)
-				{
-					// do nothing
-				}
-				else if (similarity(n, norm))
-				{
-					n += norm;
-				}
-				else
-				{
-					idx.data[i] = (unsigned int)_vertices.size();
-					_vertices.push_back(vertices[vIdx]);
-					vertNorms2.push_back(norm);
-					if (_texCoords.size())
-						texCoords2.push_back(texCoords[itt->data[i]]);
-				}
+				texCoords1[vIdx] = texCoords[tIdx];
 			}
 			itt++;
-			itn++;
 		}
-		_vertNorms.clear();
-		for (Vertex &norm : vertNorms1)
-			_vertNorms.push_back(norm);
-		for (Vertex &norm : vertNorms2)
-			_vertNorms.push_back(norm);
-
-		for (Vertex &norm : _vertNorms)
-			norm *= Q_rsqrt(dot(norm, norm));
-			
-		_texCoords.clear();
-		for (uTex &tex : texCoords1)
-			_texCoords.push_back(tex);
-		for (uTex &tex : texCoords2)
-			_texCoords.push_back(tex);
 	}
+
+	itt = _texIndices.begin();
+	itn = _normIndices.begin();
+	for (uIndex &idx : _indices)
+	{
+		Vertex	&v1 = vertices[idx.v1];
+		Vertex	&v2 = vertices[idx.v2];
+		Vertex	&v3 = vertices[idx.v3];
+		Vertex	normCalc;
+
+		Vertex	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
+		Vertex	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
+
+		normCalc.x = edge1.y * edge2.z - edge1.z * edge2.y;
+		normCalc.y = edge1.z * edge2.x - edge1.x * edge2.z;
+		normCalc.z = edge1.x * edge2.y - edge1.y * edge2.x;
+
+		for (unsigned int i = 0; i < 3; i++)
+		{
+			unsigned int	vIdx = idx.data[i];
+			unsigned int	nIdx = itn->data[i];
+			Vertex			&n = vertNorms1[vIdx];
+			Vertex			norm;
+
+			if (nIdx < vertNorms.size())
+				norm = vertNorms[nIdx];
+			else
+				norm = normCalc;
+
+			if (n == 0.0f)
+			{
+				n = norm;
+			}
+			else if (n == norm)
+			{
+				// do nothing
+			}
+			else if (similarity(n, norm))
+			{
+				n += norm;
+			}
+			else
+			{
+				idx.data[i] = (unsigned int)_vertices.size();
+				_vertices.push_back(vertices[vIdx]);
+				vertNorms2.push_back(norm);
+				if (_texCoords.size())
+					texCoords2.push_back(texCoords[itt->data[i]]);
+			}
+		}
+		itt++;
+		itn++;
+	}
+
+	_vertNorms.clear();
+	for (Vertex &norm : vertNorms1)
+		_vertNorms.push_back(norm);
+	for (Vertex &norm : vertNorms2)
+		_vertNorms.push_back(norm);
+
+	for (Vertex &norm : _vertNorms)
+		norm *= Q_rsqrt(dot(norm, norm));
+
+	_texCoords.clear();
+	for (uTex &tex : texCoords1)
+		_texCoords.push_back(tex);
+	for (uTex &tex : texCoords2)
+		_texCoords.push_back(tex);
+
 	this->stats(objPath.c_str());
 	{
 		std::ifstream	mtlFile(mtlPath);

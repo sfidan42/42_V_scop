@@ -28,7 +28,7 @@ private:
 	glm::mat4	model;
 	glm::mat4	view;
 	glm::mat4	projection;
-	private:
+private:
 	float	speedCoeff;
 	float	deltaTime;
 	float	lastFrame;
@@ -38,10 +38,10 @@ private:
 	static bool		leftButtonPressed;
 	static bool		firstMouse;
 private:
-	static float	yaw;
-	static float	pitch;
-	static double	lastX;
-	static double	lastY;
+	static float		yaw;
+	static float		pitch;
+	static double		lastX;
+	static double		lastY;
 	static glm::vec3	cameraPos;
 	static glm::vec3	cameraFront;
 	static glm::vec3	cameraUp;
