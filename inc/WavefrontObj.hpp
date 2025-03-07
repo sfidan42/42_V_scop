@@ -7,6 +7,7 @@
 # include <algorithm>
 # include <cmath>
 # include "Vertex.hpp"
+# include "Q_rsqrt.hpp"
 
 typedef struct
 {
