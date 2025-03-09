@@ -20,9 +20,8 @@ private:
 	unsigned int				_program;
 	std::vector<unsigned int>	_programs;
 	std::vector<tShader>		_shaders;
-private:
-	Shader(void);
 public:
+	Shader(void);
 	~Shader(void);
 public:
 	void	config(const unsigned int count);
