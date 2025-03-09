@@ -5,12 +5,49 @@
 namespace glm2
 {
 	template <typename T>
+	inline T	dot(glm::vec<3, T> const &v1, glm::vec<3, T> const &v2)
+	{
+		return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
+	}
+
+	template <typename T>
+	inline glm::vec<3, T>	cross(glm::vec<3, T> const &v1, glm::vec<3, T> const &v2)
+	{
+		return (glm::vec<3, T>(
+			v1.y * v2.z - v1.z * v2.y,
+			v1.z * v2.x - v1.x * v2.z,
+			v1.x * v2.y - v1.y * v2.x
+		));
+	}
+
+	inline float	Q_rsqrt( float y )
+	{
+		long i;
+		float x2;
+		const float threehalfs = 1.5F;
+	
+		x2 = y * 0.5F;
+		i  = * ( long * ) &y;                       // evil floating point bit level hacking
+		i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+		y  = * ( float * ) &i;
+		y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+		y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+	
+		return y;
+	}	
+
+	template <typename T>
+	inline glm::vec<3, T>	normalize(glm::vec<3, T> const &v)
+	{
+		return (v * Q_rsqrt(glm::dot(v, v)));
+	}
+
+	template <typename T>
 	inline glm::mat4	lookAt(glm::vec<3, T> const &camPos, glm::vec<3, T> const &camTarget, glm::vec<3, T> const &camUp)
 	{
-		glm::vec<3, T>	f = glm::normalize(camTarget - camPos);
-		glm::vec<3, T>	u = glm::normalize(camUp);
-		glm::vec<3, T>	s = glm::normalize(glm::cross(f, u));
-		u = glm::cross(s, f);
+		glm::vec<3, T>	f = glm2::normalize(camTarget - camPos);
+		glm::vec<3, T>	u = glm2::normalize(camUp);
+		glm::vec<3, T>	s = glm2::normalize(glm::cross(f, u));
 
 		glm::mat4	ret = glm::mat4(1.0f);
 		ret[0][0] = s.x;
@@ -34,7 +71,7 @@ namespace glm2
 		glm::mat4	ret = mat;
 		T			c = cos(angle);
 		T			s = sin(angle);
-		glm::vec3	a = glm::normalize(axis);
+		glm::vec3	a = glm2::normalize(axis);
 		glm::vec3	temp = (1 - c) * a;
 
 		glm::mat3	rot = glm::mat3(
@@ -61,28 +98,6 @@ namespace glm2
 		ret[2][3] = -T(1);
 		ret[3][2] = -(T(2) * far * near) / (far - near);
 		return (ret);
-	}
-
-	inline float	Q_rsqrt( float y )
-	{
-		long i;
-		float x2;
-		const float threehalfs = 1.5F;
-	
-		x2 = y * 0.5F;
-		i  = * ( long * ) &y;                       // evil floating point bit level hacking
-		i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
-		y  = * ( float * ) &i;
-		y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-		y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
-	
-		return y;
-	}	
-
-	template <typename T>
-	inline glm::vec<3, T>	normalize(glm::vec<3, T> const &v)
-	{
-		return (v * Q_rsqrt(glm::dot(v, v)));
 	}
 
 	inline float	radians(float degree)
