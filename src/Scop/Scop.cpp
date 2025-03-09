@@ -12,12 +12,12 @@ Scop::Scop(void)
 
 Scop::~Scop(void) { }
 
-void	Scop::moveCamera(glm::vec3 speed)
+void	Scop::moveCamera(void)
 {
 	if (speedCoeff == 0.0f)
 		std::cout << "Speed coefficient not set" << std::endl;
 
-	cameraPos += speed * speedCoeff * deltaTime;
+	cameraPos += cameraSpeed * speedCoeff * deltaTime;
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	shader.setMat4fv("view", glm::value_ptr(view));
 }

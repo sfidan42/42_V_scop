@@ -20,10 +20,12 @@ private:
 	unsigned int				_program;
 	std::vector<unsigned int>	_programs;
 	std::vector<tShader>		_shaders;
-public:
+private:
 	Shader(void);
+public:
 	~Shader(void);
 public:
+	void	config(const unsigned int count);
 	void	read(const char *filepath);
 	void	create(void);
 	void	use(unsigned int index);

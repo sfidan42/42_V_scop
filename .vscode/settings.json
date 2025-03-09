@@ -58,6 +58,7 @@
         "iomanip": "cpp",
         "span": "cpp",
         "variant": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "*.tpp": "cpp"
     }
 }

@@ -22,8 +22,7 @@ enum class Rotate
 class Scop
 {
 public:
-	static Shader		shader;
-	static glm::vec3	cameraSpeed;
+	static Shader	shader;
 private:
 	glm::mat4	model;
 	glm::mat4	view;
@@ -45,6 +44,7 @@ private:
 	static glm::vec3	cameraPos;
 	static glm::vec3	cameraFront;
 	static glm::vec3	cameraUp;
+	static glm::vec3	cameraSpeed;
 	static glm::vec3	cameraUpSpeed;
 	static glm::vec3	cameraDownSpeed;
 	static glm::vec3	cameraRightSpeed;
@@ -54,7 +54,7 @@ private:
 public: // .
 	Scop();
 	~Scop();
-	void	moveCamera(glm::vec3 dist);
+	void	moveCamera();
 	void	locateCamera(glm::vec3 loc);
 	void	transformObject(void);
 	void	calcDeltaTime(void);

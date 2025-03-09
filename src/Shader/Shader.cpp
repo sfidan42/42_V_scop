@@ -1,11 +1,17 @@
 #include <Shader.hpp>
 
-Shader::Shader(void)
+Shader::Shader()
 {
 }
 
 Shader::~Shader(void)
 {
+}
+
+void	Shader::config(const unsigned int count)
+{
+	_programs.reserve(count);
+	_shaders.reserve(count);
 }
 
 void	Shader::read(const char *filepath)
@@ -18,6 +24,11 @@ void	Shader::read(const char *filepath)
 	if (!file.is_open())
 	{
 		std::cerr << "Failed to open file\n";
+		return ;
+	}
+	if (_shaders.size() >= _shaders.capacity())
+	{
+		std::cerr << "Shader count exceeded\n";
 		return ;
 	}
 	i = -1;

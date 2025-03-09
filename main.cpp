@@ -81,6 +81,8 @@ int	main(int c, char **av)
 
 	scop.loadTexture(av[3]);
 
+	Scop::shader.config(2);
+
 	Scop::shader.read("res/shaders/specular.shader");
 	Scop::shader.read("res/shaders/specular.textured.shader");
 	Scop::shader.create();
@@ -110,7 +112,7 @@ int	main(int c, char **av)
 
 		scop.calcDeltaTime();
 		scop.transformObject();
-		scop.moveCamera(Scop::cameraSpeed);
+		scop.moveCamera();
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
