@@ -4,8 +4,8 @@ void	Scop::framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
 	(void)window;
 	glViewport(0, 0, w, h);
-	glm::mat4	projection = glm::perspective(glm::radians(70.0f), (float)w / (float)h, 0.1f, 20000.0f);
-	shader.setMat4fv("projection", glm::value_ptr(projection));
+	glm::mat4	projection = glm2::perspective(glm::radians(70.0f), (float)w / (float)h, 0.1f, 20000.0f);
+	shader.setMat4fv("projection", glm2::value_ptr(projection));
 }
 
 void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
