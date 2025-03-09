@@ -2,13 +2,13 @@
 
 const std::vector<float>	WavefrontObj::getVertices(void)
 {
-	std::list<Vertex>::iterator		itv = _vertices.begin();
-	std::list<Vertex>::iterator		itn = _vertNorms.begin();
-	std::list<uTex>::iterator		itt = _texCoords.begin();
+	std::list<glm::vec3>::iterator		itv = _vertices.begin();
+	std::list<glm::vec3>::iterator		itn = _vertNorms.begin();
+	std::list<glm::vec2>::iterator		itt = _texCoords.begin();
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
 
-	vec.resize(_vertices.size() * ((2 * sizeof(Vertex) + sizeof(uTex)) / sizeof(float)));
+	vec.resize(_vertices.size() * ((2 * sizeof(glm::vec3) + sizeof(glm::vec2)) / sizeof(float)));
 
 	if (_texCoords.size())
 	{
@@ -20,8 +20,8 @@ const std::vector<float>	WavefrontObj::getVertices(void)
 			*it++ = itn->x;
 			*it++ = itn->y;
 			*it++ = itn->z;
-			*it++ = itt->u;
-			*it++ = itt->v;
+			*it++ = itt->x;
+			*it++ = itt->y;
 		}
 	}
 	else
@@ -46,13 +46,13 @@ const std::vector<unsigned int>	WavefrontObj::getIndices(void)
 	std::vector<unsigned int>::iterator	it;
 	std::vector<unsigned int>			vec;
 
-	vec.resize(_indices.size() * sizeof(uIndex));
+	vec.resize(_indices.size() * sizeof(glm::vec<3, uint>));
 	it = vec.begin();
-	for (uIndex &idx : _indices)
+	for (glm::vec<3, uint> &idx : _indices)
 	{
-		*it++ = idx.v1;
-		*it++ = idx.v2;
-		*it++ = idx.v3;
+		*it++ = idx.x;
+		*it++ = idx.y;
+		*it++ = idx.z;
 	}
 	return (vec);
 }

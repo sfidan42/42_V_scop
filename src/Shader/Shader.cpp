@@ -36,7 +36,7 @@ void	Shader::read(const char *filepath)
 	{
 		if (line.find("#shader") != std::string::npos)
 		{
-			if (line.find("vertex") != std::string::npos)
+			if (line.find("glm::vec3") != std::string::npos)
 				i = 0;
 			else if (line.find("fragment") != std::string::npos)
 				i = 1;

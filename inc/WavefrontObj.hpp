@@ -6,33 +6,15 @@
 # include <iostream>
 # include <algorithm>
 # include <cmath>
-# include "Vertex.hpp"
+# include <glm/glm.hpp>
 # include "Q_rsqrt.hpp"
 
 typedef struct
 {
-	float	r;
-	float	g;
-	float	b;
-}			tColor;
-
-typedef union
-{
-	struct
-	{
-		unsigned int	v1;
-		unsigned int	v2;
-		unsigned int	v3;
-	};
-	unsigned int		data[3];
-}						uIndex;
-
-typedef struct
-{
 	std::string		name; // Wood
-	tColor			ka; // 1.000000 1.000000 1.000000
-	tColor			kd; // 0.640000 0.640000 0.640000
-	tColor			ks; // 0.500000 0.500000 0.500000
+	glm::vec3		ka; // 1.000000 1.000000 1.000000
+	glm::vec3		kd; // 0.640000 0.640000 0.640000
+	glm::vec3		ks; // 0.500000 0.500000 0.500000
 	float			ns; // 96.078431
 	float			ni; // 1.000000
 	float			d; // 1.000000
@@ -40,27 +22,17 @@ typedef struct
 	std::string		map_Kd; // woodtexture.jpg
 }					tMaterial;
 
-typedef union
-{
-	struct
-	{
-		float	u;
-		float	v;
-	};
-	float		data[2];
-}				uTex;
-
 class WavefrontObj
 {
 private:
-	std::list<Vertex>	_vertices;
-	std::list<Vertex>	_vertNorms;
-	std::list<uTex>		_texCoords;
-	std::list<uIndex>	_indices;
-	std::list<uIndex>	_texIndices;
-	std::list<uIndex>	_normIndices;
-	Vertex				_vertexAvg;
-	tMaterial			_mat;
+	std::list<glm::vec3>			_vertices;
+	std::list<glm::vec3>			_vertNorms;
+	std::list<glm::vec2>			_texCoords;
+	std::list<glm::vec<3, uint>>	_indices;
+	std::list<glm::vec<3, uint>>	_texIndices;
+	std::list<glm::vec<3, uint>>	_normIndices;
+	glm::vec3						_vertexAvg;
+	tMaterial						_mat;
 public:
 	WavefrontObj(void);
 	~WavefrontObj();

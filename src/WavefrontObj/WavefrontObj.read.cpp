@@ -1,6 +1,6 @@
 #include <WavefrontObj.hpp>
 
-static int	similarity(const Vertex &v1, const Vertex &v2)
+static int	similarity(const glm::vec3 &v1, const glm::vec3 &v2)
 {
 	float   ans;
 
@@ -17,11 +17,11 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	{
 		std::ifstream	objFile(objPath);
 		std::string		line;
-		Vertex			vert;
-		uTex			tex;
-		uIndex			idx;
-		uIndex			texIdx;
-		uIndex			normIdx;
+		glm::vec3			vert;
+		glm::vec2			tex;
+		glm::vec<3, uint>			idx;
+		glm::vec<3, uint>			texIdx;
+		glm::vec<3, uint>			normIdx;
 		tMaterial		mat;
 
 		if (!objFile.is_open())
@@ -50,7 +50,7 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			}
 			else if (word == "vt")
 			{
-				iss >> tex.u >> tex.v;
+				iss >> tex.x >> tex.y;
 				_texCoords.push_back(tex);
 			}
 			else if (word == "vn")
@@ -66,30 +66,30 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 				std::string		fword[4];
 				char			c;
 				iss >> fword[0] >> fword[1] >> fword[2] >> fword[3];
-				std::istringstream(fword[0]) >> idx.v1 >> c >> texIdx.v1 >> c >> normIdx.v1;
-				std::istringstream(fword[1]) >> idx.v2 >> c >> texIdx.v2 >> c >> normIdx.v2;
-				std::istringstream(fword[2]) >> idx.v3 >> c >> texIdx.v3 >> c >> normIdx.v3;
-				idx.v1 -= 1;
-				idx.v2 -= 1;
-				idx.v3 -= 1;
+				std::istringstream(fword[0]) >> idx.x >> c >> texIdx.x >> c >> normIdx.x;
+				std::istringstream(fword[1]) >> idx.y >> c >> texIdx.y >> c >> normIdx.y;
+				std::istringstream(fword[2]) >> idx.z >> c >> texIdx.z >> c >> normIdx.z;
+				idx.x -= 1;
+				idx.y -= 1;
+				idx.z -= 1;
 				_indices.push_back(idx);
-				texIdx.v1 -= 1;
-				texIdx.v2 -= 1;
-				texIdx.v3 -= 1;
+				texIdx.x -= 1;
+				texIdx.y -= 1;
+				texIdx.z -= 1;
 				_texIndices.push_back(texIdx);
-				normIdx.v1 -= 1;
-				normIdx.v2 -= 1;
-				normIdx.v3 -= 1;
+				normIdx.x -= 1;
+				normIdx.y -= 1;
+				normIdx.z -= 1;
 				_normIndices.push_back(normIdx);
 				if (fword[3].size())
 				{
-					idx.v2 = idx.v3;
-					texIdx.v2 = texIdx.v3;
-					normIdx.v2 = normIdx.v3;
-					std::istringstream(fword[3]) >> idx.v3 >> c >> texIdx.v3 >> c >> normIdx.v3;
-					idx.v3 -= 1;
-					texIdx.v3 -= 1;
-					normIdx.v3 -= 1;
+					idx.y = idx.z;
+					texIdx.y = texIdx.z;
+					normIdx.y = normIdx.z;
+					std::istringstream(fword[3]) >> idx.z >> c >> texIdx.z >> c >> normIdx.z;
+					idx.z -= 1;
+					texIdx.z -= 1;
+					normIdx.z -= 1;
 					_indices.push_back(idx);
 					_texIndices.push_back(texIdx);
 					_normIndices.push_back(normIdx);
@@ -100,25 +100,25 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		_vertexAvg.y /= _vertices.size();
 		_vertexAvg.z /= _vertices.size();
 	}
-	std::vector<Vertex>	vertices(_vertices.begin(), _vertices.end());
-	std::vector<Vertex>	vertNorms(_vertNorms.begin(), _vertNorms.end());
-	std::vector<Vertex>	vertNorms1(_vertices.size());
-	std::list<Vertex>	vertNorms2;
-	std::vector<uTex>	texCoords(_texCoords.begin(), _texCoords.end());
-	std::vector<uTex>	texCoords1(_vertices.size());
-	std::list<uTex>		texCoords2;
-	std::list<uIndex>::iterator	itt;
-	std::list<uIndex>::iterator	itn;
+	std::vector<glm::vec3>	vertices(_vertices.begin(), _vertices.end());
+	std::vector<glm::vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
+	std::vector<glm::vec3>	vertNorms1(_vertices.size());
+	std::list<glm::vec3>	vertNorms2;
+	std::vector<glm::vec2>	texCoords(_texCoords.begin(), _texCoords.end());
+	std::vector<glm::vec2>	texCoords1(_vertices.size());
+	std::list<glm::vec2>		texCoords2;
+	std::list<glm::vec<3, uint>>::iterator	itt;
+	std::list<glm::vec<3, uint>>::iterator	itn;
 
 	if (_texCoords.size())
 	{
 		itt = _texIndices.begin();
-		for (uIndex &idx : _indices)
+		for (glm::vec<3, uint> &idx : _indices)
 		{
 			for (unsigned int i = 0; i < 3; i++)
 			{
-				unsigned int	vIdx = idx.data[i];
-				unsigned int	tIdx = itt->data[i];
+				unsigned int	vIdx = idx[i];
+				unsigned int	tIdx = (*itt)[i];
 
 				texCoords1[vIdx] = texCoords[tIdx];
 			}
@@ -128,15 +128,15 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 
 	itt = _texIndices.begin();
 	itn = _normIndices.begin();
-	for (uIndex &idx : _indices)
+	for (glm::vec<3, uint> &idx : _indices)
 	{
-		Vertex	&v1 = vertices[idx.v1];
-		Vertex	&v2 = vertices[idx.v2];
-		Vertex	&v3 = vertices[idx.v3];
-		Vertex	normCalc;
+		glm::vec3	&v1 = vertices[idx.x];
+		glm::vec3	&v2 = vertices[idx.y];
+		glm::vec3	&v3 = vertices[idx.z];
+		glm::vec3	normCalc;
 
-		Vertex	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
-		Vertex	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
+		glm::vec3	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
+		glm::vec3	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
 
 		normCalc.x = edge1.y * edge2.z - edge1.z * edge2.y;
 		normCalc.y = edge1.z * edge2.x - edge1.x * edge2.z;
@@ -144,17 +144,17 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 
 		for (unsigned int i = 0; i < 3; i++)
 		{
-			unsigned int	vIdx = idx.data[i];
-			unsigned int	nIdx = itn->data[i];
-			Vertex			&n = vertNorms1[vIdx];
-			Vertex			norm;
+			unsigned int	vIdx = idx[i];
+			unsigned int	nIdx = (*itn)[i];
+			glm::vec3			&n = vertNorms1[vIdx];
+			glm::vec3			norm;
 
 			if (nIdx < vertNorms.size())
 				norm = vertNorms[nIdx];
 			else
 				norm = normCalc;
 
-			if (n == 0.0f)
+			if (glm::length(n) <= 0.0000001f)
 			{
 				n = norm;
 			}
@@ -168,11 +168,11 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			}
 			else
 			{
-				idx.data[i] = (unsigned int)_vertices.size();
+				idx[i] = (unsigned int)_vertices.size();
 				_vertices.push_back(vertices[vIdx]);
 				vertNorms2.push_back(norm);
 				if (_texCoords.size())
-					texCoords2.push_back(texCoords[itt->data[i]]);
+					texCoords2.push_back(texCoords[(*itt)[i]]);
 			}
 		}
 		itt++;
@@ -180,18 +180,18 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	}
 
 	_vertNorms.clear();
-	for (Vertex &norm : vertNorms1)
+	for (glm::vec3 &norm : vertNorms1)
 		_vertNorms.push_back(norm);
-	for (Vertex &norm : vertNorms2)
+	for (glm::vec3 &norm : vertNorms2)
 		_vertNorms.push_back(norm);
 
-	for (Vertex &norm : _vertNorms)
+	for (glm::vec3 &norm : _vertNorms)
 		norm *= Q_rsqrt(dot(norm, norm));
 
 	_texCoords.clear();
-	for (uTex &tex : texCoords1)
+	for (glm::vec2 &tex : texCoords1)
 		_texCoords.push_back(tex);
-	for (uTex &tex : texCoords2)
+	for (glm::vec2 &tex : texCoords2)
 		_texCoords.push_back(tex);
 
 	this->stats(objPath.c_str());
