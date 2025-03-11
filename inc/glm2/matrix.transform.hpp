@@ -47,7 +47,7 @@ namespace glm2
 	{
 		glm::vec<3, T>	f = glm2::normalize(camTarget - camPos);
 		glm::vec<3, T>	u = glm2::normalize(camUp);
-		glm::vec<3, T>	s = glm2::normalize(glm::cross(f, u));
+		glm::vec<3, T>	s = glm2::normalize(glm2::cross(f, u));
 
 		glm::mat4	ret = glm::mat4(1.0f);
 		ret[0][0] = s.x;
