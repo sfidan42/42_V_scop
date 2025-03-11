@@ -21,9 +21,17 @@ inline float	Q_rsqrt( float y )
 namespace glm2
 {
 	template <typename T>
-	inline T	dot(glm::vec<3, T> const &v1, glm::vec<3, T> const &v2)
+	inline T	dot(glm::vec<3, T> const &a, glm::vec<3, T> const &b)
 	{
-		return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
+		glm::vec<3, T>	tmp(a * b);
+
+		return (tmp.x + tmp.y + tmp.z);
+	}
+
+	template <typename T>
+	inline T	length(const glm::vec<3, T> &v)
+	{
+		return static_cast<T>(sqrt(dot(v, v)));
 	}
 
 	template <typename T>
@@ -39,7 +47,7 @@ namespace glm2
 	template <typename T>
 	inline glm::vec<3, T>	normalize(glm::vec<3, T> const &v)
 	{
-		return (v * Q_rsqrt(glm::dot(v, v)));
+		return (v * Q_rsqrt(glm2::dot(v, v)));
 	}
 
 	template <typename T>
@@ -59,9 +67,9 @@ namespace glm2
 		ret[0][2] = -f.x;
 		ret[1][2] = -f.y;
 		ret[2][2] = -f.z;
-		ret[3][0] = -glm::dot(s, camPos);
-		ret[3][1] = -glm::dot(u, camPos);
-		ret[3][2] = glm::dot(f, camPos);
+		ret[3][0] = -glm2::dot(s, camPos);
+		ret[3][1] = -glm2::dot(u, camPos);
+		ret[3][2] = glm2::dot(f, camPos);
 		return (ret);
 	}
 

@@ -4,9 +4,9 @@ static int	similarity(const glm::vec3 &v1, const glm::vec3 &v2)
 {
 	float   ans;
 
-	ans = dot(v1, v2);
-	ans *= Q_rsqrt(dot(v1, v1));
-	ans *= Q_rsqrt(dot(v2, v2));
+	ans = glm2::dot(v1, v2);
+	ans *= Q_rsqrt(glm2::dot(v1, v1));
+	ans *= Q_rsqrt(glm2::dot(v2, v2));
 	ans = acosf(ans);
 	ans *= 180.0f / M_PI;
 	return (ans < 30.0f);
@@ -154,7 +154,7 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			else
 				norm = normCalc;
 
-			if (glm::length(n) <= 0.0000001f)
+			if (glm2::length(n) <= 0.0000001f)
 			{
 				n = norm;
 			}
@@ -186,7 +186,7 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		_vertNorms.push_back(norm);
 
 	for (glm::vec3 &norm : _vertNorms)
-		norm *= Q_rsqrt(dot(norm, norm));
+		norm *= Q_rsqrt(glm2::dot(norm, norm));
 
 	_texCoords.clear();
 	for (glm::vec2 &tex : texCoords1)
