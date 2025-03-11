@@ -7,7 +7,7 @@
 # include <algorithm>
 # include <cmath>
 # include <glm/glm.hpp>
-# include "Q_rsqrt.hpp"
+# include <glm2/matrix.transform.hpp>
 
 typedef struct
 {
