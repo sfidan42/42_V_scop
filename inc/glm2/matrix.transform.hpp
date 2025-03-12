@@ -2,6 +2,7 @@
 # include <glm/glm.hpp>
 # include <glm/gtc/matrix_transform.hpp>
 
+// 1 / sqrt(x)
 inline float	Q_rsqrt( float y )
 {
 	long i;

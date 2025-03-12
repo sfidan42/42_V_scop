@@ -4,7 +4,7 @@ Scop::Scop(void)
 {
 	model = glm::mat4(1.0f);
 	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	projection = glm2::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
+	projection = glm2::perspective(glm2::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 	speedCoeff = 0.0f;
 	deltaTime = 0.0f;
 	lastFrame = 0.0f;
@@ -44,7 +44,7 @@ void	Scop::transformObject(void)
 		case Rotate::ROLL_MINUS: angle = -1.0f; axis = glm::vec3(0.0f, 0.0f, 1.0f); break;
 		default: angle = M_PI / 10.0f; axis = glm::vec3(0.0f, 1.0f, 0.0f); break;
 	}
-	model = glm2::rotate(model, glm::radians(angle), axis);
+	model = glm2::rotate(model, glm2::radians(angle), axis);
 	shader.setMat4fv("model", glm2::value_ptr(model));
 }
 

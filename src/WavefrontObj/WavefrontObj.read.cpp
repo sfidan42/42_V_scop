@@ -2,7 +2,7 @@
 
 static int	similarity(const glm::vec3 &v1, const glm::vec3 &v2)
 {
-	float   ans;
+	float	ans;
 
 	ans = glm2::dot(v1, v2);
 	ans *= Q_rsqrt(glm2::dot(v1, v1));
