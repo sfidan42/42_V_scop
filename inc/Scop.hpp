@@ -24,9 +24,9 @@ class Scop
 public:
 	static Shader	shader;
 private:
-	glm::mat4	model;
-	glm::mat4	view;
-	glm::mat4	projection;
+	glm2::mat4	model;
+	glm2::mat4	view;
+	glm2::mat4	projection;
 private:
 	float	speedCoeff;
 	float	deltaTime;

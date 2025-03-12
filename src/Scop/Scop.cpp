@@ -2,7 +2,7 @@
 
 Scop::Scop(void)
 {
-	model = glm::mat4(1.0f);
+	model = glm2::mat4(1.0f);
 	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	projection = glm2::perspective(glm2::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 	speedCoeff = 0.0f;

@@ -2,28 +2,6 @@
 
 int	main(int c, char **av)
 {
-	glm2::mat4	mat(1.0f);
-
-	glm::mat4	mat2(1.0f);
-
-	for (unsigned int i = 0; i < 4; i++)
-	{
-		for (unsigned int j = 0; j < 4; j++)
-		{
-			std::cout << mat[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-
-	for (unsigned int i = 0; i < 4; i++)
-	{
-		for (unsigned int j = 0; j < 4; j++)
-		{
-			std::cout << mat2[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-
 	GLFWwindow		*window;
 	WavefrontObj	obj;
 	Scop			scop;

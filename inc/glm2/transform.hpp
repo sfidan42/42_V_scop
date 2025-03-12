@@ -1,5 +1,6 @@
 #pragma once
 # include <glm/glm.hpp>
+# include "glm2/mat.hpp"
 
 // 1 / sqrt(x)
 inline float	Q_rsqrt( float y )
@@ -51,13 +52,13 @@ namespace glm2
 	}
 
 	template <typename T>
-	inline glm::mat4	lookAt(glm::vec<3, T> const &camPos, glm::vec<3, T> const &camTarget, glm::vec<3, T> const &camUp)
+	inline glm2::mat4	lookAt(glm::vec<3, T> const &camPos, glm::vec<3, T> const &camTarget, glm::vec<3, T> const &camUp)
 	{
 		glm::vec<3, T>	f = glm2::normalize(camTarget - camPos);
 		glm::vec<3, T>	u = glm2::normalize(camUp);
 		glm::vec<3, T>	s = glm2::normalize(glm2::cross(f, u));
 
-		glm::mat4	ret = glm::mat4(1.0f);
+		glm2::mat4	ret = glm2::mat4(1.0f);
 		ret[0][0] = s.x;
 		ret[1][0] = s.y;
 		ret[2][0] = s.z;
@@ -74,9 +75,9 @@ namespace glm2
 	}
 
 	template <typename T>
-	inline glm::mat4	rotate(glm::mat4 const &mat, T angle, glm::vec3 const &axis)
+	inline glm2::mat4	rotate(glm2::mat4 const &mat, T angle, glm::vec3 const &axis)
 	{
-		glm::mat4	ret = mat;
+		glm2::mat4	ret = mat;
 		T			c = cos(angle);
 		T			s = sin(angle);
 		glm::vec3	a = glm2::normalize(axis);
@@ -95,9 +96,9 @@ namespace glm2
 	}
 
 	template <typename T>
-	inline glm::mat4	perspective(T fovy, T aspect, T near, T far)
+	inline glm2::mat4	perspective(T fovy, T aspect, T near, T far)
 	{
-		glm::mat4	ret = glm::mat4(0.0f);
+		glm2::mat4	ret = glm2::mat4(0.0f);
 		T			tanHalfFovy = tan(fovy / T(2));
 
 		ret[0][0] = T(1) / (aspect * tanHalfFovy);
@@ -113,8 +114,8 @@ namespace glm2
 		return (M_PI * (degree / 180.0));
 	}
 
-	inline const float	*value_ptr(glm::mat4 &mat)
+	inline const float	*value_ptr(const glm2::mat4 &m)
 	{
-		return &(mat[0].x);
+		return &(m[0].x);
 	}
 }
