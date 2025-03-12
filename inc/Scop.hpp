@@ -5,9 +5,8 @@
 # include <iostream>
 # include <math.h>
 # include <glm/glm.hpp>
-# include <glm/gtc/matrix_transform.hpp>
-# include <glm/gtc/type_ptr.hpp>
-# include "glm2/matrix.transform.hpp"
+# include "glm2/mat.hpp"
+# include "glm2/transform.hpp"
 
 enum class Rotate
 {

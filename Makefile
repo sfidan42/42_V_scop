@@ -3,6 +3,7 @@ SRC     =   error.cpp \
 			Shader/Shader.cpp Shader/Shader.set.cpp \
 			WavefrontObj/WavefrontObj.cpp WavefrontObj/WavefrontObj.read.cpp WavefrontObj/WavefrontObj.get.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
+HDR		=	$(addprefix inc/, Scop.hpp Shader.hpp WavefrontObj.hpp error.h)
 
 EXE     =   scop
 
@@ -39,7 +40,7 @@ all: $(STB) $(GLM) $(GLAD) $(GLFW) $(EXE)
 	@echo "____________max-planck______________"
 	@./$(EXE) res/objects/max-planck.obj "" ""	|| echo "Error: $(EXE) failed"
 
-bin/%.o: src/%.cpp
+bin/%.o: src/%.cpp $(HDR)
 	$(CXX) -c $< -o $@
 
 bin:

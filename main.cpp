@@ -2,6 +2,28 @@
 
 int	main(int c, char **av)
 {
+	glm2::mat4	mat(1.0f);
+
+	glm::mat4	mat2(1.0f);
+
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		for (unsigned int j = 0; j < 4; j++)
+		{
+			std::cout << mat[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		for (unsigned int j = 0; j < 4; j++)
+		{
+			std::cout << mat2[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
 	GLFWwindow		*window;
 	WavefrontObj	obj;
 	Scop			scop;
@@ -44,7 +66,7 @@ int	main(int c, char **av)
 
 	std::vector<float>			vertices = obj.getVertices();
 	std::vector<unsigned int>	indices = obj.getIndices();
-	tMaterial					mat = obj.getMaterial();
+	tMaterial					material = obj.getMaterial();
 
 	unsigned int	VBO;
 	unsigned int	VAOs;
@@ -89,12 +111,12 @@ int	main(int c, char **av)
 
 	Scop::shader.use(0);
 	scop.setLightPos(lightPos);
-	scop.setMaterial(mat);
+	scop.setMaterial(material);
 	scop.setMVP();
 
 	Scop::shader.use(1);
 	scop.setLightPos(lightPos);
-	scop.setMaterial(mat);
+	scop.setMaterial(material);
 	scop.setMVP();
 
 	scop.useShader();
@@ -105,9 +127,11 @@ int	main(int c, char **av)
 
 	glEnable(GL_DEPTH_TEST);
 
+	glm::vec3	clColor = material.ka;
+
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(mat.ka.r, mat.ka.g, mat.ka.b, 1.0f);
+		glClearColor(clColor.x, clColor.y, clColor.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		scop.calcDeltaTime();

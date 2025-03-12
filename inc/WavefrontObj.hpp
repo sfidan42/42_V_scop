@@ -7,7 +7,7 @@
 # include <algorithm>
 # include <cmath>
 # include <glm/glm.hpp>
-# include <glm2/matrix.transform.hpp>
+# include <glm2/transform.hpp>
 
 typedef struct
 {

@@ -1,6 +1,5 @@
 #pragma once
 # include <glm/glm.hpp>
-# include <glm/gtc/matrix_transform.hpp>
 
 // 1 / sqrt(x)
 inline float	Q_rsqrt( float y )
@@ -118,6 +117,4 @@ namespace glm2
 	{
 		return &(mat[0].x);
 	}
-
-	
 }
