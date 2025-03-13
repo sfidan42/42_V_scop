@@ -6,8 +6,9 @@
 # include <iostream>
 # include <algorithm>
 # include <cmath>
-# include <glm/glm.hpp>
-# include <glm2/transform.hpp>
+# include "glm2/vec.hpp"
+# include "glm2/mat.hpp"
+# include "glm2/transform.hpp"
 
 typedef struct
 {

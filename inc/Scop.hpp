@@ -4,7 +4,7 @@
 # include "WavefrontObj.hpp"
 # include <iostream>
 # include <math.h>
-# include <glm/glm.hpp>
+# include "glm2/vec.hpp"
 # include "glm2/mat.hpp"
 # include "glm2/transform.hpp"
 

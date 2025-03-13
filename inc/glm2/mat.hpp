@@ -1,5 +1,5 @@
 #pragma once
-# include <glm/glm.hpp>
+# include "vec.hpp"
 
 namespace glm2
 {
