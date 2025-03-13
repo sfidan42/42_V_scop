@@ -1,6 +1,5 @@
 #pragma once
-# include <glm/glm.hpp>
-# include "glm2/mat.hpp"
+# include "mat.hpp"
 
 // 1 / sqrt(x)
 inline float	Q_rsqrt( float y )
@@ -22,23 +21,23 @@ inline float	Q_rsqrt( float y )
 namespace glm2
 {
 	template <typename T>
-	inline T	dot(glm::vec<3, T> const &a, glm::vec<3, T> const &b)
+	inline T	dot(glm2::vec<3, T> const &a, glm2::vec<3, T> const &b)
 	{
-		glm::vec<3, T>	tmp(a * b);
+		glm2::vec<3, T>	tmp(a * b);
 
 		return (tmp.x + tmp.y + tmp.z);
 	}
 
 	template <typename T>
-	inline T	length(const glm::vec<3, T> &v)
+	inline T	length(const glm2::vec<3, T> &v)
 	{
 		return static_cast<T>(sqrt(dot(v, v)));
 	}
 
 	template <typename T>
-	inline glm::vec<3, T>	cross(glm::vec<3, T> const &v1, glm::vec<3, T> const &v2)
+	inline glm2::vec<3, T>	cross(glm2::vec<3, T> const &v1, glm2::vec<3, T> const &v2)
 	{
-		return (glm::vec<3, T>(
+		return (glm2::vec<3, T>(
 			v1.y * v2.z - v1.z * v2.y,
 			v1.z * v2.x - v1.x * v2.z,
 			v1.x * v2.y - v1.y * v2.x
@@ -46,17 +45,17 @@ namespace glm2
 	}
 
 	template <typename T>
-	inline glm::vec<3, T>	normalize(glm::vec<3, T> const &v)
+	inline glm2::vec<3, T>	normalize(glm2::vec<3, T> const &v)
 	{
 		return (v * Q_rsqrt(glm2::dot(v, v)));
 	}
 
 	template <typename T>
-	inline glm2::mat4	lookAt(glm::vec<3, T> const &camPos, glm::vec<3, T> const &camTarget, glm::vec<3, T> const &camUp)
+	inline glm2::mat4	lookAt(glm2::vec<3, T> const &camPos, glm2::vec<3, T> const &camTarget, glm2::vec<3, T> const &camUp)
 	{
-		glm::vec<3, T>	f = glm2::normalize(camTarget - camPos);
-		glm::vec<3, T>	u = glm2::normalize(camUp);
-		glm::vec<3, T>	s = glm2::normalize(glm2::cross(f, u));
+		glm2::vec<3, T>	f = glm2::normalize(camTarget - camPos);
+		glm2::vec<3, T>	u = glm2::normalize(camUp);
+		glm2::vec<3, T>	s = glm2::normalize(glm2::cross(f, u));
 
 		glm2::mat4	ret = glm2::mat4(1.0f);
 		ret[0][0] = s.x;
@@ -75,19 +74,18 @@ namespace glm2
 	}
 
 	template <typename T>
-	inline glm2::mat4	rotate(glm2::mat4 const &mat, T angle, glm::vec3 const &axis)
+	inline glm2::mat4	rotate(glm2::mat4 const &mat, T angle, glm2::vec3 const &axis)
 	{
 		glm2::mat4	ret = mat;
 		T			c = cos(angle);
 		T			s = sin(angle);
-		glm::vec3	a = glm2::normalize(axis);
-		glm::vec3	temp = (1 - c) * a;
+		glm2::vec3	a = glm2::normalize(axis);
+		glm2::vec3	temp = a * (1 - c);
 
-		glm::mat3	rot = glm::mat3(
-			c + temp.x * a.x, temp.x * a.y + s * a.z, temp.x * a.z - s * a.y,
-			temp.y * a.x - s * a.z, c + temp.y * a.y, temp.y * a.z + s * a.x,
-			temp.z * a.x + s * a.y, temp.z * a.y - s * a.x, c + temp.z * a.z
-		);
+		glm2::mat3	rot;
+		rot[0] = glm2::vec3(c + temp.x * a.x, temp.x * a.y + s * a.z, temp.x * a.z - s * a.y);
+		rot[1] = glm2::vec3(temp.y * a.x - s * a.z, c + temp.y * a.y, temp.y * a.z + s * a.x);
+		rot[2] = glm2::vec3(temp.z * a.x + s * a.y, temp.z * a.y - s * a.x, c + temp.z * a.z);
 
 		ret[0] = mat[0] * rot[0][0] + mat[1] * rot[0][1] + mat[2] * rot[0][2];
 		ret[1] = mat[0] * rot[1][0] + mat[1] * rot[1][1] + mat[2] * rot[1][2];

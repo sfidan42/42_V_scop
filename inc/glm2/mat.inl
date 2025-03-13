@@ -1,37 +1,39 @@
 namespace glm2
 {
-	template <unsigned int N, typename T>
-	inline mat<N, T>::mat(void)
+	GLM2
+	inline MAT::mat(void)
 	{
 		T	num;
 		
 		num = static_cast<T>(0);
 		for (unsigned int i = 0; i < N; i++)
-			_data[i] = glm::vec<N, T>(num);
+			_data[i] = glm2::VEC(num);
 	}
 
-	template <unsigned int N, typename T>
-	inline mat<N, T>::mat(float num)
+	GLM2
+	inline MAT::mat(T num)
 	{
-		glm::vec<N, T>	vec;
+		glm2::VEC	vec;
+		T			zero;
 
+		zero = static_cast<T>(0);
 		for (unsigned int i = 0; i < N; i++)
 		{
-			vec = glm::vec<N, T>(0);
+			vec = glm2::VEC(zero);
 			vec[i] = num;
 			_data[i] = vec;
 		}
 	}
 
-	template <unsigned int N, typename T>
-	inline mat<N, T>::mat(const mat<N, T> &mat)
+	GLM2
+	inline MAT::mat(const MAT &mat)
 	{
 		for (unsigned int i = 0; i < N; i++)
 			_data[i] = mat._data[i];
 	}
 
-	template <unsigned int N, typename T>
-	inline mat<N, T> &mat<N, T>::operator=(const mat<N, T> &mat)
+	GLM2
+	inline MAT &MAT::operator=(const MAT &mat)
 	{
 		if (this != &mat)
 		{
@@ -41,20 +43,20 @@ namespace glm2
 		return *this;
 	}
 
-	template <unsigned int N, typename T>
-	inline glm::vec<N, T>	&mat<N, T>::operator[](int i)
+	GLM2
+	inline glm2::VEC	&MAT::operator[](int i)
 	{
 		return _data[i];
 	}
 
-	template <unsigned int N, typename T>
-	inline const glm::vec<N, T>	&mat<N, T>::operator[](int i) const
+	GLM2
+	inline const glm2::VEC	&MAT::operator[](int i) const
 	{
 		return _data[i];
 	}
 
-	template <unsigned int N, typename T>
-	inline mat<N, T>::~mat(void)
+	GLM2
+	inline MAT::~mat(void)
 	{
 	}
 }

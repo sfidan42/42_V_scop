@@ -1,4 +1,4 @@
-#shader glm::vec3
+#shader glm2::vec3
 #version 460 core
 
 layout (location = 0) in vec3 aPos;

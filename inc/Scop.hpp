@@ -7,6 +7,9 @@
 # include "glm2/vec.hpp"
 # include "glm2/mat.hpp"
 # include "glm2/transform.hpp"
+# include <glm/gtc/matrix_transform.hpp>
+# include <glm/glm.hpp>
+# include <glm/gtc/type_ptr.hpp>
 
 enum class Rotate
 {
@@ -25,7 +28,7 @@ public:
 	static Shader	shader;
 private:
 	glm2::mat4	model;
-	glm2::mat4	view;
+	glm::mat4	view;
 	glm2::mat4	projection;
 private:
 	float	speedCoeff;
@@ -55,7 +58,7 @@ public: // .
 	Scop();
 	~Scop();
 	void	moveCamera();
-	void	locateCamera(glm2::vec3 loc);
+	void	locateCamera(glm::vec3 loc);
 	void	transformObject(void);
 	void	calcDeltaTime(void);
 	void	useShader(void); // automatic detection of the shader to use
@@ -68,7 +71,7 @@ public: // .load
 	void	loadTexture(const char *texPath);
 public: // .set
 	void	setMVP(void);
-	void	setLightPos(glm::vec3 lightPos);
+	void	setLightPos(glm2::vec3 lightPos);
 	void	setMaterial(tMaterial mat);
 	void	setSpeedCoeff(float speedCoeff);
 };

@@ -6,6 +6,7 @@
 # include <iostream>
 # include <algorithm>
 # include <cmath>
+# include <glm/glm.hpp>
 # include "glm2/vec.hpp"
 # include "glm2/mat.hpp"
 # include "glm2/transform.hpp"
@@ -13,9 +14,9 @@
 typedef struct
 {
 	std::string		name; // Wood
-	glm::vec3		ka; // 1.000000 1.000000 1.000000
-	glm::vec3		kd; // 0.640000 0.640000 0.640000
-	glm::vec3		ks; // 0.500000 0.500000 0.500000
+	glm2::vec3		ka; // 1.000000 1.000000 1.000000
+	glm2::vec3		kd; // 0.640000 0.640000 0.640000
+	glm2::vec3		ks; // 0.500000 0.500000 0.500000
 	float			ns; // 96.078431
 	float			ni; // 1.000000
 	float			d; // 1.000000

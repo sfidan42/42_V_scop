@@ -4,6 +4,7 @@ SRC     =   error.cpp \
 			WavefrontObj/WavefrontObj.cpp WavefrontObj/WavefrontObj.read.cpp WavefrontObj/WavefrontObj.get.cpp
 OBJ     =   $(addprefix bin/, $(SRC:.cpp=.o))
 HDR		=	$(addprefix inc/, Scop.hpp Shader.hpp WavefrontObj.hpp error.h)
+HDR		+=	$(addprefix inc/, glm2/vec.hpp glm2/mat.hpp glm2/vec.inl glm2/mat.inl glm2/transform.hpp)
 
 EXE     =   scop
 

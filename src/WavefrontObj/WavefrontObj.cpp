@@ -2,9 +2,9 @@
 
 WavefrontObj::WavefrontObj(void) : _vertexAvg{0.0f, 0.0f, 0.0f}
 {
-	_mat.kd = glm::vec3(1.0f, 1.0f, 1.0f);
-	_mat.ka = glm::vec3(0.1f, 0.1f, 0.1f);
-	_mat.ks = glm::vec3(0.7f, 0.7f, 0.7f);
+	_mat.kd = glm2::vec3(1.0f, 1.0f, 1.0f);
+	_mat.ka = glm2::vec3(0.1f, 0.1f, 0.1f);
+	_mat.ks = glm2::vec3(0.7f, 0.7f, 0.7f);
 }
 
 WavefrontObj::~WavefrontObj()
