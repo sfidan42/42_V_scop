@@ -73,7 +73,7 @@ int	main(int c, char **av)
 	{
 		distance = std::max(distance, std::abs(vertex));
 	}	
-	glm::vec3	camLoc = glm::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
+	glm2::vec3	camLoc = glm2::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
 	glm::vec3	lightPos = glm::vec3(distance, -distance, -distance);
 
 	scop.locateCamera(camLoc);

@@ -22,9 +22,11 @@ void	Scop::moveCamera(void)
 	shader.setMat4fv("view", glm2::value_ptr(view));
 }
 
-void	Scop::locateCamera(glm::vec3 loc)
+void	Scop::locateCamera(glm2::vec3 loc)
 {
-	cameraPos = loc;
+	cameraPos[0] = loc[0];
+	cameraPos[1] = loc[1];
+	cameraPos[2] = loc[2];
 	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	shader.setMat4fv("view", glm2::value_ptr(view));
 }

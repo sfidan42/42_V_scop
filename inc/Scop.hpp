@@ -55,7 +55,7 @@ public: // .
 	Scop();
 	~Scop();
 	void	moveCamera();
-	void	locateCamera(glm::vec3 loc);
+	void	locateCamera(glm2::vec3 loc);
 	void	transformObject(void);
 	void	calcDeltaTime(void);
 	void	useShader(void); // automatic detection of the shader to use
