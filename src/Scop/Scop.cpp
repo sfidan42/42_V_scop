@@ -59,7 +59,6 @@ void	Scop::useShader(void)
 	texLoaded ? Scop::shader.use(1) : Scop::shader.use(0);
 }
 
-
 Shader		Scop::shader;
 
 bool		Scop::texLoaded			= false;

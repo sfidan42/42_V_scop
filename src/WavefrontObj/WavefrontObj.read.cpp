@@ -44,9 +44,7 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			{
 				iss >> vert.x >> vert.y >> vert.z;
 				_vertices.push_back(vert);
-				_vertexAvg.x += vert.x;
-				_vertexAvg.y += vert.y;
-				_vertexAvg.z += vert.z;
+				_vertexAvg += vert;
 			}
 			else if (word == "vt")
 			{
@@ -56,30 +54,22 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			else if (word == "vn")
 			{
 				iss >> vert.x >> vert.y >> vert.z;
-				vert.x = -vert.x;
-				vert.y = -vert.y;
-				vert.z = -vert.z;
-				_vertNorms.push_back(vert);
+				_vertNorms.push_back(vert * -1.0f);
 			}
 			else if (word == "f")
 			{
 				std::string		fword[4];
 				char			c;
+
 				iss >> fword[0] >> fword[1] >> fword[2] >> fword[3];
 				std::istringstream(fword[0]) >> idx.x >> c >> texIdx.x >> c >> normIdx.x;
 				std::istringstream(fword[1]) >> idx.y >> c >> texIdx.y >> c >> normIdx.y;
 				std::istringstream(fword[2]) >> idx.z >> c >> texIdx.z >> c >> normIdx.z;
-				idx.x -= 1;
-				idx.y -= 1;
-				idx.z -= 1;
+				idx -= 1;
+				texIdx -= 1;
+				normIdx -= 1;
 				_indices.push_back(idx);
-				texIdx.x -= 1;
-				texIdx.y -= 1;
-				texIdx.z -= 1;
 				_texIndices.push_back(texIdx);
-				normIdx.x -= 1;
-				normIdx.y -= 1;
-				normIdx.z -= 1;
 				_normIndices.push_back(normIdx);
 				if (fword[3].size())
 				{
@@ -96,104 +86,99 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 				}
 			}
 		}
-		_vertexAvg.x /= _vertices.size();
-		_vertexAvg.y /= _vertices.size();
-		_vertexAvg.z /= _vertices.size();
+		_vertexAvg *= 1.0f / _vertices.size();
 	}
-	std::vector<glm2::vec3>	vertices(_vertices.begin(), _vertices.end());
-	std::vector<glm2::vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
-	std::vector<glm2::vec3>	vertNorms1(_vertices.size());
-	std::list<glm2::vec3>	vertNorms2;
-	std::vector<glm2::vec2>	texCoords(_texCoords.begin(), _texCoords.end());
-	std::vector<glm2::vec2>	texCoords1(_vertices.size());
-	std::list<glm2::vec2>	texCoords2;
-	std::list<glm2::vec<3, uint>>::iterator	itt;
-	std::list<glm2::vec<3, uint>>::iterator	itn;
-
-	if (_texCoords.size())
 	{
+		std::vector<glm2::vec3>	vertices(_vertices.begin(), _vertices.end());
+		std::vector<glm2::vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
+		std::vector<glm2::vec3>	vertNorms1(_vertices.size());
+		std::list<glm2::vec3>	vertNorms2;
+		std::vector<glm2::vec2>	texCoords(_texCoords.begin(), _texCoords.end());
+		std::vector<glm2::vec2>	texCoords1(_vertices.size());
+		std::list<glm2::vec2>	texCoords2;
+		std::list<glm2::vec<3, uint>>::iterator	itt;
+		std::list<glm2::vec<3, uint>>::iterator	itn;
+
+		if (_texCoords.size())
+		{
+			itt = _texIndices.begin();
+			for (glm2::vec<3, uint> &idx : _indices)
+			{
+				for (unsigned int i = 0; i < 3; i++)
+				{
+					unsigned int	vIdx = idx[i];
+					unsigned int	tIdx = (*itt)[i];
+
+					texCoords1[vIdx] = texCoords[tIdx];
+				}
+				itt++;
+			}
+		}
+
 		itt = _texIndices.begin();
+		itn = _normIndices.begin();
 		for (glm2::vec<3, uint> &idx : _indices)
 		{
+			glm2::vec3	&v1 = vertices[idx.x];
+			glm2::vec3	&v2 = vertices[idx.y];
+			glm2::vec3	&v3 = vertices[idx.z];
+
+			glm2::vec3	edge1 = v3 - v1;
+			glm2::vec3	edge2 = v2 - v1;
+			glm2::vec3	normCalculated = glm2::cross(edge1, edge2);
+
 			for (unsigned int i = 0; i < 3; i++)
 			{
 				unsigned int	vIdx = idx[i];
-				unsigned int	tIdx = (*itt)[i];
+				unsigned int	nIdx = (*itn)[i];
+				glm2::vec3		&n = vertNorms1[vIdx];
+				glm2::vec3		norm;
 
-				texCoords1[vIdx] = texCoords[tIdx];
+				if (nIdx < vertNorms.size())
+					norm = vertNorms[nIdx];
+				else
+					norm = normCalculated;
+
+				if (glm2::length(n) <= 0.0000001f)
+				{
+					n = norm;
+				}
+				else if (n == norm)
+				{
+					// do nothing
+				}
+				else if (similarity(n, norm))
+				{
+					n += norm;
+				}
+				else
+				{
+					idx[i] = (unsigned int)_vertices.size();
+					_vertices.push_back(vertices[vIdx]);
+					vertNorms2.push_back(norm);
+					if (_texCoords.size())
+						texCoords2.push_back(texCoords[(*itt)[i]]);
+				}
 			}
 			itt++;
+			itn++;
 		}
+
+		_vertNorms.clear();
+		for (glm2::vec3 &norm : vertNorms1)
+			_vertNorms.push_back(norm);
+		for (glm2::vec3 &norm : vertNorms2)
+			_vertNorms.push_back(norm);
+
+		for (glm2::vec3 &norm : _vertNorms)
+			norm *= Q_rsqrt(glm2::dot(norm, norm));
+
+		_texCoords.clear();
+		for (glm2::vec2 &tex : texCoords1)
+			_texCoords.push_back(tex);
+		for (glm2::vec2 &tex : texCoords2)
+			_texCoords.push_back(tex);
 	}
-
-	itt = _texIndices.begin();
-	itn = _normIndices.begin();
-	for (glm2::vec<3, uint> &idx : _indices)
-	{
-		glm2::vec3	&v1 = vertices[idx.x];
-		glm2::vec3	&v2 = vertices[idx.y];
-		glm2::vec3	&v3 = vertices[idx.z];
-		glm2::vec3	normCalc;
-
-		glm2::vec3	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
-		glm2::vec3	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
-
-		normCalc.x = edge1.y * edge2.z - edge1.z * edge2.y;
-		normCalc.y = edge1.z * edge2.x - edge1.x * edge2.z;
-		normCalc.z = edge1.x * edge2.y - edge1.y * edge2.x;
-
-		for (unsigned int i = 0; i < 3; i++)
-		{
-			unsigned int	vIdx = idx[i];
-			unsigned int	nIdx = (*itn)[i];
-			glm2::vec3		&n = vertNorms1[vIdx];
-			glm2::vec3		norm;
-
-			if (nIdx < vertNorms.size())
-				norm = vertNorms[nIdx];
-			else
-				norm = normCalc;
-
-			if (glm2::length(n) <= 0.0000001f)
-			{
-				n = norm;
-			}
-			else if (n == norm)
-			{
-				// do nothing
-			}
-			else if (similarity(n, norm))
-			{
-				n += norm;
-			}
-			else
-			{
-				idx[i] = (unsigned int)_vertices.size();
-				_vertices.push_back(vertices[vIdx]);
-				vertNorms2.push_back(norm);
-				if (_texCoords.size())
-					texCoords2.push_back(texCoords[(*itt)[i]]);
-			}
-		}
-		itt++;
-		itn++;
-	}
-
-	_vertNorms.clear();
-	for (glm2::vec3 &norm : vertNorms1)
-		_vertNorms.push_back(norm);
-	for (glm2::vec3 &norm : vertNorms2)
-		_vertNorms.push_back(norm);
-
-	for (glm2::vec3 &norm : _vertNorms)
-		norm *= Q_rsqrt(glm2::dot(norm, norm));
-
-	_texCoords.clear();
-	for (glm2::vec2 &tex : texCoords1)
-		_texCoords.push_back(tex);
-	for (glm2::vec2 &tex : texCoords2)
-		_texCoords.push_back(tex);
-
 	this->stats(objPath.c_str());
 
 	{
