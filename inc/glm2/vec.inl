@@ -3,13 +3,8 @@ namespace glm2
 	GLM2
 	inline VEC::vec(void)
 	{
-	}
-
-	GLM2
-	inline VEC::vec(T t)
-	{
-		for (unsigned int i = 0; i < N; ++i)
-			_data[i] = t;
+		for (unsigned int i = 0; i < N; i++)
+			_data[i] = static_cast<T>(0);
 	}
 
 	GLM2
@@ -45,13 +40,37 @@ namespace glm2
 	}
 
 	GLM2
-	template <typename... Args>
-	inline VEC::vec(Args... args)
+	inline VEC::vec(T x)
 	{
-		static_assert(sizeof...(Args) == N, "Number of arguments must match vector dimension");
-		const T data [] = {static_cast<T>(args)...};
-		for (unsigned int i = 0; i < N; ++i)
-			_data[i] = data[i];
+		for (unsigned int i = 0; i < N; i++)
+			_data[i] = x;
+	}
+
+	GLM2
+	inline VEC::vec(T x, T y)
+	{
+		static_assert(N == 2, "vec(x, y) is only valid for vec2");
+		_data[0] = x;
+		_data[1] = y;
+	}
+
+	GLM2
+	inline VEC::vec(T x, T y, T z)
+	{
+		static_assert(N == 3, "vec(x, y, z) is only valid for vec3");
+		_data[0] = x;
+		_data[1] = y;
+		_data[2] = z;
+	}
+
+	GLM2
+	inline VEC::vec(T x, T y, T z, T w)
+	{
+		static_assert(N == 4, "vec(x, y, z, w) is only valid for vec4");
+		_data[0] = x;
+		_data[1] = y;
+		_data[2] = z;
+		_data[3] = w;
 	}
 
 	GLM2

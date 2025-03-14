@@ -2,41 +2,23 @@
 
 const std::vector<float>	WavefrontObj::getVertices(void)
 {
-	std::list<glm::vec3>::iterator	itv = _vertices.begin();
-	std::list<glm::vec3>::iterator	itn = _vertNorms.begin();
-	std::list<glm::vec2>::iterator	itt = _texCoords.begin();
+	std::list<glm2::vec3>::iterator	itv = _vertices.begin();
+	std::list<glm2::vec3>::iterator	itn = _vertNorms.begin();
+	std::list<glm2::vec2>::iterator	itt = _texCoords.begin();
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
 
-	vec.resize(_vertices.size() * ((2 * sizeof(glm::vec3) + sizeof(glm::vec2)) / sizeof(float)));
-
-	if (_texCoords.size())
+	vec.resize(_vertices.size() * 8);
+	for (it = vec.begin(); itv != _vertices.end(); itv++, itn++, itt++)
 	{
-		for (it = vec.begin(); itv != _vertices.end(); itv++, itn++, itt++)
-		{
-			*it++ = itv->x - _vertexAvg.x;
-			*it++ = itv->y - _vertexAvg.y;
-			*it++ = itv->z - _vertexAvg.z;
-			*it++ = itn->x;
-			*it++ = itn->y;
-			*it++ = itn->z;
-			*it++ = itt->x;
-			*it++ = itt->y;
-		}
-	}
-	else
-	{
-		for (it = vec.begin(); itv != _vertices.end(); itv++, itn++)
-		{
-			*it++ = itv->x - _vertexAvg.x;
-			*it++ = itv->y - _vertexAvg.y;
-			*it++ = itv->z - _vertexAvg.z;
-			*it++ = itn->x;
-			*it++ = itn->y;
-			*it++ = itn->z;
-			*it++ = 0.0f;
-			*it++ = 0.0f;
-		}
+		*it++ = itv->x - _vertexAvg.x;
+		*it++ = itv->y - _vertexAvg.y;
+		*it++ = itv->z - _vertexAvg.z;
+		*it++ = itn->x;
+		*it++ = itn->y;
+		*it++ = itn->z;
+		*it++ = itt->x;
+		*it++ = itt->y;
 	}
 	return (vec);
 }
@@ -46,7 +28,7 @@ const std::vector<unsigned int>	WavefrontObj::getIndices(void)
 	std::vector<unsigned int>::iterator	it;
 	std::vector<unsigned int>			vec;
 
-	vec.resize(_indices.size() * sizeof(glm::vec<3, uint>));
+	vec.resize(_indices.size() * 3);
 	it = vec.begin();
 	for (glm2::vec<3, uint> &idx : _indices)
 	{

@@ -1,12 +1,12 @@
 #include <WavefrontObj.hpp>
 
-static int	similarity(const glm::vec3 &v1, const glm::vec3 &v2)
+static int	similarity(const glm2::vec3 &v1, const glm2::vec3 &v2)
 {
 	float	ans;
 
-	ans = glm::dot(v1, v2);
-	ans *= Q_rsqrt(glm::dot(v1, v1));
-	ans *= Q_rsqrt(glm::dot(v2, v2));
+	ans = glm2::dot(v1, v2);
+	ans *= Q_rsqrt(glm2::dot(v1, v1));
+	ans *= Q_rsqrt(glm2::dot(v2, v2));
 	ans = acosf(ans);
 	ans *= 180.0f / M_PI;
 	return (ans < 30.0f);
@@ -17,8 +17,8 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	{
 		std::ifstream		objFile(objPath);
 		std::string			line;
-		glm::vec3			vert;
-		glm::vec2			tex;
+		glm2::vec3			vert;
+		glm2::vec2			tex;
 		glm2::vec<3, uint>	idx;
 		glm2::vec<3, uint>	texIdx;
 		glm2::vec<3, uint>	normIdx;
@@ -100,13 +100,13 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		_vertexAvg.y /= _vertices.size();
 		_vertexAvg.z /= _vertices.size();
 	}
-	std::vector<glm::vec3>	vertices(_vertices.begin(), _vertices.end());
-	std::vector<glm::vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
-	std::vector<glm::vec3>	vertNorms1(_vertices.size());
-	std::list<glm::vec3>	vertNorms2;
-	std::vector<glm::vec2>	texCoords(_texCoords.begin(), _texCoords.end());
-	std::vector<glm::vec2>	texCoords1(_vertices.size());
-	std::list<glm::vec2>	texCoords2;
+	std::vector<glm2::vec3>	vertices(_vertices.begin(), _vertices.end());
+	std::vector<glm2::vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
+	std::vector<glm2::vec3>	vertNorms1(_vertices.size());
+	std::list<glm2::vec3>	vertNorms2;
+	std::vector<glm2::vec2>	texCoords(_texCoords.begin(), _texCoords.end());
+	std::vector<glm2::vec2>	texCoords1(_vertices.size());
+	std::list<glm2::vec2>	texCoords2;
 	std::list<glm2::vec<3, uint>>::iterator	itt;
 	std::list<glm2::vec<3, uint>>::iterator	itn;
 
@@ -130,10 +130,10 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	itn = _normIndices.begin();
 	for (glm2::vec<3, uint> &idx : _indices)
 	{
-		glm::vec3	&v1 = vertices[idx.x];
-		glm::vec3	&v2 = vertices[idx.y];
-		glm::vec3	&v3 = vertices[idx.z];
-		glm::vec3	normCalc;
+		glm2::vec3	&v1 = vertices[idx.x];
+		glm2::vec3	&v2 = vertices[idx.y];
+		glm2::vec3	&v3 = vertices[idx.z];
+		glm2::vec3	normCalc;
 
 		glm2::vec3	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
 		glm2::vec3	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
@@ -146,15 +146,15 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		{
 			unsigned int	vIdx = idx[i];
 			unsigned int	nIdx = (*itn)[i];
-			glm::vec3		&n = vertNorms1[vIdx];
-			glm::vec3		norm;
+			glm2::vec3		&n = vertNorms1[vIdx];
+			glm2::vec3		norm;
 
 			if (nIdx < vertNorms.size())
 				norm = vertNorms[nIdx];
 			else
 				norm = normCalc;
 
-			if (glm::length(n) <= 0.0000001f)
+			if (glm2::length(n) <= 0.0000001f)
 			{
 				n = norm;
 			}
@@ -180,21 +180,22 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	}
 
 	_vertNorms.clear();
-	for (glm::vec3 &norm : vertNorms1)
+	for (glm2::vec3 &norm : vertNorms1)
 		_vertNorms.push_back(norm);
-	for (glm::vec3 &norm : vertNorms2)
+	for (glm2::vec3 &norm : vertNorms2)
 		_vertNorms.push_back(norm);
 
-	for (glm::vec3 &norm : _vertNorms)
-		norm *= Q_rsqrt(glm::dot(norm, norm));
+	for (glm2::vec3 &norm : _vertNorms)
+		norm *= Q_rsqrt(glm2::dot(norm, norm));
 
 	_texCoords.clear();
-	for (glm::vec2 &tex : texCoords1)
+	for (glm2::vec2 &tex : texCoords1)
 		_texCoords.push_back(tex);
-	for (glm::vec2 &tex : texCoords2)
+	for (glm2::vec2 &tex : texCoords2)
 		_texCoords.push_back(tex);
 
 	this->stats(objPath.c_str());
+
 	{
 		std::ifstream	mtlFile(mtlPath);
 		std::string		line;

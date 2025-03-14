@@ -11,32 +11,20 @@ namespace glm2
 	public:
 		union
 		{
-			T	_data[N];
-			struct
-			{
-				T	x;
-				T	y;
-				T	z;
-				T	w;
-			};
-			struct
-			{
-				T	r;
-				T	g;
-				T	b;
-				T	a;
-			};
+			T		_data[N];
+			struct	{ T	x, y, z; };
+			struct	{ T	r, g, b; };
 		};
 	public:
 		vec(void);
-		vec(T t);
 		vec(const VEC& vec);
+		vec(T x);
+		vec(T x, T y);
+		vec(T x, T y, T z);
+		vec(T x, T y, T z, T w);
 		VEC	&operator=(const VEC& vec);
 		VEC	&operator=(const T *arr);
 		~vec(void);
-	public:
-		template <typename... Args>
-		vec(Args... args);
 	public:
 		T			&operator[](int i);
 		vec			&operator*=(T b);
