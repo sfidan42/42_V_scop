@@ -1,12 +1,12 @@
 #include <WavefrontObj.hpp>
 
-const std::vector<float>	WavefrontObj::getVertices(void)
+const vector<float>	WavefrontObj::getVertices(void)
 {
 	auto	itv = _vertices.begin();
 	auto	itn = _vertNorms.begin();
 	auto	itt = _texCoords.begin();
 
-	std::vector<float>	vec(_vertices.size() * 8);
+	vector<float>	vec(_vertices.size() * 8);
 
 	for (auto it = vec.begin(); itv != _vertices.end(); itv++, itn++, itt++)
 	{
@@ -22,9 +22,9 @@ const std::vector<float>	WavefrontObj::getVertices(void)
 	return (vec);
 }
 
-const std::vector<unsigned int>	WavefrontObj::getIndices(void)
+const vector<unsigned int>	WavefrontObj::getIndices(void)
 {
-	std::vector<unsigned int>	vec(_indices.size() * 3);
+	vector<unsigned int>	vec(_indices.size() * 3);
 
 	auto it = vec.begin();
 	for (auto &idx : _indices)

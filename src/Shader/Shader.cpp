@@ -16,29 +16,29 @@ void	Shader::config(const unsigned int count)
 
 void	Shader::read(const char *filepath)
 {
-	int					i;
-	std::string			line;
-	std::ifstream		file(filepath);
-	std::stringstream	ss[2];
+	int				i;
+	string			line;
+	ifstream		file(filepath);
+	stringstream	ss[2];
 
 	if (!file.is_open())
 	{
-		std::cerr << "Failed to open file\n";
+		cerr << "Failed to open file\n";
 		return ;
 	}
 	if (_shaders.size() >= _shaders.capacity())
 	{
-		std::cerr << "Shader count exceeded\n";
+		cerr << "Shader count exceeded\n";
 		return ;
 	}
 	i = -1;
 	while (getline(file, line))
 	{
-		if (line.find("#shader") != std::string::npos)
+		if (line.find("#shader") != string::npos)
 		{
-			if (line.find("glm2::vec3") != std::string::npos)
+			if (line.find("vertex") != string::npos)
 				i = 0;
-			else if (line.find("fragment") != std::string::npos)
+			else if (line.find("fragment") != string::npos)
 				i = 1;
 		}
 		else if (i != -1)
@@ -58,15 +58,15 @@ static void	compile(unsigned int shader, const char *shader_source)
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cerr << "shader compilation failed\n" << infoLog << std::endl;
-		std::cerr << shader_source << std::endl;
+		cerr << "shader compilation failed\n" << infoLog << endl;
+		cerr << shader_source << endl;
 	}
 }
 
 void	Shader::create(void)
 {
-	int				success;
-	char			infoLog[512];
+	int		success;
+	char	infoLog[512];
 
 	for (unsigned int i = 0; i < _shaders.size(); i++)
 	{
@@ -85,7 +85,7 @@ void	Shader::create(void)
 		if (!success)
 		{
 			glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-			std::cerr << "Shader program linking failed\n" << infoLog << std::endl;
+			cerr << "Shader program linking failed\n" << infoLog << endl;
 		}
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
@@ -97,7 +97,7 @@ void	Shader::use(unsigned int index)
 {
 	if (index >= _programs.size())
 	{
-		std::cerr << "Invalid program index: " << index << std::endl;
+		cerr << "Invalid program index: " << index << endl;
 		return ;
 	}
 	_program = _programs[index];

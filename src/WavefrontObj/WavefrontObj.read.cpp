@@ -12,11 +12,11 @@ static int	similarity(const vec3 &v1, const vec3 &v2)
 	return (ans < 30.0f);
 }
 
-void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
+void	WavefrontObj::read(const string &objPath, const string &mtlPath)
 {
 	{
-		std::ifstream	objFile(objPath);
-		std::string		line;
+		ifstream	objFile(objPath);
+		string		line;
 		vec3			vert;
 		vec2			tex;
 		vec<3, uint>	idx;
@@ -26,7 +26,7 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 
 		if (!objFile.is_open())
 		{
-			std::cerr << "could not open file: " << objPath << std::endl;
+			cerr << "could not open file: " << objPath << endl;
 			return ;
 		}
 		_vertices.clear();
@@ -35,10 +35,10 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		_indices.clear();
 		_texIndices.clear();
 		_normIndices.clear();
-		while (std::getline(objFile, line))
+		while (getline(objFile, line))
 		{
-			std::istringstream	iss(line);
-			std::string			word;
+			istringstream	iss(line);
+			string			word;
 			iss >> word;
 			if (word == "v")
 			{
@@ -58,13 +58,13 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			}
 			else if (word == "f")
 			{
-				std::string		fword[4];
+				string		fword[4];
 				char			c;
 
 				iss >> fword[0] >> fword[1] >> fword[2] >> fword[3];
-				std::istringstream(fword[0]) >> idx.x >> c >> texIdx.x >> c >> normIdx.x;
-				std::istringstream(fword[1]) >> idx.y >> c >> texIdx.y >> c >> normIdx.y;
-				std::istringstream(fword[2]) >> idx.z >> c >> texIdx.z >> c >> normIdx.z;
+				istringstream(fword[0]) >> idx.x >> c >> texIdx.x >> c >> normIdx.x;
+				istringstream(fword[1]) >> idx.y >> c >> texIdx.y >> c >> normIdx.y;
+				istringstream(fword[2]) >> idx.z >> c >> texIdx.z >> c >> normIdx.z;
 				idx -= 1;
 				texIdx -= 1;
 				normIdx -= 1;
@@ -76,7 +76,7 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 					idx.y = idx.z;
 					texIdx.y = texIdx.z;
 					normIdx.y = normIdx.z;
-					std::istringstream(fword[3]) >> idx.z >> c >> texIdx.z >> c >> normIdx.z;
+					istringstream(fword[3]) >> idx.z >> c >> texIdx.z >> c >> normIdx.z;
 					idx.z -= 1;
 					texIdx.z -= 1;
 					normIdx.z -= 1;
@@ -90,13 +90,13 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	}
 	this->stats(objPath.c_str());
 	{
-		std::vector<vec3>	vertices(_vertices.begin(), _vertices.end());
-		std::vector<vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
-		std::vector<vec3>	vertNorms1(_vertices.size());
-		std::list<vec3>		vertNorms2;
-		std::vector<vec2>	texCoords(_texCoords.begin(), _texCoords.end());
-		std::vector<vec2>	texCoords1(_vertices.size());
-		std::list<vec2>		texCoords2;
+		vector<vec3>	vertices(_vertices.begin(), _vertices.end());
+		vector<vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
+		vector<vec3>	vertNorms1(_vertices.size());
+		list<vec3>		vertNorms2;
+		vector<vec2>	texCoords(_texCoords.begin(), _texCoords.end());
+		vector<vec2>	texCoords1(_vertices.size());
+		list<vec2>		texCoords2;
 
 		if (_texCoords.size())
 		{
@@ -180,21 +180,21 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	}
 	this->stats(objPath.c_str());
 	{
-		std::ifstream	mtlFile(mtlPath);
-		std::string		line;
+		ifstream	mtlFile(mtlPath);
+		string		line;
 
 		if (!mtlFile.is_open())
 		{
-			std::cout << "could not open .mtl file" << std::endl;
-			std::cout << "using the default material" << std::endl;
+			cout << "could not open .mtl file" << endl;
+			cout << "using the default material" << endl;
 			return ;
 		}
 		while (getline(mtlFile, line))
 		{
 			if (line.size() == 0)
 				continue ;
-			std::istringstream	iss(line);
-			std::string			word;
+			istringstream	iss(line);
+			string			word;
 
 			iss >> word;
 			if (word == "newmtl")
@@ -214,7 +214,7 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			else if (word == "illum")
 				iss >> _mat.illum;
 			else
-				std::cout << "unknown word: " << word << std::endl;
+				cout << "unknown word: " << word << endl;
 		}
 	}
 }

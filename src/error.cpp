@@ -12,6 +12,6 @@ bool	GLLogCall(void)
 	error = glGetError();
 	if (error == GL_NO_ERROR)
 		return (true);
-	std::cerr << "OpenGL error: (" << error << ")" << std::endl;
+	cerr << "OpenGL error: (" << error << ")" << endl;
 	return (false);
 }

@@ -2,12 +2,12 @@
 
 void	Scop::framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
-	glm2::mat4	projection;
+	mat4	projection;
 
 	(void)window;
 	glViewport(0, 0, w, h);
-	projection = glm2::perspective(glm2::radians(70.0f), (float)w / (float)h, 0.1f, 20000.0f);
-	shader.setMat4fv("projection", glm2::value_ptr(projection));
+	projection = perspective(radians(70.0f), (float)w / (float)h, 0.1f, 20000.0f);
+	shader.setMat4fv("projection", value_ptr(projection));
 }
 
 void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -28,13 +28,13 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 			case GLFW_KEY_W:	cameraSpeeds[UP] = cameraUp;
 								cameraSpeed -= cameraSpeeds[UP];
 				break;
-			case GLFW_KEY_A:	cameraSpeeds[LEFT] = glm2::normalize(glm2::cross(cameraFront, cameraUp));
+			case GLFW_KEY_A:	cameraSpeeds[LEFT] = normalize(cross(cameraFront, cameraUp));
 								cameraSpeed += cameraSpeeds[LEFT];
 				break;
 			case GLFW_KEY_S:	cameraSpeeds[DOWN] = cameraUp;
 								cameraSpeed += cameraSpeeds[DOWN];
 				break;
-			case GLFW_KEY_D:	cameraSpeeds[RIGHT] = glm2::normalize(glm2::cross(cameraFront, cameraUp)); 
+			case GLFW_KEY_D:	cameraSpeeds[RIGHT] = normalize(cross(cameraFront, cameraUp)); 
 								cameraSpeed -= cameraSpeeds[RIGHT];
 				break;
 			case GLFW_KEY_X:	cameraSpeeds[FRONT] = cameraFront;
@@ -125,16 +125,16 @@ void Scop::mouse_callback(GLFWwindow* window, double xpos, double ypos)
         if(pitch < -89.0f)
             pitch = -89.0f;
 
-        glm2::vec3 direction;
-        direction.x = cos(glm2::radians(yaw)) * cos(glm2::radians(pitch));
-        direction.y = sin(glm2::radians(pitch));
-        direction.z = sin(glm2::radians(yaw)) * cos(glm2::radians(pitch));
+        vec3 direction;
+        direction.x = cos(radians(yaw)) * cos(radians(pitch));
+        direction.y = sin(radians(pitch));
+        direction.z = sin(radians(yaw)) * cos(radians(pitch));
 
-        cameraFront = glm2::normalize(direction);
+        cameraFront = normalize(direction);
 
         // Calculate the Right and Up vectors
-        glm2::vec3 worldUp = glm2::vec3(0.0f, 1.0f, 0.0f);
-        glm2::vec3 cameraRight = glm2::normalize(glm2::cross(cameraFront, worldUp));
-        cameraUp = glm2::normalize(glm2::cross(cameraRight, cameraFront));
+        vec3 worldUp = vec3(0.0f, 1.0f, 0.0f);
+        vec3 cameraRight = normalize(cross(cameraFront, worldUp));
+        cameraUp = normalize(cross(cameraRight, cameraFront));
     }
 }

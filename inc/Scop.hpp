@@ -7,6 +7,9 @@
 # include "glm2/mat.hpp"
 # include "glm2/transform.hpp"
 
+using namespace glm2;
+using namespace std;
+
 enum class Rotation
 {
 	NONE,
@@ -33,9 +36,9 @@ class Scop
 public:
 	static Shader	shader;
 private:
-	glm2::mat4	model;
-	glm2::mat4	view;
-	glm2::mat4	projection;
+	mat4	model;
+	mat4	view;
+	mat4	projection;
 private:
 	float	speedCoeff;
 	float	deltaTime;
@@ -47,20 +50,20 @@ private:
 private:
 	static Rotation	rotation;
 private:
-	static float		yaw;
-	static float		pitch;
-	static double		lastX;
-	static double		lastY;
-	static glm2::vec3	cameraPos;
-	static glm2::vec3	cameraFront;
-	static glm2::vec3	cameraUp;
-	static glm2::vec3	cameraSpeed;
-	static glm2::vec3	cameraSpeeds[6];
+	static float	yaw;
+	static float	pitch;
+	static double	lastX;
+	static double	lastY;
+	static vec3	cameraPos;
+	static vec3	cameraFront;
+	static vec3	cameraUp;
+	static vec3	cameraSpeed;
+	static vec3	cameraSpeeds[6];
 public: // .
 	Scop();
 	~Scop();
 	void	moveCamera();
-	void	locateCamera(glm2::vec3 loc);
+	void	locateCamera(vec3 loc);
 	void	transformObject(void);
 	void	calcDeltaTime(void);
 	void	useShader(void); // automatic detection of the shader to use
@@ -73,7 +76,7 @@ public: // .load
 	void	loadTexture(const char *texPath);
 public: // .set
 	void	setMVP(void);
-	void	setLightPos(glm2::vec3 lightPos);
+	void	setLightPos(vec3 lightPos);
 	void	setMaterial(tMaterial mat);
 	void	setSpeedCoeff(float speedCoeff);
 };

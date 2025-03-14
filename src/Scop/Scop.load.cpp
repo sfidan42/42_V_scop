@@ -23,7 +23,7 @@ void	Scop::loadTexture(const char *texPath)
 	}
     else
     {
-        std::cerr << "Failed to load texture" << std::endl;
+        cerr << "Failed to load texture" << endl;
         texLoaded = false;
     }
 }

@@ -3,12 +3,12 @@
 int	main(int c, char **av)
 {
 	GLFWwindow		*window;
-	WavefrontObj	obj;
 	Scop			scop;
+	WavefrontObj	obj;
 
 	if (c != 4)
 	{
-		std::cerr << "usage: ./program [.obj] [.mtl] [.{png, jpg}]" << std::endl;
+		cerr << "usage: ./program [.obj] [.mtl] [.{png, jpg}]" << endl;
 		return (-1);
 	}
 
@@ -18,7 +18,7 @@ int	main(int c, char **av)
 	window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
 	if (!window)
 	{
-		std::cerr << "Failed to create GLFW window" << std::endl;
+		cerr << "Failed to create GLFW window" << endl;
 		glfwTerminate();
 		return (-1);
 	}
@@ -27,7 +27,7 @@ int	main(int c, char **av)
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cerr << "Failed to initialize GLAD" << std::endl;
+		cerr << "Failed to initialize GLAD" << endl;
 		return (-1);
 	}
 
@@ -38,13 +38,13 @@ int	main(int c, char **av)
 	glfwSetMouseButtonCallback(window, Scop::mouse_button_callback);
 	glfwSetCursorPosCallback(window, Scop::mouse_callback);
 
-	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+	cout << "OpenGL Version: " << glGetString(GL_VERSION) << endl;
 
 	obj.read(av[1], av[2]);
 
-	std::vector<float>			vertices = obj.getVertices();
-	std::vector<unsigned int>	indices = obj.getIndices();
-	tMaterial					material = obj.getMaterial();
+	vector<float>			vertices = obj.getVertices();
+	vector<unsigned int>	indices = obj.getIndices();
+	tMaterial				material = obj.getMaterial();
 
 	unsigned int	VBO;
 	unsigned int	VAOs;
@@ -71,13 +71,13 @@ int	main(int c, char **av)
 	float	distance = 0.0f;
 	for (const auto& vertex : vertices)
 	{
-		distance = std::max(distance, std::abs(vertex));
+		distance = max(distance, abs(vertex));
 	}	
-	glm2::vec3	camLoc = glm2::vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
-	glm2::vec3	lightPos = glm2::vec3(distance, -distance, -distance);
+	vec3	camLoc = vec3(0.0f, 0.0f, distance * 2.0f + (5.0f / 8.0f) * (cosf(35.0f) / sinf(35.0f)));
+	vec3	lightPos = vec3(distance, -distance, -distance);
 
 	scop.locateCamera(camLoc);
-	scop.setSpeedCoeff(distance * 5.0f);
+	scop.setSpeedCoeff(distance * 10.0f);
 
 	scop.loadTexture(av[3]);
 
@@ -105,7 +105,7 @@ int	main(int c, char **av)
 
 	glEnable(GL_DEPTH_TEST);
 
-	glm2::vec3	clColor = material.ka;
+	vec3	clColor = material.ka;
 
 	while (!glfwWindowShouldClose(window))
 	{

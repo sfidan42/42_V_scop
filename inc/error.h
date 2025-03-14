@@ -5,8 +5,8 @@
 
 # define ASSERT(x) if (!(x)) \
     { \
-        std::cerr << "Assertion failed: " << #x << " at " << __FILE__ << ":" << __LINE__ << std::endl; \
-        std::abort(); \
+        cerr << "Assertion failed: " << #x << " at " << __FILE__ << ":" << __LINE__ << endl; \
+        abort(); \
     }
 # define GLCall(x) \
     GLClearError(); \

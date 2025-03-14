@@ -2,9 +2,9 @@
 
 Scop::Scop(void)
 {
-	model = glm2::mat4(1.0f);
-	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	projection = glm2::perspective(glm2::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
+	model = mat4(1.0f);
+	view = lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	projection = perspective(radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 	speedCoeff = 0.0f;
 	deltaTime = 0.0f;
 	lastFrame = 0.0f;
@@ -15,36 +15,36 @@ Scop::~Scop(void) { }
 void	Scop::moveCamera(void)
 {
 	if (speedCoeff == 0.0f)
-		std::cout << "Speed coefficient not set" << std::endl;
+		cout << "Speed coefficient not set" << endl;
 	cameraPos += cameraSpeed * speedCoeff * deltaTime;
-	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	shader.setMat4fv("view", glm2::value_ptr(view));
+	view = lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	shader.setMat4fv("view", value_ptr(view));
 }
 
-void	Scop::locateCamera(glm2::vec3 loc)
+void	Scop::locateCamera(vec3 loc)
 {
 	cameraPos = loc;
-	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	shader.setMat4fv("view", glm2::value_ptr(view));
+	view = lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	shader.setMat4fv("view", value_ptr(view));
 }
 
 void	Scop::transformObject(void)
 {
-	float		angle;
-	glm2::vec3	axis;
+	float	angle;
+	vec3	axis;
 
 	switch (Scop::rotation)
 	{
-		case Rotation::PITCH_PLUS:	angle = -1.0f;	axis = glm2::vec3(1.0f, 0.0f, 0.0f); break;
-		case Rotation::PITCH_MINUS:	angle =  1.0f;	axis = glm2::vec3(1.0f, 0.0f, 0.0f); break;
-		case Rotation::YAW_PLUS:	angle =  1.0f;	axis = glm2::vec3(0.0f, 1.0f, 0.0f); break;
-		case Rotation::YAW_MINUS:	angle = -1.0f;	axis = glm2::vec3(0.0f, 1.0f, 0.0f); break;
-		case Rotation::ROLL_PLUS:	angle =  1.0f;	axis = glm2::vec3(0.0f, 0.0f, 1.0f); break;
-		case Rotation::ROLL_MINUS:	angle = -1.0f;	axis = glm2::vec3(0.0f, 0.0f, 1.0f); break;
-		default:	angle = M_PI / 10.0f;	axis = glm2::vec3(0.0f, 1.0f, 0.0f); break;
+		case Rotation::PITCH_PLUS:	angle = -2.0f;	axis = vec3(1.0f, 0.0f, 0.0f); break;
+		case Rotation::PITCH_MINUS:	angle =  2.0f;	axis = vec3(1.0f, 0.0f, 0.0f); break;
+		case Rotation::YAW_PLUS:	angle =  2.0f;	axis = vec3(0.0f, 1.0f, 0.0f); break;
+		case Rotation::YAW_MINUS:	angle = -2.0f;	axis = vec3(0.0f, 1.0f, 0.0f); break;
+		case Rotation::ROLL_PLUS:	angle =  2.0f;	axis = vec3(0.0f, 0.0f, 1.0f); break;
+		case Rotation::ROLL_MINUS:	angle = -2.0f;	axis = vec3(0.0f, 0.0f, 1.0f); break;
+		default: 					angle =  0.7f;	axis = vec3(0.0f, 1.0f, 0.0f); break;
 	}
-	model = glm2::rotate(model, glm2::radians(angle), axis);
-	shader.setMat4fv("model", glm2::value_ptr(model));
+	model = rotate(model, radians(angle), axis);
+	shader.setMat4fv("model", value_ptr(model));
 }
 
 void	Scop::calcDeltaTime(void)
@@ -71,8 +71,8 @@ float		Scop::yaw				= -90.0f;
 float		Scop::pitch				=   0.0f;
 double		Scop::lastX;
 double		Scop::lastY;
-glm2::vec3	Scop::cameraPos			= glm2::vec3(0.0f, 0.0f, 0.0f);
-glm2::vec3	Scop::cameraFront		= glm2::vec3(0.0f, 0.0f, -1.0f);
-glm2::vec3	Scop::cameraUp			= glm2::vec3(0.0f, 1.0f, 0.0f);
-glm2::vec3	Scop::cameraSpeed		= glm2::vec3(0.0f);
-glm2::vec3	Scop::cameraSpeeds[6]	= { 0.0f };
+vec3		Scop::cameraPos			= vec3(0.0f, 0.0f, 0.0f);
+vec3		Scop::cameraFront		= vec3(0.0f, 0.0f, -1.0f);
+vec3		Scop::cameraUp			= vec3(0.0f, 1.0f, 0.0f);
+vec3		Scop::cameraSpeed		= vec3(0.0f);
+vec3		Scop::cameraSpeeds[6]	= { 0.0f };

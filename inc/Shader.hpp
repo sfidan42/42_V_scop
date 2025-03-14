@@ -7,18 +7,20 @@
 # include <sstream>
 # include <iostream>
 
+using namespace std;
+
 typedef	struct
 {
-	std::string	vertex;
-	std::string	fragment;
+	string	vertex;
+	string	fragment;
 }				tShader;
 
 class Shader
 {
 private:
-	unsigned int				_program;
-	std::vector<unsigned int>	_programs;
-	std::vector<tShader>		_shaders;
+	unsigned int			_program;
+	vector<unsigned int>	_programs;
+	vector<tShader>			_shaders;
 public:
 	Shader(void);
 	~Shader(void);
@@ -28,6 +30,6 @@ public:
 	void	create(void);
 	void	use(unsigned int index);
 public:
-	void	setMat4fv(const std::string &name, const float *value);
-	void	set3f(const std::string &name, const float a, const float b, const float c);
+	void	setMat4fv(const string &name, const float *value);
+	void	set3f(const string &name, const float a, const float b, const float c);
 };
