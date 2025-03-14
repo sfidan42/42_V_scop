@@ -1,12 +1,12 @@
 #include <WavefrontObj.hpp>
 
-static int	similarity(const glm2::vec3 &v1, const glm2::vec3 &v2)
+static int	similarity(const vec3 &v1, const vec3 &v2)
 {
 	float	ans;
 
-	ans = glm2::dot(v1, v2);
-	ans *= Q_rsqrt(glm2::dot(v1, v1));
-	ans *= Q_rsqrt(glm2::dot(v2, v2));
+	ans = dot(v1, v2);
+	ans *= Q_rsqrt(dot(v1, v1));
+	ans *= Q_rsqrt(dot(v2, v2));
 	ans = acosf(ans);
 	ans *= 180.0f / M_PI;
 	return (ans < 30.0f);
@@ -15,14 +15,14 @@ static int	similarity(const glm2::vec3 &v1, const glm2::vec3 &v2)
 void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 {
 	{
-		std::ifstream		objFile(objPath);
-		std::string			line;
-		glm2::vec3			vert;
-		glm2::vec2			tex;
-		glm2::vec<3, uint>	idx;
-		glm2::vec<3, uint>	texIdx;
-		glm2::vec<3, uint>	normIdx;
-		tMaterial			mat;
+		std::ifstream	objFile(objPath);
+		std::string		line;
+		vec3			vert;
+		vec2			tex;
+		vec<3, uint>	idx;
+		vec<3, uint>	texIdx;
+		vec<3, uint>	normIdx;
+		tMaterial		mat;
 
 		if (!objFile.is_open())
 		{
@@ -88,21 +88,20 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		}
 		_vertexAvg *= 1.0f / _vertices.size();
 	}
+	this->stats(objPath.c_str());
 	{
-		std::vector<glm2::vec3>	vertices(_vertices.begin(), _vertices.end());
-		std::vector<glm2::vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
-		std::vector<glm2::vec3>	vertNorms1(_vertices.size());
-		std::list<glm2::vec3>	vertNorms2;
-		std::vector<glm2::vec2>	texCoords(_texCoords.begin(), _texCoords.end());
-		std::vector<glm2::vec2>	texCoords1(_vertices.size());
-		std::list<glm2::vec2>	texCoords2;
-		std::list<glm2::vec<3, uint>>::iterator	itt;
-		std::list<glm2::vec<3, uint>>::iterator	itn;
+		std::vector<vec3>	vertices(_vertices.begin(), _vertices.end());
+		std::vector<vec3>	vertNorms(_vertNorms.begin(), _vertNorms.end());
+		std::vector<vec3>	vertNorms1(_vertices.size());
+		std::list<vec3>		vertNorms2;
+		std::vector<vec2>	texCoords(_texCoords.begin(), _texCoords.end());
+		std::vector<vec2>	texCoords1(_vertices.size());
+		std::list<vec2>		texCoords2;
 
 		if (_texCoords.size())
 		{
-			itt = _texIndices.begin();
-			for (glm2::vec<3, uint> &idx : _indices)
+			auto itt = _texIndices.begin();
+			for (auto &idx : _indices)
 			{
 				for (unsigned int i = 0; i < 3; i++)
 				{
@@ -115,31 +114,31 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 			}
 		}
 
-		itt = _texIndices.begin();
-		itn = _normIndices.begin();
-		for (glm2::vec<3, uint> &idx : _indices)
+		auto itt = _texIndices.begin();
+		auto itn = _normIndices.begin();
+		for (auto &idx : _indices)
 		{
-			glm2::vec3	&v1 = vertices[idx.x];
-			glm2::vec3	&v2 = vertices[idx.y];
-			glm2::vec3	&v3 = vertices[idx.z];
+			vec3	&v1 = vertices[idx.x];
+			vec3	&v2 = vertices[idx.y];
+			vec3	&v3 = vertices[idx.z];
 
-			glm2::vec3	edge1 = v3 - v1;
-			glm2::vec3	edge2 = v2 - v1;
-			glm2::vec3	normCalculated = glm2::cross(edge1, edge2);
+			vec3	edge1 = v3 - v1;
+			vec3	edge2 = v2 - v1;
+			vec3	normCalculated = cross(edge1, edge2);
 
 			for (unsigned int i = 0; i < 3; i++)
 			{
 				unsigned int	vIdx = idx[i];
 				unsigned int	nIdx = (*itn)[i];
-				glm2::vec3		&n = vertNorms1[vIdx];
-				glm2::vec3		norm;
+				vec3		&n = vertNorms1[vIdx];
+				vec3		norm;
 
 				if (nIdx < vertNorms.size())
 					norm = vertNorms[nIdx];
 				else
 					norm = normCalculated;
 
-				if (glm2::length(n) <= 0.0000001f)
+				if (length(n) <= 0.0000001f)
 				{
 					n = norm;
 				}
@@ -165,22 +164,21 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		}
 
 		_vertNorms.clear();
-		for (glm2::vec3 &norm : vertNorms1)
+		for (vec3 &norm : vertNorms1)
 			_vertNorms.push_back(norm);
-		for (glm2::vec3 &norm : vertNorms2)
+		for (vec3 &norm : vertNorms2)
 			_vertNorms.push_back(norm);
 
-		for (glm2::vec3 &norm : _vertNorms)
-			norm *= Q_rsqrt(glm2::dot(norm, norm));
+		for (vec3 &norm : _vertNorms)
+			norm *= Q_rsqrt(dot(norm, norm));
 
 		_texCoords.clear();
-		for (glm2::vec2 &tex : texCoords1)
+		for (vec2 &tex : texCoords1)
 			_texCoords.push_back(tex);
-		for (glm2::vec2 &tex : texCoords2)
+		for (vec2 &tex : texCoords2)
 			_texCoords.push_back(tex);
 	}
 	this->stats(objPath.c_str());
-
 	{
 		std::ifstream	mtlFile(mtlPath);
 		std::string		line;

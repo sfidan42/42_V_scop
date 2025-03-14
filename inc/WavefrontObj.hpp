@@ -10,30 +10,33 @@
 # include "glm2/mat.hpp"
 # include "glm2/transform.hpp"
 
+using namespace glm2;
+using namespace std;
+
 typedef struct
 {
-	std::string		name; // Wood
-	glm2::vec3		ka; // 1.000000 1.000000 1.000000
-	glm2::vec3		kd; // 0.640000 0.640000 0.640000
-	glm2::vec3		ks; // 0.500000 0.500000 0.500000
-	float			ns; // 96.078431
-	float			ni; // 1.000000
-	float			d; // 1.000000
-	unsigned int	illum; // 0
-	std::string		map_Kd; // woodtexture.jpg
+	std::string		name;	// Wood
+	vec3			ka;		// 1.000000 1.000000 1.000000
+	vec3			kd;		// 0.640000 0.640000 0.640000
+	vec3			ks;		// 0.500000 0.500000 0.500000
+	float			ns;		// 96.078431
+	float			ni;		// 1.000000
+	float			d;		// 1.000000
+	unsigned int	illum;	// 0
+	std::string		map_Kd;	// woodtexture.jpg
 }					tMaterial;
 
 class WavefrontObj
 {
 private:
-	std::list<glm2::vec3>			_vertices;
-	std::list<glm2::vec3>			_vertNorms;
-	std::list<glm2::vec2>			_texCoords;
-	std::list<glm2::vec<3, uint>>	_indices;
-	std::list<glm2::vec<3, uint>>	_texIndices;
-	std::list<glm2::vec<3, uint>>	_normIndices;
-	glm2::vec3						_vertexAvg;
-	tMaterial						_mat;
+	std::list<vec3>			_vertices;
+	std::list<vec3>			_vertNorms;
+	std::list<vec2>			_texCoords;
+	std::list<vec<3, uint>>	_indices;
+	std::list<vec<3, uint>>	_texIndices;
+	std::list<vec<3, uint>>	_normIndices;
+	vec3					_vertexAvg;
+	tMaterial				_mat;
 public:
 	WavefrontObj(void);
 	~WavefrontObj();
