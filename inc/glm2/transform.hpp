@@ -20,12 +20,15 @@ inline float	Q_rsqrt(float y)
 
 namespace glm2
 {
-	template <typename T>
-	inline T	dot(glm2::vec<3, T> const &a, glm2::vec<3, T> const &b)
+	template <unsigned int N, typename T>
+	inline T	dot(glm2::vec<N, T> const &a, glm2::vec<N, T> const &b)
 	{
-		glm2::vec<3, T>	tmp(a * b);
+		T	res;
 
-		return (tmp.x + tmp.y + tmp.z);
+		res = T(0);
+		for (unsigned int i = 0; i < N; i++)
+			res += a[i] * b[i];
+		return (res);
 	}
 
 	template <typename T>
