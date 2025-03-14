@@ -19,21 +19,36 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 	{
 		switch (key)
 		{
-			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
-			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
-			case GLFW_KEY_T: texLoaded = !texLoaded; texLoaded ? shader.use(1): shader.use(0); break;
-			case GLFW_KEY_W: cameraUpSpeed = cameraUp; cameraSpeed -= cameraUpSpeed; break;
-			case GLFW_KEY_A: cameraLeftSpeed = glm2::normalize(glm2::cross(cameraFront, cameraUp)); cameraSpeed += cameraLeftSpeed; break;
-			case GLFW_KEY_S: cameraDownSpeed = cameraUp; cameraSpeed += cameraDownSpeed; break;
-			case GLFW_KEY_D: cameraRightSpeed = glm2::normalize(glm2::cross(cameraFront, cameraUp)); cameraSpeed -= cameraRightSpeed; break;
-			case GLFW_KEY_X: cameraFrontSpeed = cameraFront; cameraSpeed -= cameraFrontSpeed; break;
-			case GLFW_KEY_Z: cameraBackwardSpeed = cameraFront; cameraSpeed += cameraBackwardSpeed; break;
-			case GLFW_KEY_UP: rotate = Rotate::PITCH_MINUS; break;
-			case GLFW_KEY_DOWN: rotate = Rotate::PITCH_PLUS; break;
-			case GLFW_KEY_RIGHT: rotate = Rotate::YAW_PLUS; break;
-			case GLFW_KEY_LEFT: rotate = Rotate::YAW_MINUS; break;
-			case GLFW_KEY_N: rotate = Rotate::ROLL_PLUS; break;
-			case GLFW_KEY_M: rotate = Rotate::ROLL_MINUS; break;
+			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true);
+				break;
+			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				break;
+			case GLFW_KEY_T:	texLoaded = !texLoaded; texLoaded ? shader.use(1): shader.use(0);
+				break;
+			case GLFW_KEY_W:	cameraSpeeds[UP] = cameraUp;
+								cameraSpeed -= cameraSpeeds[UP];
+				break;
+			case GLFW_KEY_A:	cameraSpeeds[LEFT] = glm2::normalize(glm2::cross(cameraFront, cameraUp));
+								cameraSpeed += cameraSpeeds[LEFT];
+				break;
+			case GLFW_KEY_S:	cameraSpeeds[DOWN] = cameraUp;
+								cameraSpeed += cameraSpeeds[DOWN];
+				break;
+			case GLFW_KEY_D:	cameraSpeeds[RIGHT] = glm2::normalize(glm2::cross(cameraFront, cameraUp)); 
+								cameraSpeed -= cameraSpeeds[RIGHT];
+				break;
+			case GLFW_KEY_X:	cameraSpeeds[FRONT] = cameraFront;
+								cameraSpeed -= cameraSpeeds[FRONT];
+				break;
+			case GLFW_KEY_Z:	cameraSpeeds[BACKWARD] = cameraFront;
+								cameraSpeed += cameraSpeeds[BACKWARD];
+				break;
+			case GLFW_KEY_UP:	rotation = Rotation::PITCH_PLUS;	break;
+			case GLFW_KEY_DOWN:	rotation = Rotation::PITCH_MINUS;	break;
+			case GLFW_KEY_RIGHT:rotation = Rotation::YAW_PLUS;		break;
+			case GLFW_KEY_LEFT:	rotation = Rotation::YAW_MINUS;		break;
+			case GLFW_KEY_N:	rotation = Rotation::ROLL_PLUS;		break;
+			case GLFW_KEY_M:	rotation = Rotation::ROLL_MINUS;	break;
 			default: break;
 		}
 	}
@@ -42,18 +57,18 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 		switch (key)
 		{
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
-			case GLFW_KEY_W: cameraSpeed += cameraUpSpeed; break;
-			case GLFW_KEY_A: cameraSpeed -= cameraLeftSpeed; break;
-			case GLFW_KEY_S: cameraSpeed -= cameraDownSpeed; break;
-			case GLFW_KEY_D: cameraSpeed += cameraRightSpeed; break;
-			case GLFW_KEY_X: cameraSpeed += cameraFrontSpeed; break;
-			case GLFW_KEY_Z: cameraSpeed -= cameraBackwardSpeed; break;
-			case GLFW_KEY_UP: rotate = Rotate::NONE; break;
-			case GLFW_KEY_DOWN: rotate = Rotate::NONE; break;
-			case GLFW_KEY_RIGHT: rotate = Rotate::NONE; break;
-			case GLFW_KEY_LEFT: rotate = Rotate::NONE; break;
-			case GLFW_KEY_N: rotate = Rotate::NONE; break;
-			case GLFW_KEY_M: rotate = Rotate::NONE; break;
+			case GLFW_KEY_W: cameraSpeed += cameraSpeeds[UP]; break;
+			case GLFW_KEY_A: cameraSpeed -= cameraSpeeds[LEFT]; break;
+			case GLFW_KEY_S: cameraSpeed -= cameraSpeeds[DOWN]; break;
+			case GLFW_KEY_D: cameraSpeed += cameraSpeeds[RIGHT]; break;
+			case GLFW_KEY_X: cameraSpeed += cameraSpeeds[FRONT]; break;
+			case GLFW_KEY_Z: cameraSpeed -= cameraSpeeds[BACKWARD]; break;
+			case GLFW_KEY_UP:	rotation = Rotation::NONE; break;
+			case GLFW_KEY_DOWN:	rotation = Rotation::NONE; break;
+			case GLFW_KEY_RIGHT:rotation = Rotation::NONE; break;
+			case GLFW_KEY_LEFT:	rotation = Rotation::NONE; break;
+			case GLFW_KEY_N:	rotation = Rotation::NONE; break;
+			case GLFW_KEY_M:	rotation = Rotation::NONE; break;
 			default: break;
 		}
 	}

@@ -1,5 +1,4 @@
-#ifndef SCOP_H
-# define SCOP_H
+#pragma once
 # include "Shader.hpp"
 # include "WavefrontObj.hpp"
 # include <iostream>
@@ -8,7 +7,7 @@
 # include "glm2/mat.hpp"
 # include "glm2/transform.hpp"
 
-enum class Rotate
+enum class Rotation
 {
 	NONE,
 	PITCH_PLUS,
@@ -17,6 +16,16 @@ enum class Rotate
 	YAW_MINUS,
 	ROLL_PLUS,
 	ROLL_MINUS
+};
+
+enum Direction
+{
+	UP,
+	LEFT,
+	DOWN,
+	RIGHT,
+	FRONT,
+	BACKWARD
 };
 
 class Scop
@@ -32,10 +41,11 @@ private:
 	float	deltaTime;
 	float	lastFrame;
 private:
-	static Rotate	rotate;
-	static bool		texLoaded;
-	static bool		leftButtonPressed;
-	static bool		firstMouse;
+	static bool	texLoaded;
+	static bool	leftButtonPressed;
+	static bool	firstMouse;
+private:
+	static Rotation	rotation;
 private:
 	static float		yaw;
 	static float		pitch;
@@ -45,12 +55,7 @@ private:
 	static glm2::vec3	cameraFront;
 	static glm2::vec3	cameraUp;
 	static glm2::vec3	cameraSpeed;
-	static glm2::vec3	cameraUpSpeed;
-	static glm2::vec3	cameraDownSpeed;
-	static glm2::vec3	cameraRightSpeed;
-	static glm2::vec3	cameraLeftSpeed;
-	static glm2::vec3	cameraFrontSpeed;
-	static glm2::vec3	cameraBackwardSpeed;
+	static glm2::vec3	cameraSpeeds[6];
 public: // .
 	Scop();
 	~Scop();
@@ -73,4 +78,3 @@ public: // .set
 	void	setSpeedCoeff(float speedCoeff);
 };
 
-#endif
