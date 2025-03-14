@@ -49,7 +49,9 @@ namespace glm2
 	inline VEC::vec(Args... args)
 	{
 		static_assert(sizeof...(Args) == N, "Number of arguments must match vector dimension");
-		_data = {static_cast<T>(args)...};
+		const T data [] = {static_cast<T>(args)...};
+		for (unsigned int i = 0; i < N; ++i)
+			_data[i] = data[i];
 	}
 
 	GLM2

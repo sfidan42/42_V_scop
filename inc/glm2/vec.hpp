@@ -1,5 +1,4 @@
 #pragma once
-# include <array>
 
 # define GLM2	template <unsigned int N, typename T>
 # define VEC	vec<N, T>
@@ -12,7 +11,7 @@ namespace glm2
 	public:
 		union
 		{
-			std::array<T, N>	_data;
+			T	_data[N];
 			struct
 			{
 				T	x;
