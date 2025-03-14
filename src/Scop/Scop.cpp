@@ -3,7 +3,7 @@
 Scop::Scop(void)
 {
 	model = glm2::mat4(1.0f);
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	projection = glm2::perspective(glm2::radians(70.0f), 800.0f / 600.0f, 0.1f, 20000.0f);
 	speedCoeff = 0.0f;
 	deltaTime = 0.0f;
@@ -17,15 +17,15 @@ void	Scop::moveCamera(void)
 	if (speedCoeff == 0.0f)
 		std::cout << "Speed coefficient not set" << std::endl;
 	cameraPos += cameraSpeed * speedCoeff * deltaTime;
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	shader.setMat4fv("view", glm::value_ptr(view));
+	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	shader.setMat4fv("view", glm2::value_ptr(view));
 }
 
-void	Scop::locateCamera(glm::vec3 loc)
+void	Scop::locateCamera(glm2::vec3 loc)
 {
 	cameraPos = loc;
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	shader.setMat4fv("view", glm::value_ptr(view));
+	view = glm2::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	shader.setMat4fv("view", glm2::value_ptr(view));
 }
 
 void	Scop::transformObject(void)
@@ -70,13 +70,13 @@ float		Scop::yaw = -90.0f;
 float		Scop::pitch = 0.0f;
 double		Scop::lastX;
 double		Scop::lastY;
-glm::vec3	Scop::cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
-glm::vec3	Scop::cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3	Scop::cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);
-glm::vec3	Scop::cameraSpeed = glm::vec3(0.0f);
-glm::vec3	Scop::cameraUpSpeed = glm::vec3(0.0f);
-glm::vec3	Scop::cameraDownSpeed = glm::vec3(0.0f);
-glm::vec3	Scop::cameraRightSpeed = glm::vec3(0.0f);
-glm::vec3	Scop::cameraLeftSpeed = glm::vec3(0.0f);
-glm::vec3	Scop::cameraFrontSpeed = glm::vec3(0.0f);
-glm::vec3	Scop::cameraBackwardSpeed = glm::vec3(0.0f);
+glm2::vec3	Scop::cameraPos = glm2::vec3(0.0f, 0.0f,  0.0f);
+glm2::vec3	Scop::cameraFront = glm2::vec3(0.0f, 0.0f, -1.0f);
+glm2::vec3	Scop::cameraUp = glm2::vec3(0.0f, 1.0f,  0.0f);
+glm2::vec3	Scop::cameraSpeed = glm2::vec3(0.0f);
+glm2::vec3	Scop::cameraUpSpeed = glm2::vec3(0.0f);
+glm2::vec3	Scop::cameraDownSpeed = glm2::vec3(0.0f);
+glm2::vec3	Scop::cameraRightSpeed = glm2::vec3(0.0f);
+glm2::vec3	Scop::cameraLeftSpeed = glm2::vec3(0.0f);
+glm2::vec3	Scop::cameraFrontSpeed = glm2::vec3(0.0f);
+glm2::vec3	Scop::cameraBackwardSpeed = glm2::vec3(0.0f);

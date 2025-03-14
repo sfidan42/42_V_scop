@@ -3,7 +3,7 @@
 void	Scop::setMVP(void)
 {
 	shader.setMat4fv("model", glm2::value_ptr(model));
-	shader.setMat4fv("view", glm::value_ptr(view));
+	shader.setMat4fv("view", glm2::value_ptr(view));
 	shader.setMat4fv("projection", glm2::value_ptr(projection));
 }
 

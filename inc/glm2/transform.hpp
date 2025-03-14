@@ -2,7 +2,7 @@
 # include "mat.hpp"
 
 // 1 / sqrt(x)
-inline float	Q_rsqrt( float y )
+inline float	Q_rsqrt(float y)
 {
 	long i;
 	float x2;
@@ -44,48 +44,49 @@ namespace glm2
 		));
 	}
 
-	template <typename T>
-	inline glm2::vec<3, T>	normalize(glm2::vec<3, T> const &v)
+	template <unsigned int N, typename T>
+	inline glm2::vec<N, T>	normalize(glm2::vec<N, T> const &v)
 	{
-		return (v * Q_rsqrt(glm2::dot(v, v)));
+		return (v * (T(1) / length(v)));
 	}
 
 	template <typename T>
-	inline glm2::mat4	lookAt(glm2::vec<3, T> const &camPos, glm2::vec<3, T> const &camTarget, glm2::vec<3, T> const &camUp)
+	inline glm2::mat<4, T>	lookAt(glm2::vec<3, T> const &eye, glm2::vec<3, T> const &center, glm2::vec<3, T> const &up)
 	{
-		glm2::vec<3, T>	f = glm2::normalize(camTarget - camPos);
-		glm2::vec<3, T>	u = glm2::normalize(camUp);
-		glm2::vec<3, T>	s = glm2::normalize(glm2::cross(f, u));
+		glm2::vec<3, T>	f(glm2::normalize(center - eye));
+		glm2::vec<3, T>	s(glm2::normalize(glm2::cross(f, up)));
+		glm2::vec<3, T>	u(glm2::cross(s, f));
+		glm2::mat<4, T>	Result(1);
 
-		glm2::mat4	ret = glm2::mat4(1.0f);
-		ret[0][0] = s.x;
-		ret[1][0] = s.y;
-		ret[2][0] = s.z;
-		ret[0][1] = u.x;
-		ret[1][1] = u.y;
-		ret[2][1] = u.z;
-		ret[0][2] = -f.x;
-		ret[1][2] = -f.y;
-		ret[2][2] = -f.z;
-		ret[3][0] = -glm2::dot(s, camPos);
-		ret[3][1] = -glm2::dot(u, camPos);
-		ret[3][2] = glm2::dot(f, camPos);
-		return (ret);
+		Result[0][0] = s.x;
+		Result[1][0] = s.y;
+		Result[2][0] = s.z;
+		Result[0][1] = u.x;
+		Result[1][1] = u.y;
+		Result[2][1] = u.z;
+		Result[0][2] =-f.x;
+		Result[1][2] =-f.y;
+		Result[2][2] =-f.z;
+		Result[3][0] =-dot(s, eye);
+		Result[3][1] =-dot(u, eye);
+		Result[3][2] = dot(f, eye);
+
+		return (Result);
 	}
 
 	template <typename T>
-	inline glm2::mat4	rotate(glm2::mat4 const &mat, T angle, glm2::vec3 const &axis)
+	inline glm2::mat<4, T>	rotate(glm2::mat<4, T> const &mat, T angle, glm2::vec<3, T> const &axis)
 	{
-		glm2::mat4	ret = mat;
-		T			c = cos(angle);
-		T			s = sin(angle);
-		glm2::vec3	a = glm2::normalize(axis);
-		glm2::vec3	temp = a * (1 - c);
+		glm2::mat<4, T>	ret = mat;
+		T				c = cos(angle);
+		T				s = sin(angle);
+		glm2::vec<3, T>	a = glm2::normalize(axis);
+		glm2::vec<3, T>	temp = a * (1 - c);
+		glm2::mat3		rot;
 
-		glm2::mat3	rot;
-		rot[0] = glm2::vec3(c + temp.x * a.x, temp.x * a.y + s * a.z, temp.x * a.z - s * a.y);
-		rot[1] = glm2::vec3(temp.y * a.x - s * a.z, c + temp.y * a.y, temp.y * a.z + s * a.x);
-		rot[2] = glm2::vec3(temp.z * a.x + s * a.y, temp.z * a.y - s * a.x, c + temp.z * a.z);
+		rot[0] = glm2::vec<3, T>(c + temp.x * a.x, temp.x * a.y + s * a.z, temp.x * a.z - s * a.y);
+		rot[1] = glm2::vec<3, T>(temp.y * a.x - s * a.z, c + temp.y * a.y, temp.y * a.z + s * a.x);
+		rot[2] = glm2::vec<3, T>(temp.z * a.x + s * a.y, temp.z * a.y - s * a.x, c + temp.z * a.z);
 
 		ret[0] = mat[0] * rot[0][0] + mat[1] * rot[0][1] + mat[2] * rot[0][2];
 		ret[1] = mat[0] * rot[1][0] + mat[1] * rot[1][1] + mat[2] * rot[1][2];
@@ -94,9 +95,9 @@ namespace glm2
 	}
 
 	template <typename T>
-	inline glm2::mat4	perspective(T fovy, T aspect, T near, T far)
+	inline glm2::mat<4, T>	perspective(T fovy, T aspect, T near, T far)
 	{
-		glm2::mat4	ret = glm2::mat4(0.0f);
+		glm2::mat<4, T>	ret = glm2::mat<4, T>(0.0f);
 		T			tanHalfFovy = tan(fovy / T(2));
 
 		ret[0][0] = T(1) / (aspect * tanHalfFovy);
@@ -112,7 +113,8 @@ namespace glm2
 		return (M_PI * (degree / 180.0));
 	}
 
-	inline const float	*value_ptr(const glm2::mat4 &m)
+	template <unsigned int N, typename T>
+	inline const float	*value_ptr(const glm2::mat<N, T> &m)
 	{
 		return &(m[0].x);
 	}

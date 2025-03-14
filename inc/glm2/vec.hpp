@@ -1,6 +1,5 @@
 #pragma once
 # include <array>
-# include <glm/glm.hpp>
 
 # define GLM2	template <unsigned int N, typename T>
 # define VEC	vec<N, T>

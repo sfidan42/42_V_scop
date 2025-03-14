@@ -7,9 +7,6 @@
 # include "glm2/vec.hpp"
 # include "glm2/mat.hpp"
 # include "glm2/transform.hpp"
-# include <glm/gtc/matrix_transform.hpp>
-# include <glm/glm.hpp>
-# include <glm/gtc/type_ptr.hpp>
 
 enum class Rotate
 {
@@ -28,7 +25,7 @@ public:
 	static Shader	shader;
 private:
 	glm2::mat4	model;
-	glm::mat4	view;
+	glm2::mat4	view;
 	glm2::mat4	projection;
 private:
 	float	speedCoeff;
@@ -44,21 +41,21 @@ private:
 	static float		pitch;
 	static double		lastX;
 	static double		lastY;
-	static glm::vec3	cameraPos;
-	static glm::vec3	cameraFront;
-	static glm::vec3	cameraUp;
-	static glm::vec3	cameraSpeed;
-	static glm::vec3	cameraUpSpeed;
-	static glm::vec3	cameraDownSpeed;
-	static glm::vec3	cameraRightSpeed;
-	static glm::vec3	cameraLeftSpeed;
-	static glm::vec3	cameraFrontSpeed;
-	static glm::vec3	cameraBackwardSpeed;
+	static glm2::vec3	cameraPos;
+	static glm2::vec3	cameraFront;
+	static glm2::vec3	cameraUp;
+	static glm2::vec3	cameraSpeed;
+	static glm2::vec3	cameraUpSpeed;
+	static glm2::vec3	cameraDownSpeed;
+	static glm2::vec3	cameraRightSpeed;
+	static glm2::vec3	cameraLeftSpeed;
+	static glm2::vec3	cameraFrontSpeed;
+	static glm2::vec3	cameraBackwardSpeed;
 public: // .
 	Scop();
 	~Scop();
 	void	moveCamera();
-	void	locateCamera(glm::vec3 loc);
+	void	locateCamera(glm2::vec3 loc);
 	void	transformObject(void);
 	void	calcDeltaTime(void);
 	void	useShader(void); // automatic detection of the shader to use
