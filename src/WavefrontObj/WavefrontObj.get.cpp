@@ -2,9 +2,9 @@
 
 const std::vector<float>	WavefrontObj::getVertices(void)
 {
-	std::list<glm::vec3>::iterator		itv = _vertices.begin();
-	std::list<glm::vec3>::iterator		itn = _vertNorms.begin();
-	std::list<glm::vec2>::iterator		itt = _texCoords.begin();
+	std::list<glm::vec3>::iterator	itv = _vertices.begin();
+	std::list<glm::vec3>::iterator	itn = _vertNorms.begin();
+	std::list<glm::vec2>::iterator	itt = _texCoords.begin();
 	std::vector<float>::iterator	it;
 	std::vector<float>				vec;
 
@@ -48,7 +48,7 @@ const std::vector<unsigned int>	WavefrontObj::getIndices(void)
 
 	vec.resize(_indices.size() * sizeof(glm::vec<3, uint>));
 	it = vec.begin();
-	for (glm::vec<3, uint> &idx : _indices)
+	for (glm2::vec<3, uint> &idx : _indices)
 	{
 		*it++ = idx.x;
 		*it++ = idx.y;

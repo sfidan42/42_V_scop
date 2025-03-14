@@ -30,10 +30,10 @@ private:
 	std::list<glm::vec3>			_vertices;
 	std::list<glm::vec3>			_vertNorms;
 	std::list<glm::vec2>			_texCoords;
-	std::list<glm::vec<3, uint>>	_indices;
-	std::list<glm::vec<3, uint>>	_texIndices;
-	std::list<glm::vec<3, uint>>	_normIndices;
-	glm::vec3						_vertexAvg;
+	std::list<glm2::vec<3, uint>>	_indices;
+	std::list<glm2::vec<3, uint>>	_texIndices;
+	std::list<glm2::vec<3, uint>>	_normIndices;
+	glm2::vec3						_vertexAvg;
 	tMaterial						_mat;
 public:
 	WavefrontObj(void);

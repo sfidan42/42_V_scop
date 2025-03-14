@@ -19,9 +19,9 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 		std::string			line;
 		glm::vec3			vert;
 		glm::vec2			tex;
-		glm::vec<3, uint>	idx;
-		glm::vec<3, uint>	texIdx;
-		glm::vec<3, uint>	normIdx;
+		glm2::vec<3, uint>	idx;
+		glm2::vec<3, uint>	texIdx;
+		glm2::vec<3, uint>	normIdx;
 		tMaterial			mat;
 
 		if (!objFile.is_open())
@@ -107,13 +107,13 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 	std::vector<glm::vec2>	texCoords(_texCoords.begin(), _texCoords.end());
 	std::vector<glm::vec2>	texCoords1(_vertices.size());
 	std::list<glm::vec2>	texCoords2;
-	std::list<glm::vec<3, uint>>::iterator	itt;
-	std::list<glm::vec<3, uint>>::iterator	itn;
+	std::list<glm2::vec<3, uint>>::iterator	itt;
+	std::list<glm2::vec<3, uint>>::iterator	itn;
 
 	if (_texCoords.size())
 	{
 		itt = _texIndices.begin();
-		for (glm::vec<3, uint> &idx : _indices)
+		for (glm2::vec<3, uint> &idx : _indices)
 		{
 			for (unsigned int i = 0; i < 3; i++)
 			{
@@ -128,15 +128,15 @@ void	WavefrontObj::read(const std::string &objPath, const std::string &mtlPath)
 
 	itt = _texIndices.begin();
 	itn = _normIndices.begin();
-	for (glm::vec<3, uint> &idx : _indices)
+	for (glm2::vec<3, uint> &idx : _indices)
 	{
 		glm::vec3	&v1 = vertices[idx.x];
 		glm::vec3	&v2 = vertices[idx.y];
 		glm::vec3	&v3 = vertices[idx.z];
 		glm::vec3	normCalc;
 
-		glm::vec3	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
-		glm::vec3	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
+		glm2::vec3	edge1(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
+		glm2::vec3	edge2(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
 
 		normCalc.x = edge1.y * edge2.z - edge1.z * edge2.y;
 		normCalc.y = edge1.z * edge2.x - edge1.x * edge2.z;
