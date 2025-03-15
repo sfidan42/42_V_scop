@@ -1,5 +1,5 @@
 .vscode
-res/objects/other/
+res/objects/temp/
 bin/
 dep/lib
 libscop.a

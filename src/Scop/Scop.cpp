@@ -34,7 +34,7 @@ void	Scop::transformObject(void)
 	
 	if (length(rotationAxis) < 0.1f)
 		return ;
-	angle = rotationDegree * speedCoeff * deltaTime;
+	angle = rotationDegree * 20.0f * deltaTime;
 	model = rotate(model, radians(angle), rotationAxis);
 	shader.setMat4fv("model", value_ptr(model));
 }

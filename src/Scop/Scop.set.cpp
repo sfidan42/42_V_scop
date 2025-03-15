@@ -22,4 +22,5 @@ void	Scop::setMaterial(tMaterial mat)
 void	Scop::setSpeedCoeff(float val)
 {
 	speedCoeff = val;
+	cerr << "Speed coefficient set to " << val << endl;
 }

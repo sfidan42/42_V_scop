@@ -24,12 +24,30 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				break;
 			case GLFW_KEY_T: texLoaded = !texLoaded; texLoaded ? shader.use(1): shader.use(0); break;
-			case GLFW_KEY_W: cameraSpeed -= cameraUp; break;
-			case GLFW_KEY_S: cameraSpeed += cameraUp; break;
-			case GLFW_KEY_A: cameraSpeed += normalize(cross(cameraFront, cameraUp)); break;
-			case GLFW_KEY_D: cameraSpeed -= normalize(cross(cameraFront, cameraUp)); break;
-			case GLFW_KEY_X: cameraSpeed -= cameraFront; break;
-			case GLFW_KEY_Z: cameraSpeed += cameraFront; break;
+			case GLFW_KEY_W:
+				cameraSpeeds[eCameraSpeed::UP] = cameraUp; 
+				cameraSpeed -= cameraSpeeds[eCameraSpeed::UP];
+				break;
+			case GLFW_KEY_A:
+				cameraSpeeds[eCameraSpeed::LEFT] = normalize(cross(cameraFront, cameraUp));
+				cameraSpeed += cameraSpeeds[eCameraSpeed::LEFT];
+				break;
+			case GLFW_KEY_S:
+				cameraSpeeds[eCameraSpeed::DOWN] = cameraUp;
+				cameraSpeed += cameraSpeeds[eCameraSpeed::DOWN];
+				break;
+			case GLFW_KEY_D:
+				cameraSpeeds[eCameraSpeed::RIGHT] = normalize(cross(cameraFront, cameraUp));
+				cameraSpeed -= cameraSpeeds[eCameraSpeed::RIGHT];
+				break;
+			case GLFW_KEY_X:
+				cameraSpeeds[eCameraSpeed::FORWARD] = cameraFront;
+				cameraSpeed -= cameraSpeeds[eCameraSpeed::FORWARD];
+				break;
+			case GLFW_KEY_Z:
+				cameraSpeeds[eCameraSpeed::BACKWARD] = cameraFront;
+				cameraSpeed += cameraSpeeds[eCameraSpeed::BACKWARD];
+				break;
 			case GLFW_KEY_UP: rotationDegree += 20.0f; rotationAxis.x -= 1.0f; break;
 			case GLFW_KEY_DOWN: rotationDegree += 20.0f; rotationAxis.x += 1.0f; break;
 			case GLFW_KEY_LEFT: rotationDegree += 20.0f; rotationAxis.y -= 1.0f; break;
@@ -44,12 +62,12 @@ void	Scop::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 		switch (key)
 		{
 			case GLFW_KEY_P: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	break;
-			case GLFW_KEY_W: cameraSpeed += cameraUp; break;
-			case GLFW_KEY_A: cameraSpeed -= normalize(cross(cameraFront, cameraUp)); break;
-			case GLFW_KEY_S: cameraSpeed -= cameraUp; break;
-			case GLFW_KEY_D: cameraSpeed += normalize(cross(cameraFront, cameraUp)); break;
-			case GLFW_KEY_X: cameraSpeed += cameraFront; break;
-			case GLFW_KEY_Z: cameraSpeed -= cameraFront; break;
+			case GLFW_KEY_W: cameraSpeed += cameraSpeeds[eCameraSpeed::UP]; break;
+			case GLFW_KEY_A: cameraSpeed -= cameraSpeeds[eCameraSpeed::LEFT]; break;
+			case GLFW_KEY_S: cameraSpeed -= cameraSpeeds[eCameraSpeed::DOWN]; break;
+			case GLFW_KEY_D: cameraSpeed += cameraSpeeds[eCameraSpeed::RIGHT]; break;
+			case GLFW_KEY_X: cameraSpeed += cameraSpeeds[eCameraSpeed::FORWARD]; break;
+			case GLFW_KEY_Z: cameraSpeed -= cameraSpeeds[eCameraSpeed::BACKWARD]; break;
 			case GLFW_KEY_UP: rotationDegree -= 20.0f; rotationAxis.x += 1.0f; break;
 			case GLFW_KEY_DOWN: rotationDegree -= 20.0f; rotationAxis.x -= 1.0f; break;
 			case GLFW_KEY_LEFT: rotationDegree -= 20.0f; rotationAxis.y += 1.0f; break;

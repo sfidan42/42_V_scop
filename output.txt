@@ -1,0 +1,22 @@
+./scop  "res/temp/Helmet.obj"  "res/temp/Helmet.mtl"  "res/temp/Helmet_1.png"
+OpenGL Version: 4.6 (Compatibility Profile) Mesa 24.2.8-1ubuntu1~24.04.1
+res/temp/Helmet.obj
+	number of _vertices: 2499973
+	number of _vertNorms: 0
+	number of _indices: 4999994
+	number of _texCoords: 2558498
+	number of _texIndices: 4999994
+	 _vertexAvg: 1.86314 -10.6194 -39.3635
+res/temp/Helmet.obj
+	number of _vertices: 2646544
+	number of _vertNorms: 2646544
+	number of _indices: 4999994
+	number of _texCoords: 2646544
+	number of _texIndices: 4999994
+	 _vertexAvg: 1.86314 -10.6194 -39.3635
+unknown word: #
+unknown word: #
+unknown word: 
+unknown word: map_Kd
+unknown word: 
+unknown word: 

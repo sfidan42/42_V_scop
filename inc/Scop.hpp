@@ -10,6 +10,16 @@
 using namespace glm2;
 using namespace std;
 
+enum eCameraSpeed
+{
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
+};
+
 class Scop
 {
 public:
