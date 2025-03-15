@@ -31,19 +31,11 @@ void	Scop::locateCamera(vec3 loc)
 void	Scop::transformObject(void)
 {
 	float	angle;
-	vec3	axis;
-
-	switch (Scop::rotation)
-	{
-		case Rotation::PITCH_PLUS:	angle = -2.0f;	axis = vec3(1.0f, 0.0f, 0.0f); break;
-		case Rotation::PITCH_MINUS:	angle =  2.0f;	axis = vec3(1.0f, 0.0f, 0.0f); break;
-		case Rotation::YAW_PLUS:	angle =  2.0f;	axis = vec3(0.0f, 1.0f, 0.0f); break;
-		case Rotation::YAW_MINUS:	angle = -2.0f;	axis = vec3(0.0f, 1.0f, 0.0f); break;
-		case Rotation::ROLL_PLUS:	angle =  2.0f;	axis = vec3(0.0f, 0.0f, 1.0f); break;
-		case Rotation::ROLL_MINUS:	angle = -2.0f;	axis = vec3(0.0f, 0.0f, 1.0f); break;
-		default: 					angle =  0.7f;	axis = vec3(0.0f, 1.0f, 0.0f); break;
-	}
-	model = rotate(model, radians(angle), axis);
+	
+	if (length(rotationAxis) < 0.1f)
+		return ;
+	angle = rotationDegree * speedCoeff * deltaTime;
+	model = rotate(model, radians(angle), rotationAxis);
 	shader.setMat4fv("model", value_ptr(model));
 }
 
@@ -65,12 +57,13 @@ bool		Scop::texLoaded			= false;
 bool		Scop::leftButtonPressed	= false;
 bool		Scop::firstMouse		= true;
 
-Rotation	Scop::rotation			= Rotation::NONE;
+float		Scop::rotationDegree	= 0.0f;
+vec3		Scop::rotationAxis		= vec3(0.0f);
 
 float		Scop::yaw				= -90.0f;
 float		Scop::pitch				=   0.0f;
-double		Scop::lastX;
-double		Scop::lastY;
+float		Scop::lastX;
+float		Scop::lastY;
 vec3		Scop::cameraPos			= vec3(0.0f, 0.0f, 0.0f);
 vec3		Scop::cameraFront		= vec3(0.0f, 0.0f, -1.0f);
 vec3		Scop::cameraUp			= vec3(0.0f, 1.0f, 0.0f);

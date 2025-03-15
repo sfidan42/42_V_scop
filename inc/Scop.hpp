@@ -10,27 +10,6 @@
 using namespace glm2;
 using namespace std;
 
-enum class Rotation
-{
-	NONE,
-	PITCH_PLUS,
-	PITCH_MINUS,
-	YAW_PLUS,
-	YAW_MINUS,
-	ROLL_PLUS,
-	ROLL_MINUS
-};
-
-enum Direction
-{
-	UP,
-	LEFT,
-	DOWN,
-	RIGHT,
-	FRONT,
-	BACKWARD
-};
-
 class Scop
 {
 public:
@@ -48,12 +27,13 @@ private:
 	static bool	leftButtonPressed;
 	static bool	firstMouse;
 private:
-	static Rotation	rotation;
+	static float	rotationDegree;
+	static vec3		rotationAxis;
 private:
 	static float	yaw;
 	static float	pitch;
-	static double	lastX;
-	static double	lastY;
+	static float	lastX;
+	static float	lastY;
 	static vec3	cameraPos;
 	static vec3	cameraFront;
 	static vec3	cameraUp;
