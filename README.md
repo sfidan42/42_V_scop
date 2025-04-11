@@ -19,3 +19,13 @@
 ## GLAD
 - In simple words, GLAD manages function pointers for OpenGL. It is useful becuase OpenGL is only really a standard/specification it is up to the driver manufacturer to implement the specification to a driver that the specific graphics card supports.
 - do```#include <glad/glad.h>``` before ```#include <GLFW/glfw3.h>```
+
+## Example output 1:
+![output1](./media/scop1.png)
+
+
+## Example output 2:
+![output1](./media/scop2.png)
+
+## Demo
+![output](./media/scop.gif)
