@@ -12,7 +12,7 @@ void	Scop::setLightPos(vec3 lightPos)
 	shader.set3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
 }
 
-void	Scop::setMaterial(tMaterial mat)
+void	Scop::setMaterial(const tMaterial &mat)
 {
 	shader.set3f("ambientColor", mat.ka.r, mat.ka.g, mat.ka.b);
 	shader.set3f("diffuseColor", mat.kd.r, mat.kd.g, mat.kd.b);

@@ -36,7 +36,7 @@ const vector<unsigned int>	WavefrontObj::getIndices(void)
 	return (vec);
 }
 
-const tMaterial	WavefrontObj::getMaterial(void)
+const tMaterial	&WavefrontObj::getMaterial(void)
 {
 	return (_mat);
 }

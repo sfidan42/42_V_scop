@@ -15,7 +15,6 @@ using namespace std;
 
 typedef struct
 {
-	string			name;	// Wood
 	vec3			ka;		// 1.000000 1.000000 1.000000
 	vec3			kd;		// 0.640000 0.640000 0.640000
 	vec3			ks;		// 0.500000 0.500000 0.500000
@@ -23,7 +22,6 @@ typedef struct
 	float			ni;		// 1.000000
 	float			d;		// 1.000000
 	unsigned int	illum;	// 0
-	string			map_Kd;	// woodtexture.jpg
 }					tMaterial;
 
 class WavefrontObj
@@ -44,6 +42,6 @@ public:
 	const vector<float>			getVertices(void);
 	const vector<float>			getNormalEnds(void);
 	const vector<unsigned int>	getIndices(void);
-	const tMaterial				getMaterial(void);
+	const tMaterial				&getMaterial(void);
 	void						stats(const char *title);
 };

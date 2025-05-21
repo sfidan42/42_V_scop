@@ -67,7 +67,7 @@ public: // .load
 public: // .set
 	void	setMVP(void);
 	void	setLightPos(vec3 lightPos);
-	void	setMaterial(tMaterial mat);
+	void	setMaterial(const tMaterial &mat);
 	void	setSpeedCoeff(float speedCoeff);
 };
 

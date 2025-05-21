@@ -87,6 +87,7 @@ int	main(int c, char **av)
 	Scop::shader.read("res/shaders/specular.textured.shader");
 	Scop::shader.create();
 
+
 	Scop::shader.use(0);
 	scop.setLightPos(lightPos);
 	scop.setMaterial(material);
@@ -123,5 +124,5 @@ int	main(int c, char **av)
 	}
 
 	glfwTerminate();
-	return 0;
+	return (0);
 }

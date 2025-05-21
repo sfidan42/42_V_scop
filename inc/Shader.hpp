@@ -13,7 +13,7 @@ typedef	struct
 {
 	string	vertex;
 	string	fragment;
-}				tShader;
+}			tShader;
 
 class Shader
 {

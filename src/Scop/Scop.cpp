@@ -10,7 +10,9 @@ Scop::Scop(void)
 	lastFrame = 0.0f;
 }
 
-Scop::~Scop(void) { }
+Scop::~Scop(void)
+{
+}
 
 void	Scop::moveCamera(void)
 {

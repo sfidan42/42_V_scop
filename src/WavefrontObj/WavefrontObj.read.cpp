@@ -15,8 +15,8 @@ static int	similarity(const vec3 &v1, const vec3 &v2)
 void	WavefrontObj::read(const string &objPath, const string &mtlPath)
 {
 	{
-		ifstream	objFile(objPath);
-		string		line;
+		ifstream		objFile(objPath);
+		string			line;
 		vec3			vert;
 		vec2			tex;
 		vec<3, uint>	idx;
@@ -197,9 +197,7 @@ void	WavefrontObj::read(const string &objPath, const string &mtlPath)
 			string			word;
 
 			iss >> word;
-			if (word == "newmtl")
-				iss >> _mat.name;
-			else if (word == "Kd")
+			if (word == "Kd")
 				iss >> _mat.kd.r >> _mat.kd.g >> _mat.kd.b;
 			else if (word == "Ka")
 				iss >> _mat.ka.r >> _mat.ka.g >> _mat.ka.b;

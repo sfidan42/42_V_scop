@@ -16,7 +16,7 @@ GLFW    =   dep/lib/src/libglfw3.a
 GLAD    =   dep/lib/bin/glad.o
 STB		=   dep/lib/inc/stb_image.h
 
-CXX     =   c++ -Wall -Wextra -std=c++20 -Iinc -Idep/lib/inc -g -lm
+CXX     =   c++ -Wall -Wextra -std=c++20 -Iinc -Idep/lib/inc -g
 
 FLAGS   =   -L. -lscop -Ldep/lib/src -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
@@ -37,8 +37,8 @@ all: $(STB) $(GLAD) $(GLFW) $(EXE)
 	@./$(EXE) res/objects/teapot.obj ""	""		|| echo "Error: $(EXE) failed"
 	@echo "_____________teapot2________________"
 	@./$(EXE) res/objects/teapot2.obj \
-			res/objects/teapot2.mtl \
-			""									|| echo "Error: $(EXE) failed"
+		res/materials/teapot2.mtl \
+		""									|| echo "Error: $(EXE) failed"
 	@echo "____________max-planck______________"
 	@./$(EXE) res/objects/max-planck.obj "" ""	|| echo "Error: $(EXE) failed"
 

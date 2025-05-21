@@ -24,6 +24,7 @@ void	Scop::loadTexture(const char *texPath)
     else
     {
         cerr << "Failed to load texture" << endl;
+		cerr << "Using default texture" << endl;
         texLoaded = false;
     }
 }
